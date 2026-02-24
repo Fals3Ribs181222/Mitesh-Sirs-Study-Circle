@@ -17,6 +17,10 @@ function doPost(e) {
       response = handleFileUpload(data);
     } else if (action === 'addAnnouncement') {
       response = handleAddAnnouncement(data);
+    } else if (action === 'scheduleTest') {
+      response = handleScheduleTest(data);
+    } else if (action === 'enterMarks') {
+      response = handleEnterMarks(data);
     }
   } catch (error) {
     response = { success: false, error: error.toString() };
@@ -39,6 +43,10 @@ function doGet(e) {
       response = getSheetData(ss, 'Files');
     } else if (action === 'getAnnouncements') {
       response = getSheetData(ss, 'Announcements');
+    } else if (action === 'getTests') {
+      response = getSheetData(ss, 'Tests');
+    } else if (action === 'getMarks') {
+      response = getSheetData(ss, 'Marks');
     } else if (action === 'getStudents') {
       var sheetData = getSheetData(ss, 'Students');
       if (sheetData.success && sheetData.data) {
@@ -131,6 +139,49 @@ function handleAddAnnouncement(data) {
   var date = new Date().toISOString().split('T')[0];
   // Columns: Date, Title, Message, Class
   sheet.appendRow([date, data.title, data.message, data.targetClass]);
+  return { success: true };
+}
+
+function handleScheduleTest(data) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Tests');
+  if (!sheet) return { success: false, error: 'Tests sheet not found' };
+  
+  var testId = Utilities.getUuid();
+  // Columns: Test ID, Date, Title, Subject, Class, Max Marks
+  sheet.appendRow([testId, data.date, data.title, data.subject, data.targetClass, data.maxMarks]);
+  
+  return { success: true, testId: testId };
+}
+
+function handleEnterMarks(data) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Marks');
+  if (!sheet) return { success: false, error: 'Marks sheet not found' };
+  
+  var testId = data.testId;
+  var marksList = data.marks; // Array of { username: "...", marks: "..." }
+  
+  // Columns: Test ID, Student Username, Marks
+  // We should ideally update existing marks if present, or append if new
+  var rows = sheet.getDataRange().getValues();
+  var existingMarks = {};
+  for (var i = 1; i < rows.length; i++) {
+    if (rows[i][0] === testId) {
+      existingMarks[rows[i][1]] = i + 1; // 1-indexed row number
+    }
+  }
+  
+  for (var j = 0; j < marksList.length; j++) {
+    var m = marksList[j];
+    var rowIndex = existingMarks[m.username];
+    if (rowIndex) {
+      // Update existing
+      sheet.getRange(rowIndex, 3).setValue(m.marks);
+    } else {
+      // Append new
+      sheet.appendRow([testId, m.username, m.marks]);
+    }
+  }
+  
   return { success: true };
 }
 

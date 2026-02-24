@@ -171,6 +171,32 @@
                     <div class="loading-text">Loading notices...</div>
                 </div>
             </div>
+
+            <!-- Tests & Marks Panel -->
+            <div class="panel" style="grid-column: 1 / -1;">
+                <div class="panel-header">
+                    <h3>Tests & Marks</h3>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table style="width: 100%; border-collapse: collapse; text-align: left;" id="testsTable">
+                        <thead>
+                            <tr style="border-bottom: 2px solid var(--border-color);">
+                                <th style="padding: 1rem; color: var(--text-muted);">Date</th>
+                                <th style="padding: 1rem; color: var(--text-muted);">Subject</th>
+                                <th style="padding: 1rem; color: var(--text-muted);">Test Title</th>
+                                <th style="padding: 1rem; color: var(--text-muted);">Max Marks</th>
+                                <th style="padding: 1rem; color: var(--text-muted); font-weight: 600;">Marks Earned</th>
+                            </tr>
+                        </thead>
+                        <tbody id="testsTableBody">
+                            <tr>
+                                <td colspan="5" style="padding: 1rem; text-align: center; color: var(--text-muted);">
+                                    Loading tests...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -200,6 +226,7 @@
             if (CONFIG.SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
                 document.getElementById('materialsList').innerHTML = '<div class="loading-text" style="color:red">Setup pending: Configure Apps Script URL</div>';
                 document.getElementById('announcementsList').innerHTML = '<div class="loading-text" style="color:red">Setup pending</div>';
+                document.getElementById('testsTableBody').innerHTML = '<tr><td colspan="5" class="loading-text" style="color:red; text-align:center;">Setup pending</td></tr>';
                 return;
             }
 
@@ -245,6 +272,51 @@
                 });
             } else {
                 annList.innerHTML = `<div class="loading-text">Error: ${annRes.error}</div>`;
+            }
+
+            // Fetch Tests and Marks
+            const [testsRes, marksRes] = await Promise.all([
+                api.get('getTests'),
+                api.get('getMarks')
+            ]);
+
+            const tbody = document.getElementById('testsTableBody');
+            if (testsRes.success && marksRes.success) {
+                const tests = testsRes.data || [];
+                const marks = marksRes.data || [];
+
+                // Filter tests for this student's class
+                const myTests = tests.filter(t => !t['Class'] || String(t['Class']) === String(user.studentClass)).reverse(); // Newest first
+
+                // Map marks for easy lookup by testId
+                const myMarks = {};
+                marks.forEach(m => {
+                    if (String(m['Student Username']) === String(user.username)) {
+                        myMarks[m['Test ID']] = m['Marks'];
+                    }
+                });
+
+                if (myTests.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" style="padding: 1rem; text-align: center; color: var(--text-muted);">No tests scheduled.</td></tr>';
+                } else {
+                    tbody.innerHTML = myTests.map(t => {
+                        const earned = myMarks[t['Test ID']];
+                        const earnedDisplay = earned !== undefined ? `<span style="font-weight: 600; color: var(--primary);">${earned}</span>` : `<span class="text-muted" style="font-size: 0.9em;">Not Uploaded</span>`;
+                        const metaDate = new Date(t['Date']).toLocaleDateString() !== 'Invalid Date' ? new Date(t['Date']).toLocaleDateString() : t['Date'];
+
+                        return `
+                            <tr style="border-bottom: 1px solid var(--border-color);">
+                                <td style="padding: 1rem; color: var(--text-main);">${metaDate}</td>
+                                <td style="padding: 1rem; color: var(--text-main);">${t['Subject'] || '-'}</td>
+                                <td style="padding: 1rem; color: var(--text-main); font-weight: 500;">${t['Title']}</td>
+                                <td style="padding: 1rem; color: var(--text-muted);">${t['Max Marks']}</td>
+                                <td style="padding: 1rem;">${earnedDisplay}</td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+            } else {
+                tbody.innerHTML = '<tr><td colspan="5" style="padding: 1rem; text-align: center; color: var(--error);">Failed to load tests.</td></tr>';
             }
         }
 
