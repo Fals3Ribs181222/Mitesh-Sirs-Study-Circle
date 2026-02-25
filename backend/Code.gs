@@ -21,6 +21,8 @@ function doPost(e) {
       response = handleScheduleTest(data);
     } else if (action === 'enterMarks') {
       response = handleEnterMarks(data);
+    } else if (action === 'addStudent') {
+      response = handleAddStudent(data);
     }
   } catch (error) {
     response = { success: false, error: error.toString() };
@@ -49,12 +51,6 @@ function doGet(e) {
       response = getSheetData(ss, 'Marks');
     } else if (action === 'getStudents') {
       var sheetData = getSheetData(ss, 'Students');
-      if (sheetData.success && sheetData.data) {
-        // Remove password from response
-        for (var k = 0; k < sheetData.data.length; k++) {
-          delete sheetData.data[k]['Password'];
-        }
-      }
       response = sheetData;
     } else {
       response = { success: false, error: 'Unknown GET action' };
@@ -204,4 +200,38 @@ function getSheetData(ss, sheetName) {
   }
   
   return { success: true, data: data };
+}
+
+function handleAddStudent(data) {
+  try {
+    var ss = SpreadsheetApp.getActiveSpreadsheet();
+    var sheet = ss.getSheetByName('Students'); 
+    
+    if (!sheet) return { success: false, error: 'Students sheet not found' };
+    
+    // Auto-generate hidden Student ID (e.g. MSGT-2026-001)
+    var year = new Date().getFullYear();
+    var lastRow = Math.max(sheet.getLastRow(), 1); 
+    var count = lastRow - 1; 
+    var rawId = count + 1;
+    var paddedId = ('000' + rawId).slice(-3); // Pads to 3 digits
+    var studentId = 'MSGT-' + year + '-' + paddedId;
+    
+    // Append the row. Match this to your exact Google Sheets columns:
+    // [Student ID, Name, Role, Username, Password, Grade, Subjects]
+    sheet.appendRow([
+      studentId,           
+      data.name,           
+      'student',           
+      data.username,       
+      data.password,       
+      data.grade,          
+      data.subjects        
+    ]);
+    
+    return { success: true, data: { studentId: studentId } };
+    
+  } catch (err) {
+    return { success: false, error: err.toString() };
+  }
 }

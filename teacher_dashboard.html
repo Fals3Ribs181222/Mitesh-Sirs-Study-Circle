@@ -62,6 +62,32 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
+        /* Pill Tab Styles inside panels */
+        .pill-toggle {
+            display: inline-flex;
+            background: var(--bg-surface-hover);
+            border-radius: 9999px;
+            padding: 0.25rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .pill-toggle .btn {
+            background: transparent;
+            color: var(--text-main);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .pill-toggle .btn.active {
+            background: var(--primary);
+            color: white;
+        }
+
         .tab-panel {
             display: none;
             animation: fadeIn 0.3s ease;
@@ -220,10 +246,9 @@
                     </div>
 
                     <div class="form-group"
-                        style="padding: 1.5rem; border: 2px dashed var(--border-color); border-radius: var(--radius-md); text-align: center;">
+                        style="padding: 1.5rem; border: 2px dashed var(--border-color); border-radius: var(--radius-md); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.5rem; text-align: center;">
                         <input type="file" id="fileInput" required style="max-width: 100%;">
-                        <p style="margin-top: 0.5rem; font-size: 0.8rem; color: var(--text-muted);">Max file size: 50MB
-                        </p>
+                        <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">Max file size: 50MB</p>
                     </div>
 
                     <button type="submit" class="btn btn-primary" style="width: 100%;" id="btnUpload">Upload
@@ -341,30 +366,51 @@
                 </div>
             </div>
 
-            <!-- View Students Panel -->
+            <!-- Manage Students Panel -->
             <div class="panel tab-panel" id="panel-students">
-                <div class="panel-header" style="display: flex; justify-content: space-between; align-items: center;">
-                    <h3>Student List</h3>
-                    <button class="btn btn-primary" id="btnRefreshStudents"
-                        style="padding: 0.5rem 1rem; font-size: 0.9rem;">Refresh List</button>
+                <div class="panel-header"
+                    style="display: flex; justify-content: space-between; align-items: center; border-bottom: none; margin-bottom: 1rem;">
+                    <h3>Manage Students</h3>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div class="pill-toggle">
+                            <button class="btn active" id="pillViewStudents">Student List</button>
+                            <button class="btn" id="pillAddStudent">+ Add Student</button>
+                        </div>
+                    </div>
                 </div>
-                <div id="studentsListStatus" class="status-msg"></div>
-                <div style="overflow-x: auto;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left;" id="studentsTable">
-                        <thead>
-                            <tr style="border-bottom: 2px solid var(--border-color);">
-                                <th style="padding: 1rem; color: var(--text-muted);">Name</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Username</th>
-                                <th style="padding: 1rem; color: var(--text-muted);">Class</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentsTableBody">
-                            <tr>
-                                <td colspan="3" style="padding: 1rem; text-align: center; color: var(--text-muted);">
-                                    Loading students...</td>
-                            </tr>
-                        </tbody>
-                    </table>
+
+                <!-- View Container -->
+                <div id="studentsListContainer">
+                    <div id="studentsListStatus" class="status-msg"></div>
+                    <div style="overflow-x: auto;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: left;" id="studentsTable">
+                            <thead>
+                                <tr style="border-bottom: 2px solid var(--border-color);">
+                                    <th style="padding: 1rem; color: var(--text-muted);">Name</th>
+                                    <th style="padding: 1rem; color: var(--text-muted);">Username</th>
+                                    <th style="padding: 1rem; color: var(--text-muted);">Password</th>
+                                    <th style="padding: 1rem; color: var(--text-muted);">Grade</th>
+                                </tr>
+                            </thead>
+                            <tbody id="studentsTableBody">
+                                <tr>
+                                    <td colspan="3"
+                                        style="padding: 1rem; text-align: center; color: var(--text-muted);">Loading
+                                        students...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align: right; margin-top: 1.5rem;">
+                        <button class="btn btn-primary" id="btnRefreshStudents"
+                            style="padding: 0.5rem 1rem; font-size: 0.9rem;">Refresh List</button>
+                    </div>
+                </div>
+
+                <!-- Add Container -->
+                <div id="addStudentContainer"
+                    style="display: none; border-top: 1px solid var(--glass-border); padding-top: 1.5rem;">
+                    <div style="padding: 2rem; text-align: center; color: var(--text-muted);">Loading component...</div>
                 </div>
             </div>
         </div>
@@ -644,7 +690,8 @@
                         <tr style="border-bottom: 1px solid var(--border-color);">
                             <td style="padding: 1rem; color: var(--text-main); font-weight: 500;">${student.Name || '-'}</td>
                             <td style="padding: 1rem; color: var(--text-muted);">${student.Username || '-'}</td>
-                            <td style="padding: 1rem; color: var(--text-muted);">${student.Class || '-'}</td>
+                            <td style="padding: 1rem; color: var(--text-muted);">${student.Password || '-'}</td>
+                            <td style="padding: 1rem; color: var(--text-muted);">${student.Grade || student.Class || '-'}</td>
                         </tr>
                     `).join('');
                 } else {
@@ -660,9 +707,149 @@
 
         document.getElementById('btnRefreshStudents').addEventListener('click', loadStudents);
 
+        // Pill Toggle Logic for Student Tab
+        const pillView = document.getElementById('pillViewStudents');
+        const pillAdd = document.getElementById('pillAddStudent');
+        const listContainer = document.getElementById('studentsListContainer');
+        const addContainer = document.getElementById('addStudentContainer');
+        const btnRefresh = document.getElementById('btnRefreshStudents');
+
+        pillView.addEventListener('click', () => {
+            pillView.classList.add('active');
+            pillAdd.classList.remove('active');
+            listContainer.style.display = 'block';
+            addContainer.style.display = 'none';
+            btnRefresh.style.display = 'inline-block'; // Show refresh
+        });
+
+        pillAdd.addEventListener('click', () => {
+            pillAdd.classList.add('active');
+            pillView.classList.remove('active');
+            addContainer.style.display = 'block';
+            listContainer.style.display = 'none';
+            btnRefresh.style.display = 'none'; // Hide refresh when adding
+        });
+
+        // Load Add Student Component
+        async function loadAddStudentComponent() {
+            try {
+                // Fetch the component HTML
+                const response = await fetch('components/add_student.html');
+                if (response.ok) {
+                    const html = await response.text();
+                    document.getElementById('addStudentContainer').innerHTML = html;
+                    attachAddStudentListeners();
+                } else {
+                    console.error('Failed to load add student component: HTTP Status', response.status);
+                }
+            } catch (err) {
+                console.error('Error loading add student component:', err);
+            }
+        }
+
+        function attachAddStudentListeners() {
+            const form = document.getElementById('addStudentForm');
+            const autoGenCheck = document.getElementById('autoGenerateCheckbox');
+            const customFields = document.getElementById('customCredentialsFields');
+            const studentNameInput = document.getElementById('studentName');
+
+            if (!form) return;
+
+            autoGenCheck.addEventListener('change', (e) => {
+                if (e.target.checked) {
+                    customFields.style.display = 'none';
+                    document.getElementById('studentUsername').removeAttribute('required');
+                    document.getElementById('studentPassword').removeAttribute('required');
+                } else {
+                    customFields.style.display = 'block';
+                    document.getElementById('studentUsername').setAttribute('required', 'true');
+                    document.getElementById('studentPassword').setAttribute('required', 'true');
+                }
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('btnAddStudent');
+                const status = document.getElementById('addStudentStatus');
+
+                btn.disabled = true;
+                btn.textContent = 'Registering...';
+                status.style.display = 'none';
+                status.className = 'status-msg';
+
+                const name = studentNameInput.value.trim();
+                const grade = document.getElementById('studentGrade').value;
+
+                // Get checked subjects
+                const subjectCheckboxes = document.querySelectorAll('input[name="studentSubjects"]:checked');
+                const subjects = Array.from(subjectCheckboxes).map(cb => cb.value).join(', ');
+
+                let username = '';
+                let password = '';
+
+                if (autoGenCheck.checked) {
+                    // Auto-generation logic
+                    let firstName = name.split(' ')[0] || '';
+                    let lastName = name.split(' ').length > 1 ? name.split(' ')[name.split(' ').length - 1] : '';
+                    let lastInitial = lastName ? lastName.charAt(0).toLowerCase() : '';
+
+                    let randUser = Math.floor(100 + Math.random() * 900);
+                    username = `${firstName.toLowerCase()}.${lastInitial}${randUser}`;
+
+                    let randPass = Math.floor(1000 + Math.random() * 9000);
+                    let capFirst = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+                    password = `${capFirst}@${randPass}`;
+                } else {
+                    username = document.getElementById('studentUsername').value.trim();
+                    password = document.getElementById('studentPassword').value;
+                }
+
+                const payload = {
+                    name: name,
+                    grade: grade,
+                    subjects: subjects,
+                    username: username,
+                    password: password
+                };
+
+                const response = await api.post('addStudent', payload);
+
+                btn.disabled = false;
+                btn.textContent = 'Register Student';
+
+                if (response.success) {
+                    status.innerHTML = `
+                        <strong>✅ Student Registered Successfully</strong><br><br>
+                        <strong>Name:</strong> ${name}<br>
+                        <strong>Grade:</strong> ${grade} | <strong>Subjects:</strong> ${subjects || 'None'}<br><br>
+                        <strong>Username:</strong> ${username}<br>
+                        <strong>Password:</strong> ${password}<br><br>
+                        <em>(Please copy these credentials and share them with the student)</em>
+                    `;
+                    status.className = 'status-msg status-success';
+                    status.style.display = 'block';
+
+                    // Reset form but handle toggle states
+                    form.reset();
+                    if (!autoGenCheck.checked) {
+                        autoGenCheck.checked = true;
+                        customFields.style.display = 'none';
+                        document.getElementById('studentUsername').removeAttribute('required');
+                        document.getElementById('studentPassword').removeAttribute('required');
+                    }
+                    if (typeof loadStudents === 'function') loadStudents();
+                } else {
+                    status.textContent = response.error || 'Failed to register student.';
+                    status.className = 'status-msg status-error';
+                    status.style.display = 'block';
+                }
+            });
+        }
+
         // Load students on initial page load
         loadStudents();
         loadTests();
+        loadAddStudentComponent();
 
         // Tab Switching Logic
         document.querySelectorAll('.tab-btn').forEach(button => {
