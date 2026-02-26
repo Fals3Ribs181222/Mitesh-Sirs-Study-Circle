@@ -4,96 +4,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Mitesh Sir's Group Tuitions — Mumbai's most trusted ISC Accountancy coaching classes for 12th Grade students.">
     <title>Mitesh Sir's Group Tuitions</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=light">
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="index.html" class="nav-logo">Mitesh Sir's Group Tuitions</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link active">Home</a>
-                <a href="testimonials.html" class="nav-link">Testimonials</a>
-                <a href="results.html" class="nav-link">Results</a>
-                <a href="login.html" class="nav-link">Student Login</a>
-                <a href="login.html?role=teacher" class="nav-link">Teacher Login</a>
-            </div>
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="container navbar__container">
+            <a href="index.html" class="navbar__logo">Mitesh Sir's Group Tuitions</a>
+            <ul class="navbar__links">
+                <li><a href="index.html" class="navbar__link navbar__link--active">Home</a></li>
+                <li><a href="testimonials.html" class="navbar__link">Testimonials</a></li>
+                <li><a href="results.html" class="navbar__link">Results</a></li>
+                <li><a href="login.html" class="navbar__link">Student Login</a></li>
+                <li><a href="login.html?role=teacher" class="navbar__link">Teacher Login</a></li>
+            </ul>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero container">
-        <div class="hero-content">
-            <span class="hero-subtitle">Premium ISC Accountancy Coaching</span>
-            <h1>Master the Art of <span
-                    style="background: linear-gradient(135deg, var(--primary), var(--secondary)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;">Accountancy</span>
-            </h1>
-            <p class="hero-text">Join Mumbai's most trusted coaching classes. We empower 12th Grade students with
+    <section class="hero container" aria-labelledby="hero-heading">
+        <div class="hero__content">
+            <span class="hero__subtitle">Premium ISC Accountancy Coaching</span>
+            <h1 id="hero-heading">Master the Art of <span class="hero__highlight">Accountancy</span></h1>
+            <p class="hero__text">Join Mumbai's most trusted coaching classes. We empower 12th Grade students with
                 conceptual clarity, rigorous practice, and an environment designed for ultimate success.</p>
-            <div class="hero-buttons">
-                <a href="login.html" class="btn btn-primary">Join Now</a>
-                <a href="results.html" class="btn btn-outline">View Results</a>
+            <div class="hero__actions">
+                <a href="login.html" class="btn btn--primary">Join Now</a>
+                <a href="results.html" class="btn btn--outline">View Results</a>
             </div>
         </div>
     </section>
 
     <!-- Stats Section -->
-    <section class="container" style="padding-bottom: 6rem;">
+    <section class="container section--stats" aria-label="Key statistics">
         <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number">10+</div>
-                <div class="stat-label">Years of Excellence</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Passing Rate</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">5k+</div>
-                <div class="stat-label">Students Guided</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">50+</div>
-                <div class="stat-label">State Toppers</div>
-            </div>
+            <article class="stats__item">
+                <p class="stats__number">10+</p>
+                <p class="stats__label">Years of Excellence</p>
+            </article>
+            <article class="stats__item">
+                <p class="stats__number">100%</p>
+                <p class="stats__label">Passing Rate</p>
+            </article>
+            <article class="stats__item">
+                <p class="stats__number">5k+</p>
+                <p class="stats__label">Students Guided</p>
+            </article>
+            <article class="stats__item">
+                <p class="stats__number">50+</p>
+                <p class="stats__label">State Toppers</p>
+            </article>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-grid">
-                <div class="footer-col">
+            <div class="footer__grid">
+                <div class="footer__col">
                     <h4>Mitesh Sir's Group Tuitions</h4>
-                    <p class="text-muted" style="color: var(--text-muted); font-size: 0.9rem; margin-top: 1rem;">
+                    <p class="footer__desc">
                         Guiding students towards academic excellence since 2012. Our proven methodology ensures deep
                         understanding of fundamental concepts.
                     </p>
                 </div>
-                <div class="footer-col">
+                <div class="footer__col">
                     <h4>Quick Links</h4>
-                    <ul class="footer-links">
+                    <ul class="footer__links">
                         <li><a href="index.html">Home</a></li>
                         <li><a href="results.html">Results</a></li>
                         <li><a href="testimonials.html">Testimonials</a></li>
                         <li><a href="login.html">Login Portal</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
+                <div class="footer__col">
                     <h4>Contact Us</h4>
-                    <ul class="footer-links">
-                        <li><a href="#">+91 98XXX XXXXX</a></li>
-                        <li><a href="#">contact@miteshsir.in</a></li>
-                        <li><a href="#">Mumbai, Maharashtra</a></li>
+                    <ul class="footer__links">
+                        <li><a href="tel:+919800000000">+91 98XXX XXXXX</a></li>
+                        <li><a href="mailto:contact@miteshsir.in">contact@miteshsir.in</a></li>
+                        <li>
+                            <address>Mumbai, Maharashtra</address>
+                        </li>
                     </ul>
                 </div>
             </div>
-            <div class="footer-bottom">
+            <div class="footer__bottom">
                 <p>&copy; 2026 Mitesh Sir's Group Tuitions. All rights reserved.</p>
             </div>
         </div>
