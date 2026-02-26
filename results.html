@@ -4,157 +4,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="View outstanding academic results achieved by students at Mitesh Sir's Group Tuitions.">
     <title>Results | Mitesh Sir's Group Tuitions</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/styles.css?v=light">
-    <style>
-        .filter-bar {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            padding: 1.5rem 2rem;
-            backdrop-filter: blur(16px);
-            margin-bottom: 2rem;
-            display: flex;
-            gap: 1.5rem;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .filter-group {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .filter-bar select,
-        .filter-bar input {
-            background: var(--bg-surface-hover);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 0.5rem 1rem;
-            border-radius: var(--radius-md);
-            font-family: inherit;
-        }
-
-        .filter-bar select:focus,
-        .filter-bar input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        .results-table-wrapper {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--radius-lg);
-            overflow-x: auto;
-            backdrop-filter: blur(16px);
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th,
-        td {
-            padding: 1.25rem;
-            border-bottom: 1px solid var(--glass-border);
-        }
-
-        th {
-            font-weight: 600;
-            color: var(--primary);
-            white-space: nowrap;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tbody tr {
-            transition: var(--transition);
-        }
-
-        tbody tr:hover {
-            background: rgba(0, 0, 0, 0.03);
-        }
-
-        .rank-badge {
-            display: inline-block;
-            background: rgba(236, 72, 153, 0.15);
-            color: var(--secondary);
-            font-weight: 700;
-            padding: 0.25rem 0.75rem;
-            border-radius: var(--radius-full);
-            border: 1px solid rgba(236, 72, 153, 0.3);
-        }
-
-        .score-highlight {
-            font-weight: 700;
-            color: var(--text-main);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-            color: var(--text-muted);
-        }
-    </style>
+    <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
     <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container nav-container">
-            <a href="index.html" class="nav-logo">Mitesh Sir's Group Tuitions</a>
-            <div class="nav-links">
-                <a href="index.html" class="nav-link">Home</a>
-                <a href="testimonials.html" class="nav-link">Testimonials</a>
-                <a href="results.html" class="nav-link active">Results</a>
-                <a href="login.html" class="nav-link">Student Login</a>
-                <a href="login.html?role=teacher" class="nav-link">Teacher Login</a>
-            </div>
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="container navbar__container">
+            <a href="index.html" class="navbar__logo">Mitesh Sir's Group Tuitions</a>
+            <ul class="navbar__links">
+                <li><a href="index.html" class="navbar__link">Home</a></li>
+                <li><a href="testimonials.html" class="navbar__link">Testimonials</a></li>
+                <li><a href="results.html" class="navbar__link navbar__link--active">Results</a></li>
+                <li><a href="login.html" class="navbar__link">Student Login</a></li>
+                <li><a href="login.html?role=teacher" class="navbar__link">Teacher Login</a></li>
+            </ul>
         </div>
     </nav>
 
     <main class="container section">
-        <div class="section-header">
-            <h1 class="section-title">Outstanding Results</h1>
+        <header class="section__header">
+            <h1 class="section__title">Outstanding Results</h1>
             <p>We are proud of our students' achievements. Browse through our top performers.</p>
-        </div>
+        </header>
 
-        <div class="filter-bar">
-            <div class="filter-group">
+        <div class="filter-bar" role="search" aria-label="Filter results">
+            <div class="filter-bar__group">
                 <label for="filterSubject">Subject:</label>
-                <select id="filterSubject">
+                <select id="filterSubject" class="filter-bar__control">
                     <option value="">All Subjects</option>
                 </select>
             </div>
-            <div class="filter-group">
+            <div class="filter-bar__group">
                 <label for="filterYear">Year:</label>
-                <select id="filterYear">
+                <select id="filterYear" class="filter-bar__control">
                     <option value="">All Years</option>
                 </select>
             </div>
-            <div class="filter-group">
+            <div class="filter-bar__group">
                 <label for="searchName">Search:</label>
-                <input type="text" id="searchName" placeholder="Student name...">
+                <input type="search" id="searchName" class="filter-bar__control" placeholder="Student name...">
             </div>
         </div>
 
-        <div class="results-table-wrapper">
-            <table>
+        <div class="data-table">
+            <table aria-label="Student results">
                 <thead>
                     <tr>
-                        <th>Student Name</th>
-                        <th>Subject</th>
-                        <th>Marks</th>
-                        <th>Overall</th>
-                        <th>Year</th>
+                        <th scope="col">Student Name</th>
+                        <th scope="col">Subject</th>
+                        <th scope="col">Marks</th>
+                        <th scope="col">Overall</th>
+                        <th scope="col">Year</th>
                     </tr>
                 </thead>
                 <tbody id="resultsBody">
@@ -167,8 +74,10 @@
     </main>
 
     <footer class="footer">
-        <div class="container text-center text-muted pt-4 pb-4">
-            <p>&copy; 2026 Mitesh Sir's Group Tuitions. All rights reserved.</p>
+        <div class="container">
+            <div class="footer__bottom">
+                <p>&copy; 2026 Mitesh Sir's Group Tuitions. All rights reserved.</p>
+            </div>
         </div>
     </footer>
 
@@ -236,11 +145,10 @@
                 return matchSubj && matchYear && matchName;
             });
 
-            // Sort by Marks
             filtered.sort((a, b) => {
                 const marksA = parseFloat(a['Marks']) || 0;
                 const marksB = parseFloat(b['Marks']) || 0;
-                return marksB - marksA; // Descending order
+                return marksB - marksA;
             });
 
             tbody.innerHTML = '';
@@ -259,7 +167,7 @@
 
                 tr.appendChild(createElement('td', '', item['Student Name'] || '-'));
                 tr.appendChild(createElement('td', '', item['Subject'] || '-'));
-                tr.appendChild(createElement('td', 'score-highlight', item['Marks'] || '-'));
+                tr.appendChild(createElement('td', 'data-table__score', item['Marks'] || '-'));
                 tr.appendChild(createElement('td', '', item['Overall'] || '-'));
                 tr.appendChild(createElement('td', '', item['Year'] || '-'));
 

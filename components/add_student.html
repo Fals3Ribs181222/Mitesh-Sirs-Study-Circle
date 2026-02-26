@@ -1,57 +1,54 @@
 <form id="addStudentForm">
-    <div class="form-group">
-        <label class="form-label">Student Full Name</label>
-        <input type="text" id="studentName" class="form-control" required placeholder="e.g. Rahul Sharma">
+    <div class="form__group">
+        <label class="form__label" for="studentName">Student Full Name</label>
+        <input type="text" id="studentName" class="form__control" required placeholder="e.g. Rahul Sharma">
     </div>
 
-    <div class="form-group">
-        <label class="form-label">Grade</label>
-        <select id="studentGrade" class="form-control" required>
+    <div class="form__group">
+        <label class="form__label" for="studentGrade">Grade</label>
+        <select id="studentGrade" class="form__control" required>
             <option value="">-- Select Grade --</option>
             <option value="11th">11th</option>
             <option value="12th">12th</option>
         </select>
     </div>
 
-    <div class="form-group">
-        <label class="form-label">Subjects</label>
-        <div style="display: flex; gap: 1rem; margin-top: 0.5rem; color: var(--text-main);">
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="checkbox" name="studentSubjects" value="Accounts" style="width: 1.2rem; height: 1.2rem;">
+    <div class="form__group">
+        <label class="form__label">Subjects</label>
+        <div class="form__checkbox-group">
+            <label class="form__checkbox-label">
+                <input type="checkbox" name="studentSubjects" value="Accounts" class="form__checkbox">
                 Accounts
             </label>
-            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                <input type="checkbox" name="studentSubjects" value="Commerce" style="width: 1.2rem; height: 1.2rem;">
+            <label class="form__checkbox-label">
+                <input type="checkbox" name="studentSubjects" value="Commerce" class="form__checkbox">
                 Commerce
             </label>
         </div>
     </div>
 
-    <div class="form-group" style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
-        <label
-            style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; color: var(--text-main); font-weight: 500;">
-            <input type="checkbox" id="autoGenerateCheckbox" checked style="width: 1.2rem; height: 1.2rem;">
-            Auto-generate Username & Password
+    <div class="form__group form__toggle">
+        <label class="form__toggle-label">
+            <input type="checkbox" id="autoGenerateCheckbox" checked class="form__checkbox">
+            Auto-generate Username &amp; Password
         </label>
-        <p style="margin-top: 0.5rem; font-size: 0.85rem; color: var(--text-muted); padding-left: 1.7rem;">
+        <p class="form__toggle-hint">
             Automatically generates a standard, secure Username (e.g. rahul.s123) and Password. Uncheck to provide
             custom credentials.
         </p>
     </div>
 
-    <div id="customCredentialsFields"
-        style="display: none; background: rgba(0,0,0,0.02); padding: 1.5rem; border-radius: var(--radius-md); border: 1px dashed var(--border-color); margin-bottom: 1.5rem;">
-        <div class="form-group">
-            <label class="form-label">Custom Username</label>
-            <input type="text" id="studentUsername" class="form-control" placeholder="e.g. rahul.sharma">
+    <div id="customCredentialsFields" class="form__custom-fields">
+        <div class="form__group">
+            <label class="form__label" for="studentUsername">Custom Username</label>
+            <input type="text" id="studentUsername" class="form__control" placeholder="e.g. rahul.sharma">
         </div>
-        <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label">Custom Password</label>
-            <input type="text" id="studentPassword" class="form-control" placeholder="Enter secure password">
+        <div class="form__group">
+            <label class="form__label" for="studentPassword">Custom Password</label>
+            <input type="text" id="studentPassword" class="form__control" placeholder="Enter secure password">
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="btnAddStudent">Register
-        Student</button>
-    <div id="addStudentStatus" class="status-msg"></div>
+    <button type="submit" class="btn btn--primary btn--full" id="btnAddStudent">Register Student</button>
+    <div id="addStudentStatus" class="status"></div>
 </form>
