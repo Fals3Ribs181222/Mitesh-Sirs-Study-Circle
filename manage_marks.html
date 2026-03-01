@@ -196,7 +196,7 @@
 
         function updatePerformanceSummary() {
             const inputs = document.querySelectorAll('.student-mark-input');
-            const max = Number(currentTest['Max Marks']) || 100;
+            const max = Number(currentTest.max_marks) || 100;
             const marksValues = Array.from(inputs)
                 .map(i => i.value.trim())
                 .filter(v => v !== '')

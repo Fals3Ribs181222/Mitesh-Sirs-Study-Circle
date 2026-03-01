@@ -253,12 +253,12 @@
                 if (response.data && response.data.length > 0) {
                     tbody.innerHTML = response.data.map(file => `
                         <tr class="data-table__row">
-                            <td class="data-table__td--main">${file['Title'] || file.title || '-'}</td>
-                            <td class="data-table__td">${file['Subject'] || file.subject || '-'}</td>
-                            <td class="data-table__td">${file['Grade'] || file.grade || 'All'}</td>
-                            <td class="data-table__td">${file['Upload Date'] || file.uploadDate || '-'}</td>
-                            <td class="data-table__td">${file['Uploaded By'] || file.uploadedBy || '-'}</td>
-                            <td class="data-table__td"><a href="${file['File URL'] || file.fileUrl || '#'}" target="_blank" class="navbar__link">View</a></td>
+                            <td class="data-table__td--main">${file.title || '-'}</td>
+                            <td class="data-table__td">${file.subject || '-'}</td>
+                            <td class="data-table__td">${file.grade || 'All'}</td>
+                            <td class="data-table__td">${file.created_at ? new Date(file.created_at).toLocaleDateString() : '-'}</td>
+                            <td class="data-table__td">${file.uploaded_by || '-'}</td>
+                            <td class="data-table__td"><a href="${file.file_url || '#'}" target="_blank" class="navbar__link">View</a></td>
                         </tr>
                     `).join('');
                 } else {
@@ -401,10 +401,10 @@
                 if (response.data && response.data.length > 0) {
                     tbody.innerHTML = response.data.reverse().map(ann => `
                         <tr class="data-table__row">
-                            <td class="data-table__td--main">${ann['Title'] || '-'}</td>
-                            <td class="data-table__td">${ann['Grade'] || 'All'}</td>
-                            <td class="data-table__td">${ann['Date'] || '-'}</td>
-                            <td class="data-table__td">${ann['Posted By'] || '-'}</td>
+                            <td class="data-table__td--main">${ann.title || '-'}</td>
+                            <td class="data-table__td">${ann.grade || 'All'}</td>
+                            <td class="data-table__td">${ann.created_at ? new Date(ann.created_at).toLocaleDateString() : '-'}</td>
+                            <td class="data-table__td">${ann.posted_by || '-'}</td>
                         </tr>
                     `).join('');
                 } else {
@@ -506,26 +506,28 @@
             status.style.display = 'none';
             tbody.innerHTML = '<tr><td colspan="7" class="loading-text">Loading tests...</td></tr>';
 
-            const response = await api.get('tests');
+            const response = await api.get('tests', {}, '*, profiles:scheduled_by(name)');
 
             btnRefresh.disabled = false;
             btnRefresh.textContent = 'Refresh List';
 
             if (response.success) {
                 if (response.data && response.data.length > 0) {
-                    tbody.innerHTML = response.data.reverse().map(test => `
+                    tbody.innerHTML = response.data.reverse().map(test => {
+                        const teacherName = test.profiles?.name || '-';
+                        return `
                         <tr class="data-table__row">
-                            <td class="data-table__td--main">${test['Title'] || '-'}</td>
-                            <td class="data-table__td">${test['Subject'] || '-'}</td>
-                            <td class="data-table__td">${test['Grade'] || '-'}</td>
-                            <td class="data-table__td">${test['Date'] || '-'}</td>
-                            <td class="data-table__td">${test['Max Marks'] || '-'}</td>
-                            <td class="data-table__td">${test['Scheduled By'] || '-'}</td>
+                            <td class="data-table__td--main">${test.title || '-'}</td>
+                            <td class="data-table__td">${test.subject || '-'}</td>
+                            <td class="data-table__td">${test.grade || '-'}</td>
+                            <td class="data-table__td">${test.date || '-'}</td>
+                            <td class="data-table__td">${test.max_marks || '-'}</td>
+                            <td class="data-table__td">${teacherName}</td>
                             <td class="data-table__td">
-                                <a href="manage_marks.html?testId=${test['Test ID']}" class="btn btn--primary btn--sm">Manage Marks</a>
+                                <a href="manage_marks.html?testId=${test.id}" class="btn btn--primary btn--sm">Manage Marks</a>
                             </td>
                         </tr>
-                    `).join('');
+                    `}).join('');
                 } else {
                     tbody.innerHTML = '<tr><td colspan="7" class="loading-text">No tests scheduled yet.</td></tr>';
                 }
@@ -705,30 +707,96 @@
             const form = document.getElementById('addStudentForm');
             if (!form) return;
 
-            form.addEventListener('submit', (e) => {
+            form.addEventListener('submit', async (e) => {
                 e.preventDefault();
+
                 const status = document.getElementById('addStudentStatus');
+                const btn = document.getElementById('btnAddStudent');
+                const btnText = document.getElementById('btnAddStudentText');
+                const btnSpinner = document.getElementById('btnAddStudentSpinner');
+
                 const name = document.getElementById('studentName').value.trim();
                 const grade = document.getElementById('studentGrade').value;
                 const username = document.getElementById('studentUsername').value.trim().toLowerCase();
+                const password = document.getElementById('studentPassword').value;
 
                 const subjectCheckboxes = document.querySelectorAll('input[name="studentSubjects"]:checked');
                 const subjects = Array.from(subjectCheckboxes).map(cb => cb.value).join(', ');
 
-                const email = `${username}@tuitions.internal`;
-                const metadata = {
-                    name: name,
-                    username: username,
-                    grade: grade,
-                    subjects: subjects,
-                    role: 'student'
-                };
+                if (!name || !grade || !username || !password) {
+                    status.textContent = 'Please fill in all required fields.';
+                    status.className = 'status status--error';
+                    status.style.display = 'block';
+                    return;
+                }
 
-                document.getElementById('genEmail').textContent = email;
-                document.getElementById('genMetadata').textContent = JSON.stringify(metadata, null, 2);
+                // Show loading state
+                btnText.style.display = 'none';
+                btnSpinner.style.display = 'inline-block';
+                btn.disabled = true;
+                status.style.display = 'none';
 
-                status.style.display = 'block';
-                status.className = 'status status--info';
+                try {
+                    // Save teacher's current session before creating the student
+                    const { data: sessionData } = await supabaseClient.auth.getSession();
+                    const teacherSession = sessionData?.session;
+
+                    const email = `${username}@msgt.internal`;
+                    const metadata = {
+                        name: name,
+                        username: username,
+                        grade: grade,
+                        subjects: subjects,
+                        role: 'student'
+                    };
+
+                    // Create the student account
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email: email,
+                        password: password,
+                        options: { data: metadata }
+                    });
+
+                    // Restore teacher session immediately
+                    if (teacherSession) {
+                        await supabaseClient.auth.setSession({
+                            access_token: teacherSession.access_token,
+                            refresh_token: teacherSession.refresh_token
+                        });
+                    }
+
+                    // Ensure profile has the correct data
+                    if (!error && data?.user?.id) {
+                        await supabaseClient
+                            .from('profiles')
+                            .update({ name, username, grade, subjects, role: 'student' })
+                            .eq('id', data.user.id);
+                    }
+
+                    if (error) {
+                        status.textContent = `Error: ${error.message}`;
+                        status.className = 'status status--error';
+                        status.style.display = 'block';
+                    } else {
+                        status.innerHTML = `<strong>✓ Student registered!</strong><br>
+                            Name: ${name}<br>
+                            Username: ${username}<br>
+                            Grade: ${grade}<br>
+                            The student can now log in.`;
+                        status.className = 'status status--info';
+                        status.style.display = 'block';
+                        form.reset();
+                        loadStudents(); // Refresh the students list
+                    }
+                } catch (err) {
+                    status.textContent = `Unexpected error: ${err.message}`;
+                    status.className = 'status status--error';
+                    status.style.display = 'block';
+                } finally {
+                    btnText.style.display = 'inline-block';
+                    btnSpinner.style.display = 'none';
+                    btn.disabled = false;
+                }
             });
         }
 

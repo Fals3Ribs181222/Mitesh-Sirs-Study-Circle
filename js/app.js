@@ -52,7 +52,7 @@ const api = {
 // Auth State Management
 const auth = {
     async login(username, password) {
-        const email = `${username.toLowerCase()}@tuitions.internal`;
+        const email = `${username.toLowerCase()}@msgt.internal`;
         const { data, error } = await supabaseClient.auth.signInWithPassword({
             email,
             password
@@ -80,7 +80,8 @@ const auth = {
             username: profile.username,
             name: profile.name,
             role: profile.role,
-            studentClass: profile.grade
+            grade: profile.grade,
+            subjects: profile.subjects
         };
 
         localStorage.setItem('mitesh_tutions_user', JSON.stringify(user));

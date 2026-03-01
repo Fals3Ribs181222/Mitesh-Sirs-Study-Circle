@@ -1,3 +1,14 @@
+/*
+ * ============================================================
+ * LEGACY FILE — Google Apps Script Backend
+ * ============================================================
+ * This file has been archived and commented out.
+ * The application has been migrated to Supabase.
+ * This code is preserved for reference only and does NOT execute.
+ * ============================================================
+ */
+
+/*
 // Google Apps Script Backend for Mitesh Sir's Group Tutions
 // Make sure to configure the FOLDER_ID below for file uploads
 
@@ -265,22 +276,14 @@ function handleAddStudent(data) {
   }
 }
 
-/**
- * Generates a random ID in the format: PREFIX-XXXX-YYY
- * @param {string} prefix The ID prefix (e.g., UPL, ANN, TST, STU)
- * @returns {string} The formatted ID
- */
+// Generates a random ID in the format: PREFIX-XXXX-YYY
 function generateRandomId(prefix) {
   var part1 = Math.floor(1000 + Math.random() * 9000); // 4 random numbers
   var part2 = Math.floor(100 + Math.random() * 900);   // 3 random numbers
   return prefix + '-' + part1 + '-' + part2;
 }
 
-/**
- * Generates a short random hex hash ID: PREFIX-XXXXXX
- * @param {string} prefix The ID prefix (e.g., MRK)
- * @returns {string} The formatted ID
- */
+// Generates a short random hex hash ID: PREFIX-XXXXXX
 function generateShortHash(prefix) {
   var hash = '';
   var chars = '0123456789ABCDEF';
@@ -289,3 +292,4 @@ function generateShortHash(prefix) {
   }
   return prefix + '-' + hash;
 }
+*/

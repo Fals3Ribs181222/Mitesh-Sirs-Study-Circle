@@ -20,6 +20,7 @@
                 <li><a href="index.html" class="navbar__link">Home</a></li>
                 <li><a href="testimonials.html" class="navbar__link">Testimonials</a></li>
                 <li><a href="results.html" class="navbar__link">Results</a></li>
+                <li><a href="login.html" class="navbar__link navbar__link--active">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -29,15 +30,9 @@
             <div class="login__card">
                 <header class="login__header">
                     <h1>Welcome Back</h1>
-                    <p id="loginSubtitle">Login to access your dashboard</p>
                 </header>
 
-                <div class="role-toggle" role="group" aria-label="Select portal type">
-                    <button type="button" class="role-toggle__btn role-toggle__btn--active" id="btnStudent"
-                        onclick="setRole('student')">Student Portal</button>
-                    <button type="button" class="role-toggle__btn" id="btnTeacher" onclick="setRole('teacher')">Teacher
-                        Portal</button>
-                </div>
+
 
                 <form id="loginForm" novalidate>
                     <div class="form__group">
@@ -66,31 +61,10 @@
     <script src="js/config.js"></script>
     <script src="js/app.js"></script>
     <script>
-        let currentRole = 'student';
-
-        // Check query params for role
-        const urlParams = new URLSearchParams(window.location.search);
-        const roleParam = urlParams.get('role');
-        if (roleParam === 'teacher') {
-            setRole('teacher');
-        }
-
         // If already logged in, redirect
         const user = auth.getUser();
         if (user) {
             auth.redirect(user.role);
-        }
-
-        function setRole(role) {
-            currentRole = role;
-            if (role === 'student') {
-                document.getElementById('btnStudent').classList.add('role-toggle__btn--active');
-                document.getElementById('btnTeacher').classList.remove('role-toggle__btn--active');
-            } else {
-                document.getElementById('btnTeacher').classList.add('role-toggle__btn--active');
-                document.getElementById('btnStudent').classList.remove('role-toggle__btn--active');
-            }
-            document.getElementById('errorMsg').style.display = 'none';
         }
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {

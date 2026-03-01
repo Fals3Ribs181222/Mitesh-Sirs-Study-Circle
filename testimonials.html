@@ -22,8 +22,7 @@
                 <li><a href="index.html" class="navbar__link">Home</a></li>
                 <li><a href="testimonials.html" class="navbar__link navbar__link--active">Testimonials</a></li>
                 <li><a href="results.html" class="navbar__link">Results</a></li>
-                <li><a href="login.html" class="navbar__link">Student Login</a></li>
-                <li><a href="login.html?role=teacher" class="navbar__link">Teacher Login</a></li>
+                <li><a href="login.html" class="navbar__link">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -57,12 +56,7 @@
             const list = document.getElementById('testimonialsList');
             const loadingMsg = document.getElementById('loadingMsg');
 
-            if (CONFIG.SCRIPT_URL === 'YOUR_WEB_APP_URL_HERE') {
-                loadingMsg.textContent = 'Please configure the Google Apps Script Web App URL to load testimonials.';
-                return;
-            }
-
-            const response = await api.get('getTestimonials');
+            const response = await api.get('testimonials');
 
             if (response.success && response.data && response.data.length > 0) {
                 list.innerHTML = '';
@@ -70,21 +64,22 @@
                     const card = createElement('article', 'testimonials__card');
                     card.setAttribute('role', 'listitem');
 
-                    const text = createElement('p', 'testimonials__text', `"${item['Testimonial Text']}"`);
+                    const text = createElement('p', 'testimonials__text', `"${item.testimonial_text || ''}"`);
                     card.appendChild(text);
 
                     const authorDiv = createElement('div', 'testimonials__author');
 
-                    const initial = item['Student Name'] ? item['Student Name'].charAt(0) : 'S';
+                    const studentName = item.student_name || 'Student';
+                    const initial = studentName.charAt(0);
                     const avatar = createElement('div', 'testimonials__avatar', initial);
                     authorDiv.appendChild(avatar);
 
                     const info = createElement('div', 'testimonials__author-info');
-                    info.appendChild(createElement('h4', '', item['Student Name']));
+                    info.appendChild(createElement('h4', '', studentName));
 
                     const subsetInfo = [];
-                    if (item['Subject']) subsetInfo.push(item['Subject']);
-                    if (item['Year']) subsetInfo.push(`Batch ${item['Year']}`);
+                    if (item.subject) subsetInfo.push(item.subject);
+                    if (item.year) subsetInfo.push(`Batch ${item.year}`);
 
                     info.appendChild(createElement('p', '', subsetInfo.join(' | ')));
                     authorDiv.appendChild(info);

@@ -22,8 +22,7 @@
                 <li><a href="index.html" class="navbar__link">Home</a></li>
                 <li><a href="testimonials.html" class="navbar__link">Testimonials</a></li>
                 <li><a href="results.html" class="navbar__link navbar__link--active">Results</a></li>
-                <li><a href="login.html" class="navbar__link">Student Login</a></li>
-                <li><a href="login.html?role=teacher" class="navbar__link">Teacher Login</a></li>
+                <li><a href="login.html" class="navbar__link">Login</a></li>
             </ul>
         </div>
     </nav>
@@ -94,14 +93,6 @@
             document.getElementById('filterYear').addEventListener('change', renderResults);
             document.getElementById('searchName').addEventListener('input', renderResults);
         });
-
-        // Helper for creating elements with classes and text
-        function createElement(tag, className = '', text = '') {
-            const el = document.createElement(tag);
-            if (className) el.className = className;
-            if (text) el.textContent = text;
-            return el;
-        }
 
         async function loadResults() {
             // Fetch marks with associated test and student profile names

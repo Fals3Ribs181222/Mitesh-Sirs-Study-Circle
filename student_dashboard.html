@@ -117,7 +117,7 @@
         // Require student role
         const user = auth.requireRole('student');
         document.getElementById('studentName').textContent = user.name;
-        document.getElementById('studentClassInfo').textContent = `Grade: ${user.grade || 'N/A'} | Access your study materials and notices.`;
+        document.getElementById('studentClassInfo').textContent = `Grade: ${user.grade || 'N/A'} | Subjects: ${user.subjects || 'N/A'}`;
 
         let allFiles = [];
 
@@ -171,21 +171,31 @@
                 annList.innerHTML = `<div class="loading-text">Error: ${annRes.error}</div>`;
             }
 
-            // Fetch My Marks (with Test details)
-            const marksRes = await api.get('marks', { student_id: user.id }, '*, tests(*)');
+            // Fetch all tests for student's grade
+            const testsRes = await api.get('tests', { grade: user.grade });
+            // Fetch student's marks
+            const marksRes = await api.get('marks', { student_id: user.id });
             const tbody = document.getElementById('testsTableBody');
 
-            if (marksRes.success) {
-                const myMarks = marksRes.data.reverse();
+            if (testsRes.success) {
+                const allTests = testsRes.data.reverse();
+                const marksMap = {};
 
-                // Calculate Performance Stats
+                // Build a lookup of marks by test_id
+                if (marksRes.success) {
+                    marksRes.data.forEach(m => { marksMap[m.test_id] = m; });
+                }
+
+                // Calculate Performance Stats (only for graded tests)
                 let totalPercent = 0;
                 let bestPercent = 0;
+                let gradedCount = 0;
 
-                myMarks.forEach(m => {
-                    const test = m.tests;
-                    if (test) {
-                        const earned = Number(m.marks_obtained);
+                allTests.forEach(test => {
+                    const mark = marksMap[test.id];
+                    if (mark) {
+                        gradedCount++;
+                        const earned = Number(mark.marks_obtained);
                         const max = Number(test.max_marks) || 100;
                         const percent = (earned / max) * 100;
                         totalPercent += percent;
@@ -193,20 +203,21 @@
                     }
                 });
 
-                if (myMarks.length > 0) {
-                    document.getElementById('statTestsTaken').textContent = myMarks.length;
-                    document.getElementById('statAvgMarks').textContent = Math.round(totalPercent / myMarks.length) + '%';
+                if (gradedCount > 0) {
+                    document.getElementById('statTestsTaken').textContent = gradedCount;
+                    document.getElementById('statAvgMarks').textContent = Math.round(totalPercent / gradedCount) + '%';
                     document.getElementById('statBestScore').textContent = Math.round(bestPercent) + '%';
                     document.getElementById('studentPerfCard').classList.add('perf-card--visible');
                 }
 
-                if (myMarks.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="loading-text">No tests found for your record.</td></tr>';
+                if (allTests.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="5" class="loading-text">No tests scheduled for your grade yet.</td></tr>';
                 } else {
-                    tbody.innerHTML = myMarks.map(m => {
-                        const test = m.tests || {};
-                        const earned = m.marks_obtained;
-                        const earnedDisplay = `<span class="data-table__score">${earned}</span>`;
+                    tbody.innerHTML = allTests.map(test => {
+                        const mark = marksMap[test.id];
+                        const earnedDisplay = mark
+                            ? `<span class="data-table__score">${mark.marks_obtained}</span>`
+                            : `<span style="color: var(--gray-500); font-style: italic;">Not graded yet</span>`;
                         const metaDate = new Date(test.date).toLocaleDateString();
 
                         return `

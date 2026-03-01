@@ -60,6 +60,15 @@ ALTER TABLE files ENABLE ROW LEVEL SECURITY;
 ALTER TABLE tests ENABLE ROW LEVEL SECURITY;
 ALTER TABLE marks ENABLE ROW LEVEL SECURITY;
 
+-- Helper function to check teacher role (SECURITY DEFINER bypasses RLS to prevent recursion)
+CREATE OR REPLACE FUNCTION public.is_teacher()
+RETURNS boolean AS $$
+  SELECT EXISTS (
+    SELECT 1 FROM public.profiles
+    WHERE id = auth.uid() AND role = 'teacher'
+  );
+$$ LANGUAGE sql SECURITY DEFINER;
+
 -- Basic Policies (Safe Re-run)
 DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON profiles;
 CREATE POLICY "Public profiles are viewable by everyone" ON profiles FOR SELECT USING (true);
@@ -69,7 +78,7 @@ CREATE POLICY "Users can update their own profile" ON profiles FOR UPDATE USING 
 
 DROP POLICY IF EXISTS "Teachers can manage all profiles" ON profiles;
 CREATE POLICY "Teachers can manage all profiles" ON profiles FOR ALL 
-USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'teacher'));
+USING (public.is_teacher());
 
 DROP POLICY IF EXISTS "Public announcements are viewable by everyone" ON announcements;
 CREATE POLICY "Public announcements are viewable by everyone" ON announcements FOR SELECT USING (true);
@@ -83,22 +92,22 @@ CREATE POLICY "Public tests are viewable by everyone" ON tests FOR SELECT USING 
 DROP POLICY IF EXISTS "Public marks are viewable by everyone" ON marks;
 CREATE POLICY "Public marks are viewable by everyone" ON marks FOR SELECT USING (true);
 
--- Teacher-only writes
+-- Teacher-only writes (using is_teacher() to avoid recursion)
 DROP POLICY IF EXISTS "Teachers can insert announcements" ON announcements;
 CREATE POLICY "Teachers can insert announcements" ON announcements FOR INSERT 
-WITH CHECK (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'teacher'));
+WITH CHECK (public.is_teacher());
 
 DROP POLICY IF EXISTS "Teachers can insert files" ON files;
 CREATE POLICY "Teachers can insert files" ON files FOR INSERT 
-WITH CHECK (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'teacher'));
+WITH CHECK (public.is_teacher());
 
 DROP POLICY IF EXISTS "Teachers can insert tests" ON tests;
 CREATE POLICY "Teachers can insert tests" ON tests FOR INSERT 
-WITH CHECK (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'teacher'));
+WITH CHECK (public.is_teacher());
 
 DROP POLICY IF EXISTS "Teachers can manage marks" ON marks;
 CREATE POLICY "Teachers can manage marks" ON marks FOR ALL 
-USING (EXISTS (SELECT 1 FROM profiles WHERE id = auth.uid() AND role = 'teacher'));
+USING (public.is_teacher());
 
 -- 6. Automatic Profile Creation Trigger
 CREATE OR REPLACE FUNCTION public.handle_new_user()
