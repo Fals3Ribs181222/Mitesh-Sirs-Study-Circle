@@ -1285,7 +1285,16 @@ button:disabled {
     text-align: center;
     pointer-events: none;
     max-width: 600px;
-    padding: 2rem;
+    padding: 2.5rem;
+    background: rgba(var(--bg-surface-rgb, 255, 255, 255), 0.75);
+    /* Slight transparency */
+    backdrop-filter: blur(12px);
+    /* Frosted glass effect */
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    /* Soft shadow to separate from collage */
 }
 
 .hero-interactive__title {

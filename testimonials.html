@@ -210,13 +210,29 @@
                 const el = document.createElement('div');
                 el.className = 'hero-interactive__element';
 
-                // Random position logic for initial placement around the edges
-                // We leave center empty for text
+                // Define safe zones to strictly avoid the center frosted box and the bottom edge
+                // Safe Zone 1 (Left): left 5-20%, top 10-60%
+                // Safe Zone 2 (Right): left 80-95%, top 10-60%
+                // Safe Zone 3 (Top-Left): left 20-40%, top 5-25%
+                // Safe Zone 4 (Top-Right): left 60-80%, top 5-25%
+                // Max top limit is around 60% to ensure the bottom of a 200px element doesn't clip the horizon
+
                 let top, left;
-                if (index % 4 === 0) { top = 5 + Math.random() * 25; left = Math.random() * 25; } // Top left
-                else if (index % 4 === 1) { top = 5 + Math.random() * 25; left = 70 + Math.random() * 25; } // Top right
-                else if (index % 4 === 2) { top = 65 + Math.random() * 25; left = Math.random() * 25; } // Bottom left
-                else { top = 65 + Math.random() * 25; left = 70 + Math.random() * 25; } // Bottom right
+                const zone = index % 4;
+
+                if (zone === 0) {
+                    left = 5 + Math.random() * 15;
+                    top = 10 + Math.random() * 50;
+                } else if (zone === 1) {
+                    left = 80 + Math.random() * 15;
+                    top = 10 + Math.random() * 50;
+                } else if (zone === 2) {
+                    left = 20 + Math.random() * 20;
+                    top = 5 + Math.random() * 20;
+                } else {
+                    left = 60 + Math.random() * 20;
+                    top = 5 + Math.random() * 20;
+                }
 
                 el.style.top = `${top}%`;
                 el.style.left = `${left}%`;
@@ -254,20 +270,29 @@
                 container.appendChild(el);
             });
 
-            // GSAP Mousemove Parallax Logic
-            document.addEventListener('mousemove', (e) => {
-                if (window.innerWidth < 768) return; // Disable parallax on mobile
+            // GSAP Hover Scale Logic
+            gsap.utils.toArray('.hero-interactive__element').forEach(el => {
+                // Get the initial scale that was randomly assigned
+                const currentTransform = el.style.transform;
+                const baseScale = currentTransform.includes('scale(')
+                    ? parseFloat(currentTransform.split('scale(')[1])
+                    : 1;
 
-                const xPos = (e.clientX / window.innerWidth - 0.5) * 2; // -1 to 1
-                const yPos = (e.clientY / window.innerHeight - 0.5) * 2; // -1 to 1
-
-                gsap.utils.toArray('.hero-interactive__element').forEach(el => {
-                    const depth = parseFloat(el.getAttribute('data-depth'));
+                el.addEventListener('mouseenter', () => {
                     gsap.to(el, {
-                        x: xPos * 60 * depth, // 60px base movement, scaled by depth
-                        y: yPos * 60 * depth,
-                        duration: 1.2,
-                        ease: 'power2.out'
+                        scale: baseScale * 1.15, // Grow by 15%
+                        duration: 0.3,
+                        ease: 'power2.out',
+                        zIndex: 100 // Bring to front on hover
+                    });
+                });
+
+                el.addEventListener('mouseleave', () => {
+                    gsap.to(el, {
+                        scale: baseScale, // Return to base scale
+                        duration: 0.3,
+                        ease: 'power2.out',
+                        zIndex: 1 // Reset z-index
                     });
                 });
             });
