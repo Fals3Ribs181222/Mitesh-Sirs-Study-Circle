@@ -1,0 +1,42 @@
+# CSS Variables and Theme Data
+
+This document lists all the custom CSS variables used across the project to maintain a consistent theme, including colors, fonts, layout properties, and styling utilities. These variables are defined in the `:root` selector of `css/styles.css`.
+
+## Color Palette
+
+### Base & Backgrounds
+- `--bg-base`: `#EADDCA` (A warm, neutral background color)
+- `--bg-surface`: `#ffffff` (White, used for cards and clean surface areas)
+- `--bg-surface-hover`: `#f3e9d8` (A slightly tinted white/beige for hover states)
+- `--glass-bg`: `rgba(255, 255, 255, 0.7)` (Semi-transparent white for glassmorphism effects)
+
+### Brand & Interactive Colors
+- `--primary`: `#7393B3` (A muted, professional blue used for primary actions, headings, and highlights)
+- `--primary-hover`: `#5a7691` (A darker shade of primary blue for interactive hover states)
+- `--secondary`: `#8A9A5B` (A soft, natural green used for active states, accents, and success items)
+- `--amber`: `#FFBF00` (A bright amber/yellow for specific highlights, though usage is sparse in the core CSS snippet provided)
+- `--cadmium-red`: `#D22B2B` (A strong red, likely intended for danger/error states alongside the explicit rgba reds used in `.btn--danger`)
+
+### Typography Colors
+- `--text-main`: `#2d3748` (A dark slate gray for high contrast readability of body text)
+- `--text-muted`: `#4a5568` (A lighter slate gray for secondary text, labels, and less prominent information)
+
+### Borders & Effects
+- `--border-color`: `rgba(0, 0, 0, 0.1)` (Subtle, semi-transparent black for standard borders)
+- `--glass-border`: `rgba(0, 0, 0, 0.08)` (Even lighter semi-transparent black for the borders of glassmorphic elements)
+- `--shadow-glow`: `0 4px 6px rgba(0, 0, 0, 0.05)` (A soft, faint shadow to provide subtle elevation to components like cards and stats items)
+
+## Typography
+
+- `--font-main`: `'Outfit', 'Inter', sans-serif` (The primary font stack prioritizing modern, clean sans-serif typefaces)
+
+## Structural & Utilities
+
+### Border Radii
+Used to maintain consistent rounding across components.
+- `--radius-md`: `12px` (Medium rounding, typically for standard inputs or small cards)
+- `--radius-lg`: `24px` (Large rounding, used for prominent panels, modals, and major layout blocks)
+- `--radius-full`: `9999px` (Full rounding, used to create perfectly circular or pill-shaped elements like buttons and navigation links)
+
+### Transitions
+- `--transition`: `all 0.3s cubic-bezier(0.4, 0, 0.2, 1)` (A standardized, smooth easing curve used globally for hover effects, state changes, and minor animations)
