@@ -1,18 +1,85 @@
 // Core Application Logic
 
+// Integrated Config
+const CONFIG = {
+    SUPABASE_URL: 'https://tksruuqtzxflgglnljef.supabase.co',
+    SUPABASE_ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRrc3J1dXF0enhmbGdnbG5samVmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzY0OTIsImV4cCI6MjA4Nzk1MjQ5Mn0.eu6LwoP-9O5sG9nHhBza0UgYHCOm7Ni5flk_1Lgl4FU'
+};
+
 // Initialize Supabase Client
 const { createClient } = supabase;
 const supabaseClient = createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_ANON_KEY);
 
+// --- Core UI Helpers ---
+
+/**
+ * Sets a table body into a loading state.
+ * @param {string} tbodyId
+ * @param {number} cols
+ * @param {string} msg
+ */
+function tableLoading(tbodyId, cols, msg = 'Loading...') {
+    const el = document.getElementById(tbodyId);
+    if (el) el.innerHTML = `<tr><td colspan="${cols}" class="loading-text">${msg}</td></tr>`;
+}
+
+/**
+ * Shows a status message element.
+ * @param {string} statusId
+ * @param {string} msg
+ * @param {string} type
+ */
+function showStatus(statusId, msg, type = 'error') {
+    const el = document.getElementById(statusId);
+    if (!el) return;
+    el.textContent = msg;
+    el.className = `status status--${type}`;
+    el.style.display = 'block';
+}
+
+/**
+ * Unified component loader for modular HTML segments.
+ * @param {string} componentName
+ * @param {string} containerId
+ * @param {function} onLoaded
+ */
+async function loadComponent(componentName, containerId, onLoaded) {
+    try {
+        const res = await fetch(`components/${componentName}`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const el = document.getElementById(containerId);
+        if (el) {
+            el.innerHTML = await res.text();
+            if (typeof onLoaded === 'function') onLoaded();
+        }
+    } catch (err) {
+        console.error(`Failed to load component ${componentName}:`, err);
+    }
+}
+
+// Expose Core UI Helpers globally
+window.tableLoading = tableLoading;
+window.showStatus = showStatus;
+window.loadComponent = loadComponent;
+
+
 // API interaction wrapper (Supabase implementation)
 const api = {
-    async get(tableName, filters = {}, select = '*') {
+    async get(tableName, filters = {}, select = '*', options = {}) {
         let req = supabaseClient.from(tableName).select(select);
 
-        // Add basic filters if needed
+        // Add filters
         for (const [key, value] of Object.entries(filters)) {
-            req = req.eq(key, value);
+            if (Array.isArray(value)) {
+                req = req.in(key, value);
+            } else {
+                req = req.eq(key, value);
+            }
         }
+
+        if (options.order) req = req.order(options.order, { ascending: options.ascending ?? true });
+        if (options.single) req = req.single();
+
 
         const { data, error } = await req;
         if (error) {

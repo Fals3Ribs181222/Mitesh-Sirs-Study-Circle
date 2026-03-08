@@ -10,8 +10,7 @@ async function loadMaterials() {
 
     btnRefresh.disabled = true;
     btnRefresh.textContent = 'Refreshing...';
-    status.style.display = 'none';
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-text">Loading materials...</td></tr>';
+    window.tableLoading('materialsTableBody', 6, 'Loading materials...');
 
     const response = await window.api.get('files');
 
@@ -30,34 +29,16 @@ async function loadMaterials() {
                     <td class="data-table__td"><a href="${file.file_url || '#'}" target="_blank" class="navbar__link">View</a></td>
                 </tr>
             `).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="loading-text">No materials uploaded yet.</td></tr>';
+            window.tableLoading('materialsTableBody', 6, 'No materials uploaded yet.');
         }
     } else {
-        tbody.innerHTML = '';
-        status.textContent = response.error || 'Failed to load materials.';
-        status.className = 'status status--error';
-        status.style.display = 'block';
+        document.getElementById('materialsTableBody').innerHTML = '';
+        window.showStatus('materialsListStatus', response.error || 'Failed to load materials.', 'error');
     }
 }
 
-// Load Upload Component HTML
 async function loadUploadComponent() {
-    try {
-        const response = await fetch('components/add_upload');
-        if (response.ok) {
-            const html = await response.text();
-            const container = document.getElementById('addUploadContainer');
-            if (container) {
-                container.innerHTML = html;
-                attachUploadListeners();
-            }
-        } else {
-            console.error('Failed to load upload component: HTTP Status', response.status);
-        }
-    } catch (err) {
-        console.error('Error loading upload component:', err);
-    }
+    await window.loadComponent('add_upload', 'addUploadContainer', attachUploadListeners);
 }
 
 function attachUploadListeners() {
@@ -108,8 +89,7 @@ function attachUploadListeners() {
             const response = await window.api.post('files', payload);
 
             if (response.success) {
-                status.textContent = 'File uploaded successfully!';
-                status.className = 'status status--success';
+                window.showStatus('uploadStatus', 'File uploaded successfully!', 'success');
                 e.target.reset();
                 loadMaterials();
             } else {
@@ -117,8 +97,7 @@ function attachUploadListeners() {
             }
         } catch (err) {
             console.error('Upload Error:', err);
-            status.textContent = err.message || 'Failed to upload.';
-            status.className = 'status status--error';
+            window.showStatus('uploadStatus', err.message || 'Failed to upload.', 'error');
         } finally {
             btn.disabled = false;
             btn.textContent = 'Upload Material';

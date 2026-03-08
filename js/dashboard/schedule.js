@@ -86,7 +86,7 @@ async function renderCalendar() {
             const pill = document.createElement('div');
             pill.className = `calendar__pill calendar__pill--${c.type}`;
             pill.innerHTML = `
-                <div class="calendar__pill-time">${formatTime(c.start_time)}</div>
+                <div class="calendar__pill-time">${window.formatTime(c.start_time)}</div>
                 <div class="calendar__pill-title">${c.title}</div>
             `;
 
@@ -102,7 +102,7 @@ async function renderCalendar() {
                 class_group_id: c.class_group_id,
                 title: c.title,
                 batchName: c.batches ? c.batches.name : 'Unknown Batch',
-                timeSpan: `${formatTime(c.start_time)} – ${formatTime(c.end_time)}`,
+                timeSpan: `${window.formatTime(c.start_time)} – ${window.formatTime(c.end_time)}`,
                 type: c.type,
                 notes: c.notes,
                 batch_id: c.batch_id,

@@ -87,35 +87,10 @@ function filterStudents() {
     renderStudentsTable(filtered);
 }
 
-// ====== DELETE ======
-function showConfirmModal(title, message, onConfirm) {
-    const overlay = document.createElement('div');
-    overlay.className = 'confirm-overlay';
-    overlay.innerHTML = `
-        <div class="confirm-modal">
-            <h3>${title}</h3>
-            <p>${message}</p>
-            <div class="confirm-modal__actions">
-                <button class="btn btn--outline btn--sm" id="confirmCancel">Cancel</button>
-                <button class="btn btn--danger btn--sm" id="confirmOk">Delete</button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(overlay);
-
-    overlay.querySelector('#confirmCancel').addEventListener('click', () => overlay.remove());
-    overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.remove(); });
-    overlay.querySelector('#confirmOk').addEventListener('click', async () => {
-        overlay.querySelector('#confirmOk').disabled = true;
-        overlay.querySelector('#confirmOk').textContent = 'Deleting...';
-        await onConfirm();
-        overlay.remove();
-    });
-}
 
 export async function deleteStudent(studentId) {
     const student = allStudents.find(s => s.id === studentId);
-    showConfirmModal(
+    window.showConfirmModal(
         'Delete Student',
         `Are you sure you want to delete <strong>${student?.name || 'this student'}</strong>? This cannot be undone.`,
         async () => {

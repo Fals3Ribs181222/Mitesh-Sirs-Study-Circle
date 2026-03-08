@@ -9,8 +9,7 @@ async function loadBoardResults() {
 
     btnRefresh.disabled = true;
     btnRefresh.textContent = 'Refreshing...';
-    status.style.display = 'none';
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-text">Loading board results...</td></tr>';
+    window.tableLoading('boardResultsTableBody', 6, 'Loading board results...');
 
     const response = await window.api.get('board_results');
 
@@ -31,31 +30,16 @@ async function loadBoardResults() {
                     </td>
                 </tr>
             `).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="loading-text">No board results added yet.</td></tr>';
+            window.tableLoading('boardResultsTableBody', 6, 'No board results added yet.');
         }
     } else {
-        tbody.innerHTML = '';
-        status.textContent = response.error || 'Failed to load board results.';
-        status.className = 'status status--error';
-        status.style.display = 'block';
+        document.getElementById('boardResultsTableBody').innerHTML = '';
+        window.showStatus('boardResultsListStatus', response.error || 'Failed to load board results.', 'error');
     }
 }
 
 async function loadBoardResultComponent() {
-    try {
-        const response = await fetch('components/add_board_result');
-        if (response.ok) {
-            const html = await response.text();
-            const container = document.getElementById('addBoardResultContainer');
-            if (container) {
-                container.innerHTML = html;
-                attachBoardResultListeners();
-            }
-        }
-    } catch (err) {
-        console.error('Error loading board result component:', err);
-    }
+    await window.loadComponent('add_board_result', 'addBoardResultContainer', attachBoardResultListeners);
 }
 
 function attachBoardResultListeners() {
@@ -84,14 +68,12 @@ function attachBoardResultListeners() {
         btn.textContent = 'Add Board Result';
 
         if (response.success) {
-            status.textContent = 'Board result added successfully!';
-            status.className = 'status status--success';
+            window.showStatus('boardResultStatus', 'Board result added successfully!', 'success');
             e.target.reset();
             document.getElementById('brMaxMarks').value = '100';
             loadBoardResults();
         } else {
-            status.textContent = response.error || 'Failed to add board result.';
-            status.className = 'status status--error';
+            window.showStatus('boardResultStatus', response.error || 'Failed to add board result.', 'error');
         }
     });
 }

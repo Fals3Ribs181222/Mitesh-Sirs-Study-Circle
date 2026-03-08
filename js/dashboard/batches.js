@@ -10,8 +10,7 @@ async function loadBatches() {
 
     btnRefresh.disabled = true;
     btnRefresh.textContent = 'Refreshing...';
-    status.style.display = 'none';
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-text">Loading batches...</td></tr>';
+    window.tableLoading('batchesTableBody', 6, 'Loading batches...');
 
     const batchRes = await window.api.get('batches', {}, '*, classes(type, day_of_week, class_date, start_time)');
 
@@ -36,7 +35,7 @@ async function loadBatches() {
                     const regularClasses = batch.classes.filter(c => c.type === 'regular');
                     if (regularClasses.length > 0) {
                         const schedParts = regularClasses.map(c => {
-                            const timeFormat = formatTime(c.start_time);
+                            const timeFormat = window.formatTime(c.start_time);
                             return `${days[c.day_of_week]} ${timeFormat}`;
                         });
                         scheduleStr = [...new Set(schedParts)].join(', ');
@@ -51,19 +50,17 @@ async function loadBatches() {
                     <td class="data-table__td"><div class="text-truncate" style="max-width:200px;" title="${scheduleStr}">${scheduleStr}</div></td>
                     <td class="data-table__td"><span class="badge">${counts[batch.id] || 0}</span></td>
                     <td class="data-table__td">
-                        <button class="btn btn--primary btn--sm" onclick="openBatchDetail('${batch.id}', '${(batch.name || '').replace(/'/g, "\\'")}')">Manage</button>
+                        <button class="btn btn--primary btn--sm" data-action="manage" data-id="${batch.id}" data-name="${(batch.name || '').replace(/'/g, "\\'")}">Manage</button>
                     </td>
                 </tr>
                 `;
             }).join('');
         } else {
-            tbody.innerHTML = '<tr><td colspan="6" class="loading-text">No batches created yet.</td></tr>';
+            window.tableLoading('batchesTableBody', 6, 'No batches created yet.');
         }
     } else {
-        tbody.innerHTML = '';
-        status.textContent = batchRes.error || 'Failed to load batches.';
-        status.className = 'status status--error';
-        status.style.display = 'block';
+        document.getElementById('batchesTableBody').innerHTML = '';
+        window.showStatus('batchesListStatus', batchRes.error || 'Failed to load batches.', 'error');
     }
 }
 
@@ -77,19 +74,7 @@ function formatTime(timeStr) {
 }
 
 async function loadBatchComponent() {
-    try {
-        const response = await fetch('components/add_batch');
-        if (response.ok) {
-            const html = await response.text();
-            const container = document.getElementById('addBatchContainer');
-            if (container) {
-                container.innerHTML = html;
-                attachBatchFormListeners();
-            }
-        }
-    } catch (err) {
-        console.error('Error loading batch component:', err);
-    }
+    await window.loadComponent('add_batch', 'addBatchContainer', attachBatchFormListeners);
 }
 
 function attachBatchFormListeners() {
@@ -123,15 +108,11 @@ function attachBatchFormListeners() {
         btn.disabled = false;
 
         if (response.success) {
-            status.textContent = 'Batch created successfully!';
-            status.className = 'status status--success';
-            status.style.display = 'block';
+            window.showStatus('batchFormStatus', 'Batch created successfully!', 'success');
             form.reset();
             loadBatches();
         } else {
-            status.textContent = response.error || 'Failed to create batch.';
-            status.className = 'status status--error';
-            status.style.display = 'block';
+            window.showStatus('batchFormStatus', response.error || 'Failed to create batch.', 'error');
         }
     });
 }
@@ -187,7 +168,7 @@ async function loadBatchMembers(batchId) {
                         <td class="data-table__td">${p.username || '-'}</td>
                         <td class="data-table__td">${p.grade || '-'}</td>
                         <td class="data-table__td">
-                            <button class="btn btn--danger btn--sm" onclick="removeStudentFromBatch('${m.id}')">Remove</button>
+                            <button class="btn btn--danger btn--sm" data-action="remove-student" data-id="${m.id}">Remove</button>
                         </td>
                     </tr>
                 `;
@@ -249,9 +230,9 @@ async function loadStudentPicker(batchId) {
 
 window.removeStudentFromBatch = async function (batchStudentId) {
     if (!confirm('Remove this student from the batch?')) return;
-    const { error } = await window.supabaseClient.from('batch_students').delete().eq('id', batchStudentId);
+    const { error } = await window.api.deleteWhere('batch_students', { id: batchStudentId });
     if (error) {
-        alert('Failed to remove: ' + error.message);
+        alert('Failed to remove: ' + error);
     } else {
         await loadBatchMembers(currentBatchId);
         await loadStudentPicker(currentBatchId);
@@ -261,6 +242,29 @@ window.removeStudentFromBatch = async function (batchStudentId) {
 export function init() {
     loadBatches();
     loadBatchComponent();
+
+    const tbody = document.getElementById('batchesTableBody');
+    if (tbody) {
+        tbody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action="manage"]');
+            if (btn) {
+                const id = btn.getAttribute('data-id');
+                const name = btn.getAttribute('data-name');
+                openBatchDetail(id, name);
+            }
+        });
+    }
+
+    const membersTbody = document.getElementById('batchMembersTable');
+    if (membersTbody) {
+        membersTbody.addEventListener('click', (e) => {
+            const btn = e.target.closest('button[data-action="remove-student"]');
+            if (btn) {
+                const id = btn.getAttribute('data-id');
+                removeStudentFromBatch(id);
+            }
+        });
+    }
 
     const btnRefresh = document.getElementById('btnRefreshBatches');
     if (btnRefresh) btnRefresh.addEventListener('click', loadBatches);
@@ -350,9 +354,9 @@ export function init() {
     if (btnDeleteBatch) {
         btnDeleteBatch.addEventListener('click', async () => {
             if (!confirm('Are you sure you want to delete this entire batch? All student assignments will be removed.')) return;
-            const { error } = await window.supabaseClient.from('batches').delete().eq('id', currentBatchId);
-            if (error) {
-                alert('Failed to delete batch: ' + error.message);
+            const res = await window.api.deleteWhere('batches', { id: currentBatchId });
+            if (!res.success) {
+                alert('Failed to delete batch: ' + res.error);
             } else {
                 if (detailContainer) detailContainer.style.display = 'none';
                 if (listContainer) listContainer.style.display = 'block';

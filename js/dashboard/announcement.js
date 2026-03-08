@@ -9,8 +9,7 @@ async function loadAnnouncements() {
 
     btnRefresh.disabled = true;
     btnRefresh.textContent = 'Refreshing...';
-    status.style.display = 'none';
-    tbody.innerHTML = '<tr><td colspan="4" class="loading-text">Loading announcements...</td></tr>';
+    window.tableLoading('announcementsTableBody', 4, 'Loading announcements...');
 
     const response = await window.api.get('announcements');
 
@@ -27,31 +26,16 @@ async function loadAnnouncements() {
                     <td class="data-table__td">${ann.posted_by || '-'}</td>
                 </tr>
             `).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="4" class="loading-text">No announcements posted yet.</td></tr>';
+            window.tableLoading('announcementsTableBody', 4, 'No announcements posted yet.');
         }
     } else {
-        tbody.innerHTML = '';
-        status.textContent = response.error || 'Failed to load announcements.';
-        status.className = 'status status--error';
-        status.style.display = 'block';
+        document.getElementById('announcementsTableBody').innerHTML = '';
+        window.showStatus('announcementsListStatus', response.error || 'Failed to load announcements.', 'error');
     }
 }
 
 async function loadAnnouncementComponent() {
-    try {
-        const response = await fetch('components/add_announcement');
-        if (response.ok) {
-            const html = await response.text();
-            const container = document.getElementById('addAnnouncementContainer');
-            if (container) {
-                container.innerHTML = html;
-                attachAnnouncementListeners();
-            }
-        }
-    } catch (err) {
-        console.error('Error loading announcement component:', err);
-    }
+    await window.loadComponent('add_announcement', 'addAnnouncementContainer', attachAnnouncementListeners);
 }
 
 function attachAnnouncementListeners() {
@@ -78,13 +62,11 @@ function attachAnnouncementListeners() {
         btn.textContent = 'Post Announcement';
 
         if (response.success) {
-            status.textContent = 'Announcement posted successfully!';
-            status.className = 'status status--success';
+            window.showStatus('noticeStatus', 'Announcement posted successfully!', 'success');
             e.target.reset();
             loadAnnouncements();
         } else {
-            status.textContent = response.error || 'Failed to post.';
-            status.className = 'status status--error';
+            window.showStatus('noticeStatus', response.error || 'Failed to post.', 'error');
         }
     });
 }

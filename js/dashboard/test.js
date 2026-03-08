@@ -9,8 +9,7 @@ async function loadTestsList() {
 
     btnRefresh.disabled = true;
     btnRefresh.textContent = 'Refreshing...';
-    status.style.display = 'none';
-    tbody.innerHTML = '<tr><td colspan="7" class="loading-text">Loading tests...</td></tr>';
+    window.tableLoading('testsListTableBody', 7, 'Loading tests...');
 
     const response = await window.api.get('tests', {}, '*, profiles:scheduled_by(name)');
 
@@ -34,31 +33,16 @@ async function loadTestsList() {
                     </td>
                 </tr>
             `}).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="7" class="loading-text">No tests scheduled yet.</td></tr>';
+            window.tableLoading('testsListTableBody', 7, 'No tests scheduled yet.');
         }
     } else {
-        tbody.innerHTML = '';
-        status.textContent = response.error || 'Failed to load tests.';
-        status.className = 'status status--error';
-        status.style.display = 'block';
+        document.getElementById('testsListTableBody').innerHTML = '';
+        window.showStatus('testsListStatus', response.error || 'Failed to load tests.', 'error');
     }
 }
 
 async function loadTestComponent() {
-    try {
-        const response = await fetch('components/add_test');
-        if (response.ok) {
-            const html = await response.text();
-            const container = document.getElementById('addTestContainer');
-            if (container) {
-                container.innerHTML = html;
-                attachTestListeners();
-            }
-        }
-    } catch (err) {
-        console.error('Error loading test component:', err);
-    }
+    await window.loadComponent('add_test', 'addTestContainer', attachTestListeners);
 }
 
 function attachTestListeners() {
@@ -90,13 +74,11 @@ function attachTestListeners() {
         btn.textContent = 'Schedule Test';
 
         if (response.success) {
-            status.textContent = 'Test scheduled successfully!';
-            status.className = 'status status--success';
+            window.showStatus('testStatus', 'Test scheduled successfully!', 'success');
             e.target.reset();
             loadTestsList();
         } else {
-            status.textContent = response.error || 'Failed to schedule.';
-            status.className = 'status status--error';
+            window.showStatus('testStatus', response.error || 'Failed to schedule.', 'error');
         }
     });
 }
