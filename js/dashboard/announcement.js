@@ -26,6 +26,7 @@ async function loadAnnouncements() {
                     <td class="data-table__td">${ann.posted_by || '-'}</td>
                 </tr>
             `).join('');
+        } else {
             window.tableLoading('announcementsTableBody', 4, 'No announcements posted yet.');
         }
     } else {
