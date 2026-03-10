@@ -1,6 +1,3 @@
 {
-  "cleanUrls": true,
-  "rewrites": [
-    { "source": "/teacher_dashboard/:tab", "destination": "/teacher_dashboard" }
-  ]
+    "cleanUrls": true
 }

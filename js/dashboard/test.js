@@ -33,6 +33,7 @@ async function loadTestsList() {
                     </td>
                 </tr>
             `}).join('');
+        } else {
             window.tableLoading('testsListTableBody', 7, 'No tests scheduled yet.');
         }
     } else {
