@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**TuteFlow** — an educational management system for Mitesh Sir's Group Tuitions (ISC Accountancy coaching, Mumbai). Multi-role web app with teacher and student portals, AI-powered tools, and WhatsApp integration.
+**TuteFlow** — an educational management system for Mitesh Sir's Study Circle (ISC Accountancy coaching, Mumbai). Multi-role web app with teacher and student portals, AI-powered tools, and WhatsApp integration.
 
 ## Development Commands
 

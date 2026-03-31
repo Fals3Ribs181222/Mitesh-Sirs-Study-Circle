@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Teacher Dashboard — manage students, materials, tests, and announcements.">
-    <title>Teacher Dashboard | Mitesh Sir's Group Tuitions</title>
+    <title>Teacher Dashboard | Mitesh Sir's Study Circle</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
@@ -15,7 +15,7 @@
 <body class="is-home-active">
     <nav class="navbar" aria-label="Main navigation">
         <div class="container navbar__container">
-            <a href="index.html" class="navbar__logo">Mitesh Sir's Group Tuitions</a>
+            <a href="index.html" class="navbar__logo">Mitesh Sir's Study Circle</a>
             <ul class="navbar__links">
                 <li><a href="index.html" class="navbar__link">Home</a></li>
                 <li><a href="testimonials.html" class="navbar__link">Testimonials</a></li>
@@ -725,7 +725,7 @@
     <footer class="footer">
         <div class="container">
             <div class="footer__bottom">
-                <p>&copy; 2026 Mitesh Sir's Group Tuitions. All rights reserved.</p>
+                <p>&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
             </div>
         </div>
     </footer>

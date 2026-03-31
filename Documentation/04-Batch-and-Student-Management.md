@@ -14,6 +14,13 @@ Teachers have administrative capabilities over student records:
 1.  **Profile Oversight:** Viewing comprehensive details of all student profiles securely via the `profiles` table. This overrides standard RLS visibility limits using the `is_teacher()` function.
 2.  **Assignment:** Managing individual student assignments to relevant batches or initiating cross-batch transfers.
 
+### Deleting Students
+Teachers can delete a student from the student detail view. The delete button calls the `admin-api` edge function with `action: delete_student`, which:
+1. Verifies the target user has `role = 'student'` (refuses to delete teachers/admins)
+2. Calls `auth.admin.deleteUser()` using the service role key — this removes the Supabase Auth user and cascades to the `profiles` row and all related data
+
+> **Why not a direct table delete?** RLS prevents teachers from deleting rows in `profiles` directly. A direct `DELETE` returns "success" but removes nothing, so the delete is routed through the edge function which uses the service role key to bypass RLS.
+
 ### Grade-Scoped Access
 If a teacher has been assigned a specific grade (`11th` or `12th`) via the Manage Teachers page:
 - The **student list** (`students.js`) is filtered to show only students of that grade.

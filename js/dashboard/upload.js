@@ -89,22 +89,24 @@ function attachUploadListeners() {
             const subjectCheckboxes = document.querySelectorAll('input[name="fileSubjects"]:checked');
             const subjects = Array.from(subjectCheckboxes).map(cb => cb.value).join(', ');
 
+            const uploadType = document.querySelector('input[name="uploadType"]:checked')?.value || 'student';
+
             const payload = {
                 title: document.getElementById('fileTitle').value,
                 subject: subjects,
                 grade: document.getElementById('fileGrade').value,
                 file_url: publicUrl,
+                upload_type: uploadType,
                 uploaded_by: user.id
             };
 
             const response = await window.api.post('files', payload);
 
             if (response.success) {
-                window.showStatus('uploadStatus', 'File uploaded & indexing for AI...', 'success');
-
-                // Trigger RAG indexing in the background
+                // Trigger RAG indexing only for AI training uploads
                 const fileId = response.data?.id;
-                if (fileId) {
+                if (uploadType === 'ai' && fileId) {
+                    window.showStatus('uploadStatus', 'File uploaded & indexing for AI...', 'success');
                     const { data: { session } } = await window.supabaseClient.auth.getSession();
                     fetch(`${CONFIG.SUPABASE_URL}/functions/v1/index-material`, {
                         method: 'POST',
@@ -130,6 +132,8 @@ function attachUploadListeners() {
                         console.warn('⚠️ Indexing error:', err);
                         window.showStatus('uploadStatus', 'File uploaded, but AI indexing failed.', 'error');
                     });
+                } else {
+                    window.showStatus('uploadStatus', '✅ File uploaded for students!', 'success');
                 }
 
                 window.safeFormReset(e.target);

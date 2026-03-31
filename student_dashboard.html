@@ -4,30 +4,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Student Dashboard — access study materials, notices, and test marks.">
-    <title>Student Dashboard | Mitesh Sir's Group Tuitions</title>
+    <meta name="description" content="Student Dashboard — access study materials, notices, test marks, and more.">
+    <title>Student Dashboard | Mitesh Sir's Study Circle</title>
     <link rel="icon" href="logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
 </head>
 
-<body class="dash-page">
-    <nav class="navbar" aria-label="Main navigation"></nav>
+<body class="is-home-active dash-page">
+    <nav class="navbar" aria-label="Main navigation">
+        <div class="navbar__container" style="padding: 0 2rem;">
+            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;"><span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span></a>
+            <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
+                <li><a href="index" class="navbar__link">Home</a></li>
+                <li><a href="results" class="navbar__link">Results</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <div class="dash-layout">
+
         <!-- SIDEBAR -->
         <aside class="dash-sidebar" id="dashSidebar">
             <div class="dash-sidebar__top">
-                <img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;">
+                <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
             </div>
             <nav class="dash-sidebar__nav">
-                <div class="dash-sidebar__ext-links">
-                    <a href="index" class="dash-sidebar__item">🏠 Home</a>
-                    <a href="testimonials" class="dash-sidebar__item">⭐ Testimonials</a>
-                    <a href="results" class="dash-sidebar__item">📊 Results</a>
-                </div>
+                <button class="dash-sidebar__item dash-sidebar__item--active" data-target="panel-home">
+                    <span>⊞</span> Overview
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-marks">
+                    <span>📝</span> My Marks
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-materials">
+                    <span>📚</span> Materials
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-notices">
+                    <span>📢</span> Notice Board
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-schedule">
+                    <span>📅</span> Schedule
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-attendance">
+                    <span>✅</span> Attendance
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-leaderboard">
+                    <span>🏅</span> Leaderboard
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-ask-ai">
+                    <span>🧠</span> Ask AI
+                </button>
+                <button class="dash-sidebar__item" data-target="panel-student-profile">
+                    <span>👤</span> My Profile
+                </button>
             </nav>
             <div class="dash-sidebar__bottom">
                 <button class="dash-sidebar__logout" id="btnSidebarLogout">⏻ Logout</button>
@@ -45,116 +77,353 @@
         <main class="dash-main">
             <!-- Hamburger toggle (mobile only) -->
             <button class="dash-menu-toggle" id="dashMenuToggle" aria-label="Open navigation">☰</button>
-        <header class="welcome">
-            <h1>Welcome, <span class="welcome__name" id="studentName">Student</span>!</h1>
-            <p class="welcome__sub" id="studentClassInfo">Student Portal - Access your study materials and notices.</p>
-        </header>
 
-        <!-- My Performance Card -->
-        <aside class="perf-card" id="studentPerfCard" aria-label="Performance summary">
-            <div class="perf-card__stat">
-                <p class="perf-card__value" id="statTestsTaken">0</p>
-                <p class="perf-card__label">Tests Taken</p>
-            </div>
-            <div class="perf-card__stat">
-                <p class="perf-card__value" id="statAvgMarks">0%</p>
-                <p class="perf-card__label">Avg. Score</p>
-            </div>
-            <div class="perf-card__stat">
-                <p class="perf-card__value" id="statBestScore">0%</p>
-                <p class="perf-card__label">Best Score</p>
-            </div>
-            <div class="perf-card__stat" id="statRankWrap" style="display:none;">
-                <p class="perf-card__value" id="statRank">—</p>
-                <p class="perf-card__label" id="statRankLabel">Global Rank</p>
-            </div>
-        </aside>
-
-        <div class="dashboard">
-            <!-- Study Materials Panel -->
-            <section class="panel" aria-label="Study materials">
-                <header class="panel__header">
-                    <h2>Study Materials</h2>
-                </header>
-
-                <div class="filter-bar__group">
-                    <select id="filterSubject" class="filter-bar__control">
-                        <option value="">All Subjects</option>
-                    </select>
-                    <input type="search" id="searchTitle" class="filter-bar__control" placeholder="Search title...">
+            <div class="panels-container" id="dashboard-content">
+                <div class="back-to-home-container" style="margin-bottom: 2rem; display: none;">
+                    <button class="btn btn--outline btn--sm" id="btnBackToHome">
+                        <span class="back-text-full">← Back to Overview</span>
+                        <span class="back-text-mobile">Overview</span>
+                    </button>
                 </div>
 
-                <div class="material-list" id="materialsList">
-                    <div class="loading-text">Loading materials...</div>
-                </div>
-            </section>
+                <!-- HOME PANEL (inline — not lazy loaded) -->
+                <section class="tabs__panel tabs__panel--active" id="panel-home" role="tabpanel" aria-label="Overview">
+                    <div class="dash-widgets">
 
-            <!-- Announcements Panel -->
-            <section class="panel" aria-label="Announcements">
-                <header class="panel__header">
-                    <h2>Notice Board</h2>
-                </header>
-                <div class="notice-list" id="announcementsList">
-                    <div class="loading-text">Loading notices...</div>
-                </div>
-            </section>
+                        <!-- ATTENDANCE CARD (full width) -->
+                        <div class="dash-widget dash-widget--full">
+                            <div class="dash-widget__header">
+                                <div>
+                                    <h3>My Attendance</h3>
+                                    <p class="dash-widget__sub" id="homeAttSubtitle">Loading...</p>
+                                </div>
+                                <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-student-attendance')">View Details →</button>
+                            </div>
+                            <div class="home-att-body">
+                                <!-- SVG Ring -->
+                                <div class="att-ring-wrap">
+                                    <svg class="att-ring" viewBox="0 0 120 120" aria-hidden="true">
+                                        <circle class="att-ring__bg" cx="60" cy="60" r="50"/>
+                                        <circle class="att-ring__fill" id="attRingFill" cx="60" cy="60" r="50"/>
+                                    </svg>
+                                    <div class="att-ring__label">
+                                        <span class="att-ring__pct" id="homeAttRingPct">—</span>
+                                        <span class="att-ring__sub">attendance</span>
+                                    </div>
+                                </div>
+                                <!-- Right side: stats + dot strip -->
+                                <div style="flex:1;display:flex;flex-direction:column;gap:1rem;min-width:0;">
+                                    <div class="att-stats-row">
+                                        <div class="student-detail__stat">
+                                            <p class="student-detail__stat-value" id="homeAttTotal">—</p>
+                                            <p class="student-detail__stat-label">Total</p>
+                                        </div>
+                                        <div class="student-detail__stat">
+                                            <p class="student-detail__stat-value student-detail__stat-value--green" id="homeAttPresent">—</p>
+                                            <p class="student-detail__stat-label">Present</p>
+                                        </div>
+                                        <div class="student-detail__stat">
+                                            <p class="student-detail__stat-value student-detail__stat-value--red" id="homeAttAbsent">—</p>
+                                            <p class="student-detail__stat-label">Absent</p>
+                                        </div>
+                                        <div class="student-detail__stat">
+                                            <p class="student-detail__stat-value student-detail__stat-value--amber" id="homeAttLate">—</p>
+                                            <p class="student-detail__stat-label">Late</p>
+                                        </div>
+                                    </div>
+                                    <!-- Dot calendar strip -->
+                                    <div id="homeAttDots" style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;"></div>
+                                    <!-- Legend -->
+                                    <div style="display:flex;gap:1rem;font-size:0.78rem;color:var(--text-muted);">
+                                        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#1D9E75;margin-right:3px;vertical-align:middle;"></span>Present</span>
+                                        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#E24B4A;margin-right:3px;vertical-align:middle;"></span>Absent</span>
+                                        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#BA7517;margin-right:3px;vertical-align:middle;"></span>Late</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-            <!-- Tests & Marks Panel -->
-            <section class="panel panel--full" aria-label="Tests and marks">
-                <header class="panel__header">
-                    <h2>Tests &amp; Marks</h2>
-                </header>
-                <div class="table-wrap">
-                    <table id="testsTable" aria-label="Tests and marks">
-                        <thead>
-                            <tr>
-                                <th scope="col">Date</th>
-                                <th scope="col">Subject</th>
-                                <th scope="col">Test Title</th>
-                                <th scope="col">Max Marks</th>
-                                <th scope="col">Marks Earned</th>
-                            </tr>
-                        </thead>
-                        <tbody id="testsTableBody">
-                            <tr>
-                                <td colspan="5" class="loading-text">Loading tests...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+                        <!-- UPCOMING TESTS -->
+                        <div class="dash-widget dash-widget--tests">
+                            <div class="dash-widget__header">
+                                <h3>Upcoming Tests</h3>
+                                <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-student-marks')">All Marks</button>
+                            </div>
+                            <div class="tests-preview-list" id="homeUpcomingTests">
+                                <p class="loading-text">Loading...</p>
+                            </div>
+                        </div>
+
+                        <!-- ASK AI QUICK-WIDGET -->
+                        <div class="dash-widget">
+                            <div class="dash-widget__header">
+                                <h3>🧠 Ask AI</h3>
+                                <span class="dash-widget__badge">QUICK ASK</span>
+                            </div>
+                            <p style="font-size:0.8rem;color:var(--text-muted);margin:0;">Ask a subject question — answered from your study materials.</p>
+                            <select id="homeAiSubject" class="form__select" style="width:100%;">
+                                <option value="Accounts">Accounts</option>
+                                <option value="Commerce">Commerce</option>
+                            </select>
+                            <input type="text" id="homeAiQuestion" class="form__input" placeholder="Type your question..." style="width:100%;">
+                            <button class="btn btn--primary btn--sm" id="btnHomeAsk" style="align-self:flex-start;">✨ Ask AI</button>
+                        </div>
+
+                        <!-- MINI LEADERBOARD -->
+                        <div class="dash-widget dash-widget--leaderboard">
+                            <div class="dash-widget__header">
+                                <div>
+                                    <h3>🏆 Leaderboard</h3>
+                                    <span class="dash-widget__badge" id="homeLBBadge">GRADE RANK</span>
+                                </div>
+                                <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-student-leaderboard')">Full Board</button>
+                            </div>
+                            <div class="mini-leaderboard" id="homeMiniLeaderboard">
+                                <p class="loading-text">Loading...</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+                <!-- Dynamic tabs loaded by router.js -->
+
+            </div>
         </main>
     </div>
 
     <!-- Sidebar backdrop (mobile) -->
     <div class="dash-sidebar-backdrop" id="sidebarBackdrop"></div>
 
+    <footer class="footer" style="background: var(--glass-bg); backdrop-filter: blur(16px); padding: 1rem 0; border-top: 1px solid var(--border-color);">
+        <div class="container">
+            <p style="text-align:center; font-size:0.875rem; color:var(--text-muted); margin:0;">&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
+        </div>
+    </footer>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3/dist/purify.min.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/app.js"></script>
-    <script src="js/student_dashboard.js"></script>
-    <script>
-        // Sync sidebar profile from auth
-        const _sdUser = window.auth.getUser();
-        if (_sdUser) {
-            document.getElementById('sidebarName').textContent = _sdUser.name || 'Student';
-            document.getElementById('sidebarAvatar').textContent = _sdUser.name?.[0]?.toUpperCase() || 'S';
-        }
-        document.getElementById('btnSidebarLogout').addEventListener('click', () => window.auth.logout());
-
-        // Mobile sidebar toggle
-        const _sidebar = document.getElementById('dashSidebar');
-        const _backdrop = document.getElementById('sidebarBackdrop');
-        document.getElementById('dashMenuToggle').addEventListener('click', () => {
-            _sidebar.classList.add('dash-sidebar--open');
-            _backdrop.classList.add('dash-sidebar-backdrop--visible');
-        });
-        _backdrop.addEventListener('click', () => {
-            _sidebar.classList.remove('dash-sidebar--open');
-            _backdrop.classList.remove('dash-sidebar-backdrop--visible');
-        });
+    <script type="module">
+        import { loadTab } from "./js/dashboard/router.js";
+        window.loadTab = loadTab;
     </script>
+
+    <!-- Auth guard -->
+    <script>
+        (async () => {
+            const user = await window.auth.requireRole("student");
+            if (!user) return;
+            document.getElementById("sidebarName").textContent = user.name || 'Student';
+            document.getElementById("sidebarAvatar").textContent = user.name?.[0]?.toUpperCase() || 'S';
+            window.auth.refreshProfile();
+        })();
+    </script>
+
+    <!-- Feature flag gating -->
+    <script>
+        (async () => {
+            const flags = await window.loadFeatureFlags();
+            if (!flags.student_portal_enabled) {
+                document.querySelector('main').innerHTML =
+                    '<div class="status status--error" style="margin:3rem auto;max-width:480px;text-align:center;">' +
+                    'The student portal is temporarily unavailable. Please check back later.</div>';
+                window.loadTab = () => {};
+                return;
+            }
+            // Hide individual tabs via flags
+            const hideSidebarItem = (target) => {
+                const btn = document.querySelector(`.dash-sidebar__item[data-target="${target}"]`);
+                if (btn) btn.style.display = 'none';
+            };
+            if (!flags.ai_tools_enabled) hideSidebarItem('panel-student-ask-ai');
+            if (!flags.leaderboard_enabled) hideSidebarItem('panel-student-leaderboard');
+            if (!flags.materials_enabled) hideSidebarItem('panel-student-materials');
+        })();
+    </script>
+
+    <!-- Sidebar wiring -->
+    <script>
+        const sidebar = document.getElementById('dashSidebar');
+        const backdrop = document.getElementById('sidebarBackdrop');
+
+        document.getElementById('dashMenuToggle').addEventListener('click', () => {
+            sidebar.classList.add('dash-sidebar--open');
+            backdrop.classList.add('dash-sidebar-backdrop--visible');
+        });
+        backdrop.addEventListener('click', () => {
+            sidebar.classList.remove('dash-sidebar--open');
+            backdrop.classList.remove('dash-sidebar-backdrop--visible');
+        });
+
+        document.querySelectorAll('.dash-sidebar__item[data-target]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                window.loadTab(btn.dataset.target);
+                sidebar.classList.remove('dash-sidebar--open');
+                backdrop.classList.remove('dash-sidebar-backdrop--visible');
+            });
+        });
+
+        document.getElementById('btnSidebarLogout').addEventListener('click', () => window.auth.logout());
+    </script>
+
+    <!-- Home panel widgets -->
+    <script>
+        async function loadStudentHomeWidgets() {
+            const user = window.auth.getUser();
+            if (!user) return;
+
+            const today = new Date().toISOString().slice(0, 10);
+
+            // Update attendance subtitle
+            document.getElementById('homeAttSubtitle').textContent =
+                `Grade: ${user.grade || 'N/A'} · Subjects: ${user.subjects || 'N/A'}`;
+
+            // Fetch all data in parallel
+            const [attRes, testsRes, marksRes, lbRes] = await Promise.all([
+                window.api.get('attendance', { student_id: user.id }, 'status, date'),
+                window.api.get('tests', { grade: user.grade }, '*', { order: 'date', ascending: true }),
+                window.api.get('marks', { student_id: user.id }),
+                window.api.get('student_rankings', { grade: user.grade }, '*', { order: 'rank', ascending: true })
+            ]);
+
+            // ── Attendance ring ───────────────────────────────────────
+            const attRecords = attRes.data || [];
+            const total   = attRecords.length;
+            const present = attRecords.filter(r => r.status === 'present').length;
+            const absent  = attRecords.filter(r => r.status === 'absent').length;
+            const late    = attRecords.filter(r => r.status === 'late').length;
+            const pct     = total > 0 ? Math.round(((present + late) / total) * 100) : 0;
+
+            document.getElementById('homeAttTotal').textContent   = total   || '—';
+            document.getElementById('homeAttPresent').textContent = present || '—';
+            document.getElementById('homeAttAbsent').textContent  = absent  || '—';
+            document.getElementById('homeAttLate').textContent    = late    || '—';
+            document.getElementById('homeAttRingPct').textContent = total > 0 ? pct + '%' : '—';
+
+            // Animate ring: stroke-dashoffset = circumference × (1 - pct/100)
+            // circumference = 2π × r=50 ≈ 314.16
+            const circumference = 2 * Math.PI * 50;
+            const ringFill = document.getElementById('attRingFill');
+            if (ringFill && total > 0) {
+                // Colour ring: green ≥80%, amber 60-79%, red <60%
+                const ringColor = pct >= 80 ? '#1D9E75' : pct >= 60 ? '#BA7517' : '#E24B4A';
+                ringFill.style.stroke = ringColor;
+                // Use requestAnimationFrame so CSS transition fires after initial paint
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        ringFill.style.strokeDashoffset = circumference * (1 - pct / 100);
+                    });
+                });
+            }
+
+            // Dot strip — one square per dated record (same pattern as teacher student-detail)
+            const colorMap = { present: '#1D9E75', late: '#BA7517', absent: '#E24B4A' };
+            const datedRecords = attRecords.filter(r => r.date).sort((a, b) => a.date.localeCompare(b.date));
+            const dotsEl = document.getElementById('homeAttDots');
+            if (dotsEl && datedRecords.length > 0) {
+                dotsEl.innerHTML = datedRecords.map(r => {
+                    const label = r.date ? new Date(r.date + 'T00:00:00').toLocaleDateString('en-IN', { day: 'numeric', month: 'short' }) : r.date;
+                    const bg = colorMap[r.status] || '#ccc';
+                    return `<div title="${label} · ${r.status}" style="width:14px;height:14px;border-radius:3px;background:${bg};cursor:default;flex-shrink:0;"></div>`;
+                }).join('');
+            } else if (dotsEl) {
+                dotsEl.innerHTML = '<span style="font-size:0.8rem;color:var(--text-muted);">No records yet.</span>';
+            }
+
+            // ── Upcoming tests ────────────────────────────────────────
+            const allTests = testsRes.data || [];
+            const marksMap = {};
+            (marksRes.data || []).forEach(m => { marksMap[m.test_id] = m; });
+
+            const upcoming = allTests.filter(t => t.date >= today).slice(0, 3);
+            const upcomingEl = document.getElementById('homeUpcomingTests');
+            if (upcoming.length) {
+                upcomingEl.innerHTML = upcoming.map(t => {
+                    const m = marksMap[t.id];
+                    const status = m
+                        ? `<span style="color:var(--primary);font-weight:600;">${m.marks_obtained}/${t.max_marks}</span>`
+                        : `<span style="color:var(--gray-500);">Upcoming</span>`;
+                    return `<div class="test-preview-item">
+                        <div class="test-preview-item__body">
+                            <strong>${window.esc(t.title || 'Untitled')}</strong>
+                            <span class="text-muted">${window.esc(t.subject || '')} · ${t.date || ''} · ${t.max_marks || '?'} marks · ${status}</span>
+                        </div>
+                    </div>`;
+                }).join('');
+            } else {
+                const recent = allTests.filter(t => t.date < today).slice(-3).reverse();
+                if (recent.length) {
+                    upcomingEl.innerHTML = recent.map(t => {
+                        const m = marksMap[t.id];
+                        const score = m ? `${m.marks_obtained}/${t.max_marks}` : 'Not graded';
+                        return `<div class="test-preview-item test-preview-item--past">
+                            <span class="test-preview-item__badge">Past</span>
+                            <div class="test-preview-item__body">
+                                <strong>${window.esc(t.title || 'Untitled')}</strong>
+                                <span class="text-muted">${window.esc(t.subject || '')} · ${t.date || ''} · ${score}</span>
+                            </div>
+                        </div>`;
+                    }).join('');
+                } else {
+                    upcomingEl.innerHTML = '<p class="loading-text">No tests yet.</p>';
+                }
+            }
+
+            // ── Mini leaderboard (top 3 in grade) ────────────────────
+            const miniLb = document.getElementById('homeMiniLeaderboard');
+            const lbRows = (lbRes.data || [])
+                .sort((a, b) => {
+                    if (a.final_score === null) return 1;
+                    if (b.final_score === null) return -1;
+                    return Number(a.rank) - Number(b.rank);
+                })
+                .filter(s => s.final_score !== null)
+                .slice(0, 3);
+
+            if (lbRows.length) {
+                const medals = ['🥇', '🥈', '🥉'];
+                const myId = user.id;
+                miniLb.innerHTML = lbRows.map((s, i) => {
+                    const isMe = s.student_id === myId;
+                    return `<div class="mini-lb-row${isMe ? ' mini-lb-row--me' : ''}">
+                        <span class="mini-lb-row__medal">${medals[i] || (i + 1)}</span>
+                        <div class="mini-lb-row__avatar">${s.name?.[0]?.toUpperCase() || '?'}</div>
+                        <div class="mini-lb-row__info">
+                            <strong>${window.esc(s.name || '—')}${isMe ? ' (You)' : ''}</strong>
+                            <span>${window.esc(s.subject || '')}</span>
+                        </div>
+                        <span class="mini-lb-row__score">${Math.round(s.final_score ?? 0)}</span>
+                    </div>`;
+                }).join('');
+                document.getElementById('homeLBBadge').textContent = (user.grade || 'Grade').toUpperCase();
+            } else {
+                miniLb.innerHTML = '<p class="loading-text">No rankings yet.</p>';
+            }
+
+            // ── Ask AI quick widget ───────────────────────────────────
+            document.getElementById('btnHomeAsk')?.addEventListener('click', () => {
+                const subject  = document.getElementById('homeAiSubject')?.value || 'Accounts';
+                const question = document.getElementById('homeAiQuestion')?.value.trim() || '';
+                if (!question) {
+                    document.getElementById('homeAiQuestion')?.focus();
+                    return;
+                }
+                sessionStorage.setItem('aiQuickAsk', JSON.stringify({ subject, question }));
+                window.loadTab('panel-student-ask-ai');
+            });
+
+            // Also allow Enter key in the question input
+            document.getElementById('homeAiQuestion')?.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') document.getElementById('btnHomeAsk')?.click();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStudentHomeWidgets);
+    </script>
+
 </body>
 
 </html>

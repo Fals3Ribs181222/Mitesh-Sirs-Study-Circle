@@ -1,6 +1,6 @@
 # Multi-Site Deployment Portability Plan
 
-Currently, the app has hardcoded details like "Mitesh Sir's Group Tuitions" and "@msgt.internal" scattered across HTML and JavaScript files. To make the project modular and easy to deploy for different tuition classes or businesses, we'll adopt a **White-Label Configuration Approach**.
+Currently, the app has hardcoded details like "Mitesh Sir's Study Circle" and "@msgt.internal" scattered across HTML and JavaScript files. To make the project modular and easy to deploy for different tuition classes or businesses, we'll adopt a **White-Label Configuration Approach**.
 
 ## Proposed Changes
 
@@ -18,7 +18,7 @@ Currently, the app has hardcoded details like "Mitesh Sir's Group Tuitions" and 
 
 ### Frontend HTML Modularity
 #### HTML Files (`index.html`, `login.html`, `teacher_dashboard.html`, `student_dashboard.html`, etc.)
-- Replace hardcoded text like "Mitesh Sir's Group Tuitions" with empty spans or placeholder text using `data-config="TENANT_NAME"`.
+- Replace hardcoded text like "Mitesh Sir's Study Circle" with empty spans or placeholder text using `data-config="TENANT_NAME"`.
 - Similar genericization for addresses, phone numbers, and page `<title>` tags.
 
 ---

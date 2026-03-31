@@ -1,0 +1,68 @@
+<header class="panel__header">
+    <h2>My Profile</h2>
+</header>
+
+<p id="profileStatus" class="status"></p>
+
+<!-- Read-only info -->
+<div class="panel" style="margin-bottom:1.5rem;">
+    <div class="panel__header" style="padding-bottom:0.5rem;">
+        <h3 style="font-size:1rem;">Account Info</h3>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;padding-top:0.75rem;">
+        <div>
+            <p style="font-size:0.75rem;text-transform:uppercase;color:var(--text-muted);margin:0 0 0.2rem;">Name</p>
+            <p style="font-weight:600;margin:0;" id="profileNameDisplay">—</p>
+        </div>
+        <div>
+            <p style="font-size:0.75rem;text-transform:uppercase;color:var(--text-muted);margin:0 0 0.2rem;">Username</p>
+            <p style="font-weight:600;margin:0;" id="profileUsernameDisplay">—</p>
+        </div>
+        <div>
+            <p style="font-size:0.75rem;text-transform:uppercase;color:var(--text-muted);margin:0 0 0.2rem;">Grade</p>
+            <p style="font-weight:600;margin:0;" id="profileGradeDisplay">—</p>
+        </div>
+        <div>
+            <p style="font-size:0.75rem;text-transform:uppercase;color:var(--text-muted);margin:0 0 0.2rem;">Subjects</p>
+            <p style="font-weight:600;margin:0;" id="profileSubjectsDisplay">—</p>
+        </div>
+    </div>
+</div>
+
+<!-- Editable contact info -->
+<h3 style="font-size:1rem;margin:0 0 1rem;">Contact Information</h3>
+<form id="profileForm">
+    <div class="form__row">
+        <div class="form__group">
+            <label class="form__label" for="profilePhone">Phone Number</label>
+            <input type="tel" id="profilePhone" class="form__input" maxlength="10" placeholder="10-digit mobile number">
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="profileEmail">Email Address</label>
+            <input type="email" id="profileEmail" class="form__input" placeholder="your@email.com">
+        </div>
+    </div>
+    <div class="form__row">
+        <div class="form__group">
+            <label class="form__label" for="profileFatherName">Father's Name</label>
+            <input type="text" id="profileFatherName" class="form__input" placeholder="Father's full name">
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="profileFatherPhone">Father's Phone</label>
+            <input type="tel" id="profileFatherPhone" class="form__input" maxlength="10" placeholder="10-digit mobile number">
+        </div>
+    </div>
+    <div class="form__row">
+        <div class="form__group">
+            <label class="form__label" for="profileMotherName">Mother's Name</label>
+            <input type="text" id="profileMotherName" class="form__input" placeholder="Mother's full name">
+        </div>
+        <div class="form__group">
+            <label class="form__label" for="profileMotherPhone">Mother's Phone</label>
+            <input type="tel" id="profileMotherPhone" class="form__input" maxlength="10" placeholder="10-digit mobile number">
+        </div>
+    </div>
+    <div style="margin-top:1.25rem;">
+        <button type="submit" class="btn btn--primary" id="btnSaveProfile">Save Changes</button>
+    </div>
+</form>

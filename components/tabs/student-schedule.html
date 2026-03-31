@@ -1,0 +1,40 @@
+<header class="panel__header">
+    <h2>My Class Schedule</h2>
+    <button class="btn btn--outline btn--sm" id="btnRefreshSchedule">Refresh</button>
+</header>
+
+<p id="scheduleStatus" class="status"></p>
+
+<!-- Enrolled batches info -->
+<div id="enrolledBatchesInfo" style="margin-bottom:1.25rem;display:flex;flex-wrap:wrap;gap:0.5rem;min-height:1.5rem;">
+    <span class="loading-text" style="font-size:0.85rem;">Loading batches...</span>
+</div>
+
+<!-- Calendar -->
+<div class="calendar">
+    <div class="calendar__header">
+        <button class="btn btn--outline btn--sm" id="btnSchedPrev">&#8592; Prev</button>
+        <span id="schedMonthYear" style="font-weight:600;"></span>
+        <button class="btn btn--outline btn--sm" id="btnSchedNext">Next &#8594;</button>
+    </div>
+    <div class="calendar__grid" id="schedCalendarGrid">
+        <div class="calendar__day-header">Mon</div>
+        <div class="calendar__day-header">Tue</div>
+        <div class="calendar__day-header">Wed</div>
+        <div class="calendar__day-header">Thu</div>
+        <div class="calendar__day-header">Fri</div>
+        <div class="calendar__day-header">Sat</div>
+        <div class="calendar__day-header">Sun</div>
+    </div>
+</div>
+
+<!-- Class info popover (hidden by default) -->
+<div id="schedPopover" style="display:none;background:var(--glass-bg);border:1px solid var(--border-color);border-radius:0.75rem;padding:1rem;margin-top:1rem;max-width:400px;">
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+            <h4 id="schedPopoverTitle" style="margin:0 0 0.3rem;"></h4>
+            <p id="schedPopoverMeta" style="color:var(--text-muted);font-size:0.85rem;margin:0;"></p>
+        </div>
+        <button class="btn btn--outline btn--sm" id="btnClosePopover" style="flex-shrink:0;">×</button>
+    </div>
+</div>

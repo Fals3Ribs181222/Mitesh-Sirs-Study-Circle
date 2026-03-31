@@ -32,6 +32,7 @@ function tableLoading(tbodyId, cols, msg = 'Loading...') {
 function showStatus(statusId, msg, type = 'error') {
     const el = document.getElementById(statusId);
     if (!el) return;
+    if (!msg) { el.className = 'status'; el.style.display = 'none'; return; }
     el.textContent = msg;
     el.className = `status status--${type}`;
     el.style.display = 'block';

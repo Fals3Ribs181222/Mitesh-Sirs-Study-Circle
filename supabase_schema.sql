@@ -1,4 +1,4 @@
--- Supabase Schema for Mitesh Sir's Group Tuitions
+-- Supabase Schema for Mitesh Sir's Study Circle
 
 -- 1. Profiles Table (Extends Auth Users)
 CREATE TABLE IF NOT EXISTS profiles (
@@ -9,6 +9,11 @@ CREATE TABLE IF NOT EXISTS profiles (
   grade TEXT,
   subjects TEXT,
   phone TEXT,
+  email TEXT,
+  father_name TEXT,
+  father_phone TEXT,
+  mother_name TEXT,
+  mother_phone TEXT,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
@@ -29,6 +34,7 @@ CREATE TABLE IF NOT EXISTS files (
   grade TEXT,
   subject TEXT,
   file_url TEXT NOT NULL,
+  upload_type TEXT NOT NULL DEFAULT 'student' CHECK (upload_type IN ('student', 'ai')),
   uploaded_by UUID REFERENCES profiles(id),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );

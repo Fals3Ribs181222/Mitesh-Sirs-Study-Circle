@@ -106,6 +106,57 @@ async function sendCustomMessage() {
     }
 }
 
+// ── Phone → name matcher ─────────────────────────────────────
+function resolveCallerName(fromNumber) {
+    const last10 = String(fromNumber).slice(-10);
+    for (const s of allStudentsCache) {
+        if (s.phone?.slice(-10) === last10) return `${s.name} (student)`;
+        if (s.parent_phone?.slice(-10) === last10) return `${s.name}'s parent`;
+    }
+    return fromNumber;
+}
+
+// ── Inbox (received messages) ─────────────────────────────────
+async function loadInbox() {
+    const tbody = document.getElementById('msgInboxBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '<tr><td colspan="3" class="loading-text">Loading...</td></tr>';
+
+    try {
+        const { data, error } = await window.supabaseClient
+            .from('whatsapp_incoming')
+            .select('*')
+            .eq('event_type', 'message')
+            .order('created_at', { ascending: false })
+            .limit(100);
+
+        if (error) throw error;
+
+        if (!data || data.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="loading-text">No incoming messages yet.</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = data.map(row => {
+            const from = window.esc(resolveCallerName(row.from_number));
+            const msg = DOMPurify.sanitize(row.message_text || '—');
+            const date = new Date(row.created_at).toLocaleString('en-IN', {
+                day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit',
+            });
+            return `
+                <tr class="data-table__row">
+                    <td class="data-table__td" style="white-space:nowrap;">${from}</td>
+                    <td class="data-table__td"><div class="text-truncate" style="max-width:340px;" title="${window.esc(row.message_text || '')}">${msg}</div></td>
+                    <td class="data-table__td" style="white-space:nowrap;">${date}</td>
+                </tr>
+            `;
+        }).join('');
+    } catch (err) {
+        tbody.innerHTML = `<tr><td colspan="3" class="loading-text">Error: ${window.esc(err.message)}</td></tr>`;
+    }
+}
+
 // ── Message History ──────────────────────────────────────────
 async function loadHistory() {
     const tbody = document.getElementById('msgHistoryBody');
@@ -161,28 +212,34 @@ async function loadHistory() {
 export function init() {
     loadStudentPicker();
 
-    // Pill toggle
+    // Pill toggle (3-way: Compose / History / Inbox)
     const pillCompose = document.getElementById('pillCompose');
     const pillHistory = document.getElementById('pillHistory');
+    const pillInbox   = document.getElementById('pillInbox');
     const composeContainer = document.getElementById('messagesComposeContainer');
     const historyContainer = document.getElementById('messagesHistoryContainer');
+    const inboxContainer   = document.getElementById('messagesInboxContainer');
 
-    if (pillCompose && pillHistory) {
-        pillCompose.addEventListener('click', () => {
-            pillCompose.classList.add('pill-toggle__btn--active');
-            pillHistory.classList.remove('pill-toggle__btn--active');
-            composeContainer.style.display = 'block';
-            historyContainer.style.display = 'none';
-        });
-
-        pillHistory.addEventListener('click', () => {
-            pillHistory.classList.add('pill-toggle__btn--active');
-            pillCompose.classList.remove('pill-toggle__btn--active');
-            historyContainer.style.display = 'block';
-            composeContainer.style.display = 'none';
-            loadHistory();
-        });
+    function setActiveTab(tab) {
+        const pills = [pillCompose, pillHistory, pillInbox];
+        const containers = [composeContainer, historyContainer, inboxContainer];
+        pills.forEach(p => p?.classList.remove('pill-toggle__btn--active'));
+        containers.forEach(c => { if (c) c.style.display = 'none'; });
+        tab.pill?.classList.add('pill-toggle__btn--active');
+        if (tab.container) tab.container.style.display = 'block';
+        tab.onShow?.();
     }
+
+    pillCompose?.addEventListener('click', () =>
+        setActiveTab({ pill: pillCompose, container: composeContainer }));
+
+    pillHistory?.addEventListener('click', () =>
+        setActiveTab({ pill: pillHistory, container: historyContainer, onShow: loadHistory }));
+
+    pillInbox?.addEventListener('click', () =>
+        setActiveTab({ pill: pillInbox, container: inboxContainer, onShow: loadInbox }));
+
+    document.getElementById('btnRefreshInbox')?.addEventListener('click', loadInbox);
 
     // Student selection → show phone info
     document.getElementById('msgStudentSelect')?.addEventListener('change', updatePhoneInfo);
