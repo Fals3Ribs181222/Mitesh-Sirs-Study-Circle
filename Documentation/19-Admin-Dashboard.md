@@ -90,6 +90,7 @@ Dropdown of 15 whitelisted tables. "Load" fetches 50 rows at a time via `browse_
 | `bulk_delete_attendance` | `{ batch_id }` | Deletes all attendance rows for a batch |
 | `bulk_delete_marks` | `{ test_id }` | Deletes all marks rows for a test |
 | `delete_user` | `{ user_id }` | Calls `auth.admin.deleteUser()` — cascades to profiles and all data |
+| `delete_student` | `{ user_id }` | Teacher- or admin-callable. Verifies target is a student, then calls `auth.admin.deleteUser()`. Used by the teacher dashboard student delete flow. |
 | `wipe_seed_data` | — | Deletes all student profiles (and their data) via `auth.admin.deleteUser()` |
 | `browse_table` | `{ table, limit, offset }` | Returns paginated rows from a whitelisted table |
 | `delete_row` | `{ table, id }` | Deletes a single row by id from a whitelisted table |

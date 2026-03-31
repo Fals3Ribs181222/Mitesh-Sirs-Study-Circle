@@ -1,7 +1,7 @@
 # System Overview
 
 ## Introduction
-The Mitesh Sir's Group Tuitions project is a web-based educational management system tailored for group tuitions. It provides a comprehensive platform for both teachers and students to interact, manage schedules, share materials, track attendance, and monitor academic progress.
+The Mitesh Sir's Study Circle project is a web-based educational management system tailored for group tuitions. It provides a comprehensive platform for both teachers and students to interact, manage schedules, share materials, track attendance, and monitor academic progress.
 
 ## Technology Stack
 - **Frontend:** HTML5, CSS3, JavaScript (Vanilla JS)

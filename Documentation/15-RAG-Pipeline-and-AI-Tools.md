@@ -18,10 +18,10 @@ RAG (Retrieval-Augmented Generation) is a technique where an AI model is given r
 
 The system consists of two pipelines:
 
-### Pipeline 1 — Indexing (runs on file upload)
+### Pipeline 1 — Indexing (runs on AI training upload)
 
 ```
-Teacher uploads file
+Teacher uploads file with upload_type = 'ai'
         ↓
 index-material Edge Function
         ↓

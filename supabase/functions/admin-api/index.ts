@@ -65,6 +65,40 @@ Deno.serve(async (req) => {
 
     const { action } = body as { action: string };
 
+    // delete_student is allowed for both teacher and admin roles
+    if (action === 'delete_student') {
+        if (callerRole !== 'admin' && callerRole !== 'teacher') {
+            return new Response(JSON.stringify({ error: 'Forbidden: teacher or admin role required' }), {
+                status: 403,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+        }
+        const { user_id } = body as { user_id: string };
+        // Verify the target user is a student before deleting
+        const { data: profile, error: fetchErr } = await db
+            .from('profiles')
+            .select('role')
+            .eq('id', user_id)
+            .single();
+        if (fetchErr || !profile) {
+            return new Response(JSON.stringify({ error: 'Student not found' }), {
+                status: 404,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+        }
+        if (profile.role !== 'student') {
+            return new Response(JSON.stringify({ error: 'Target user is not a student' }), {
+                status: 400,
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            });
+        }
+        const { error } = await db.auth.admin.deleteUser(user_id);
+        if (error) throw new Error(error.message);
+        return new Response(JSON.stringify({ success: true }), {
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+    }
+
     try {
         // ── get_stats ────────────────────────────────────────────────────
         if (action === 'get_stats') {

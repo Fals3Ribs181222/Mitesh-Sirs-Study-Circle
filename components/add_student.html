@@ -1,6 +1,6 @@
 <div style="margin-bottom:1.5rem;">
     <h3 style="margin-bottom:0.5rem;">Register New Student</h3>
-    <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;margin:0;">Fill out the details below to create a student account. The student will be able to log in immediately with the username and password you set.</p>
+    <p style="color:var(--text-muted);font-size:0.9rem;line-height:1.6;margin:0;">Fill out the details below to create a student account. Username and password are auto-generated from the student's name — edit if needed.</p>
 </div>
 
 <form id="addStudentForm" style="max-width:520px;">
@@ -35,7 +35,7 @@
 
     <div class="form__group">
         <label class="form__label" for="studentPassword">Password</label>
-        <input type="password" id="studentPassword" class="form__control" required placeholder="Set a secure password"
+        <input type="text" id="studentPassword" class="form__control" required placeholder="Auto-filled from name"
             minlength="6">
     </div>
 

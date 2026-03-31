@@ -15,3 +15,5 @@ Disallow: /seed-attendance
 Disallow: /seed-marks
 Disallow: /seed-tests
 Disallow: /seed-phone
+
+Sitemap: https://miteshbhatt.in/sitemap.xml

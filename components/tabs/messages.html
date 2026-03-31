@@ -3,6 +3,7 @@
     <div class="pill-toggle">
         <button class="pill-toggle__btn pill-toggle__btn--active" id="pillCompose">Compose</button>
         <button class="pill-toggle__btn" id="pillHistory">History</button>
+        <button class="pill-toggle__btn" id="pillInbox">Inbox</button>
     </div>
 </header>
 
@@ -53,6 +54,30 @@
             </button>
             <div id="msgSendStatus" class="status" style="display:none;"></div>
         </div>
+    </div>
+</div>
+
+<!-- ── Inbox View ─────────────────────────────────────────── -->
+<div id="messagesInboxContainer" style="display:none;">
+    <p class="text-muted" style="margin-bottom:1.25rem;">
+        Messages received from students and parents on WhatsApp.
+    </p>
+    <div style="display:flex; gap:1rem; align-items:center; margin-bottom:1.25rem;">
+        <button class="btn btn--outline btn--sm" id="btnRefreshInbox">Refresh</button>
+    </div>
+    <div class="table-wrap">
+        <table aria-label="Inbox">
+            <thead>
+                <tr>
+                    <th scope="col">From</th>
+                    <th scope="col">Message</th>
+                    <th scope="col">Received</th>
+                </tr>
+            </thead>
+            <tbody id="msgInboxBody">
+                <tr><td colspan="3" class="loading-text">Select Inbox to load.</td></tr>
+            </tbody>
+        </table>
     </div>
 </div>
 

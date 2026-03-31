@@ -107,8 +107,8 @@
                         <th>#</th>
                         <th>Name</th>
                         <th>Grade</th>
-                        <th>Subjects</th>
                         <th>Phone</th>
+                        <th>Email</th>
                         <th>Username (editable)</th>
                         <th>Status</th>
                     </tr>
@@ -166,7 +166,7 @@
             </div>
         </div>
 
-        <!-- Parent Phone -->
+        <!-- Parent Phone (legacy) -->
         <div>
             <p class="stat-card__label" style="margin-bottom:0.25rem;">Parent Phone</p>
             <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-top:0.25rem;">
@@ -187,6 +187,44 @@
                     <button id="btnSaveParentPhone" class="btn btn--primary btn--sm">Save</button>
                     <button id="btnCancelParentPhone" class="btn btn--outline btn--sm">Cancel</button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Email -->
+        <div>
+            <p class="stat-card__label" style="margin-bottom:0.25rem;">Email</p>
+            <p class="stat-card__value" id="sdEmail" style="font-size:1rem;margin:0;">Not set</p>
+        </div>
+
+        <!-- Father -->
+        <div>
+            <p class="stat-card__label" style="margin-bottom:0.25rem;">Father's Name</p>
+            <p class="stat-card__value" id="sdFatherName" style="font-size:1rem;margin:0;">Not set</p>
+        </div>
+        <div>
+            <p class="stat-card__label" style="margin-bottom:0.25rem;">Father's Phone</p>
+            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-top:0.25rem;">
+                <p class="stat-card__value" id="sdFatherPhone" style="font-size:1rem;margin:0;">Not set</p>
+                <a id="sdFatherWaLink" href="#" target="_blank" rel="noopener"
+                    style="display:none;background:#25D366;color:#fff;padding:3px 10px;border-radius:6px;font-size:0.78rem;text-decoration:none;font-weight:600;line-height:1.6;">
+                    WhatsApp
+                </a>
+            </div>
+        </div>
+
+        <!-- Mother -->
+        <div>
+            <p class="stat-card__label" style="margin-bottom:0.25rem;">Mother's Name</p>
+            <p class="stat-card__value" id="sdMotherName" style="font-size:1rem;margin:0;">Not set</p>
+        </div>
+        <div>
+            <p class="stat-card__label" style="margin-bottom:0.25rem;">Mother's Phone</p>
+            <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap;margin-top:0.25rem;">
+                <p class="stat-card__value" id="sdMotherPhone" style="font-size:1rem;margin:0;">Not set</p>
+                <a id="sdMotherWaLink" href="#" target="_blank" rel="noopener"
+                    style="display:none;background:#25D366;color:#fff;padding:3px 10px;border-radius:6px;font-size:0.78rem;text-decoration:none;font-weight:600;line-height:1.6;">
+                    WhatsApp
+                </a>
             </div>
         </div>
     </div>

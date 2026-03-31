@@ -1,0 +1,49 @@
+<header class="panel__header">
+    <h2>🧠 Ask AI</h2>
+</header>
+
+<p style="color:var(--text-muted);margin-bottom:1.5rem;font-size:0.9rem;">Ask any subject question — the AI answers using your grade's study materials.</p>
+
+<div class="form__row" style="margin-bottom:1rem;">
+    <div class="form__group">
+        <label class="form__label" for="aiSubject">Subject</label>
+        <select id="aiSubject" class="form__select">
+            <option value="Accounts">Accounts</option>
+            <option value="Commerce">Commerce</option>
+        </select>
+    </div>
+</div>
+
+<div class="form__group" style="margin-bottom:1rem;">
+    <label class="form__label" for="aiQuestion">Your Question</label>
+    <textarea id="aiQuestion" class="form__textarea" rows="3" placeholder="e.g. What is the accounting equation? Explain with an example."></textarea>
+</div>
+
+<div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap;margin-bottom:1rem;">
+    <button class="btn btn--primary" id="btnStudentAsk">✨ Ask AI</button>
+    <button class="btn btn--outline btn--sm" id="btnClearAI" style="display:none;">Clear</button>
+</div>
+
+<p id="aiStatus" class="status"></p>
+
+<!-- Answer box -->
+<div id="aiAnswerBox" style="display:none;margin-top:1rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;flex-wrap:wrap;">
+        <span style="font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;font-weight:600;">AI Answer</span>
+        <button class="btn btn--outline btn--sm" id="btnCopyAI">Copy</button>
+        <button class="btn btn--outline btn--sm" id="btnFeedbackUp" title="Helpful">👍</button>
+        <button class="btn btn--outline btn--sm" id="btnFeedbackDown" title="Not helpful">👎</button>
+    </div>
+    <div id="aiAnswer" class="ai-answer-content" style="line-height:1.7;"></div>
+</div>
+
+<!-- Sources -->
+<div id="aiSources" style="display:none;margin-top:0.75rem;">
+    <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 0.25rem;">Sources: <span id="aiSourcesList" style="color:var(--text-secondary);"></span></p>
+</div>
+
+<!-- Follow-up suggestions -->
+<div id="aiSuggestions" style="display:none;margin-top:1rem;">
+    <p style="font-size:0.85rem;color:var(--text-muted);margin:0 0 0.5rem;">Follow-up questions:</p>
+    <div id="aiSuggestionBtns" style="display:flex;flex-wrap:wrap;gap:0.5rem;"></div>
+</div>

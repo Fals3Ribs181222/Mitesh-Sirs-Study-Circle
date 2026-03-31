@@ -91,12 +91,22 @@ export async function deleteStudent(studentId) {
         'Delete Student',
         `Are you sure you want to delete <strong>${student?.name || 'this student'}</strong>? This cannot be undone.`,
         async () => {
-            const resp = await window.api.delete('profiles', studentId);
-            if (resp.success) {
+            try {
+                const { data: { session } } = await window.supabaseClient.auth.getSession();
+                const res = await fetch(`${window.CONFIG.SUPABASE_URL}/functions/v1/admin-api`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${session.access_token}`
+                    },
+                    body: JSON.stringify({ action: 'delete_student', user_id: studentId })
+                });
+                const json = await res.json();
+                if (!res.ok) throw new Error(json.error || 'Delete failed');
                 allStudents = allStudents.filter(s => s.id !== studentId);
                 filterStudents();
-            } else {
-                alert('Failed to delete: ' + (resp.error || 'Unknown error'));
+            } catch (err) {
+                alert('Failed to delete: ' + err.message);
             }
         }
     );
@@ -147,7 +157,7 @@ async function showStudentDetail(studentId) {
         sdStudentWaLink.style.display = 'none';
     }
 
-    // Parent phone
+    // Parent phone (legacy generic field)
     const sdParentPhone = document.getElementById('sdParentPhone');
     const sdParentWaLink = document.getElementById('sdParentWaLink');
     if (student.parent_phone) {
@@ -159,6 +169,44 @@ async function showStudentDetail(studentId) {
         sdParentWaLink.style.display = 'none';
     }
     setupParentPhoneEdit(student.id, student.parent_phone || '');
+
+    // Email
+    const sdEmail = document.getElementById('sdEmail');
+    if (sdEmail) sdEmail.textContent = student.email || 'Not set';
+
+    // Father
+    const sdFatherName = document.getElementById('sdFatherName');
+    const sdFatherPhone = document.getElementById('sdFatherPhone');
+    const sdFatherWaLink = document.getElementById('sdFatherWaLink');
+    if (sdFatherName) sdFatherName.textContent = student.father_name || 'Not set';
+    if (sdFatherPhone) {
+        sdFatherPhone.textContent = student.father_phone || 'Not set';
+        if (sdFatherWaLink) {
+            if (student.father_phone) {
+                sdFatherWaLink.href = `https://wa.me/91${student.father_phone}`;
+                sdFatherWaLink.style.display = 'inline-block';
+            } else {
+                sdFatherWaLink.style.display = 'none';
+            }
+        }
+    }
+
+    // Mother
+    const sdMotherName = document.getElementById('sdMotherName');
+    const sdMotherPhone = document.getElementById('sdMotherPhone');
+    const sdMotherWaLink = document.getElementById('sdMotherWaLink');
+    if (sdMotherName) sdMotherName.textContent = student.mother_name || 'Not set';
+    if (sdMotherPhone) {
+        sdMotherPhone.textContent = student.mother_phone || 'Not set';
+        if (sdMotherWaLink) {
+            if (student.mother_phone) {
+                sdMotherWaLink.href = `https://wa.me/91${student.mother_phone}`;
+                sdMotherWaLink.style.display = 'inline-block';
+            } else {
+                sdMotherWaLink.style.display = 'none';
+            }
+        }
+    }
 
     // Teacher notes + WA history
     loadTeacherNotes(student.id, student.teacher_notes || '');
@@ -536,12 +584,28 @@ async function loadAddStudentComponent() {
     }
 }
 
+function generateUsernameFromName(name) {
+    const parts = name.trim().toLowerCase().split(/\s+/);
+    if (parts.length === 1) return parts[0];
+    return parts[0] + '.' + parts[parts.length - 1];
+}
+
 function attachAddStudentListeners() {
     const form = document.getElementById('addStudentForm');
     if (!form) return;
 
     window.populateGradeSelect('studentGrade', false);
     window.lockGradeSelect('studentGrade');
+
+    const nameInput = document.getElementById('studentName');
+    const usernameInput = document.getElementById('studentUsername');
+    const passwordInput = document.getElementById('studentPassword');
+
+    nameInput?.addEventListener('input', () => {
+        const generated = generateUsernameFromName(nameInput.value);
+        usernameInput.value = generated;
+        passwordInput.value = generated;
+    });
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -715,7 +779,7 @@ function initImportSection() {
 }
 
 function downloadCsvTemplate() {
-    const csv = 'name,grade,subjects,phone\nRahul Sharma,11,"Accounts, Commerce",9876543210\nPriya Patel,12,Accounts,9123456789';
+    const csv = 'Student Name,Email Address,Student Phone,Address,Father\'s Name,Father\'s Phone,Mother\'s Name,Mother\'s Phone,Grade\nRahul Sharma,rahul@email.com,9876543210,Mumbai,Suresh Sharma,9876500001,Anita Sharma,9876500002,11\nPriya Patel,priya@email.com,9123456789,Pune,Rajesh Patel,9123400001,Meena Patel,9123400002,12';
     const blob = new Blob([csv], { type: 'text/csv' });
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
@@ -755,11 +819,21 @@ function parseCSV(text) {
 function detectColumns(headers) {
     const map = {};
     headers.forEach((h, i) => {
-        const lh = h.toLowerCase();
-        if (!map.name && lh.includes('name')) map.name = i;
+        const lh = h.toLowerCase().replace(/['''`]/g, "'");
+        if (!map.name && lh.includes('student name')) map.name = i;
+        else if (!map.name && !lh.includes('father') && !lh.includes('mother') && lh.includes('name')) map.name = i;
+        if (!map.email && (lh.includes('email') || lh.includes('e-mail'))) map.email = i;
         if (!map.grade && (lh.includes('grade') || lh.includes('class') || lh.includes('std'))) map.grade = i;
         if (!map.subjects && lh.includes('subject')) map.subjects = i;
-        if (!map.phone && (lh.includes('phone') || lh.includes('mobile') || lh.includes('whatsapp') || lh.includes('contact'))) map.phone = i;
+        // address — detected but intentionally not stored
+        if (!map.address && lh.includes('address')) map.address = i;
+        if (!map.father_name && (lh.includes("father") && lh.includes('name'))) map.father_name = i;
+        if (!map.father_phone && (lh.includes("father") && (lh.includes('phone') || lh.includes('mobile')))) map.father_phone = i;
+        if (!map.mother_name && (lh.includes("mother") && lh.includes('name'))) map.mother_name = i;
+        if (!map.mother_phone && (lh.includes("mother") && (lh.includes('phone') || lh.includes('mobile')))) map.mother_phone = i;
+        // generic phone — only if no specific student phone matched yet
+        if (!map.phone && (lh === 'phone' || lh === 'student phone' || lh.includes('mobile') || lh.includes('whatsapp') || lh.includes('contact'))) map.phone = i;
+        else if (!map.phone && lh.includes('phone') && !lh.includes('father') && !lh.includes('mother')) map.phone = i;
     });
     return map;
 }
@@ -799,9 +873,15 @@ function previewCsvImport() {
         const taken = new Set(allStudents.map(s => s.username).filter(Boolean));
         importRows = rows.map(row => ({
             name: row[colMap.name] || '',
+            email: colMap.email !== undefined ? row[colMap.email] : '',
             grade: colMap.grade !== undefined ? row[colMap.grade] : '',
             subjects: colMap.subjects !== undefined ? row[colMap.subjects] : '',
             phone: colMap.phone !== undefined ? row[colMap.phone] : '',
+            father_name: colMap.father_name !== undefined ? row[colMap.father_name] : '',
+            father_phone: colMap.father_phone !== undefined ? row[colMap.father_phone] : '',
+            mother_name: colMap.mother_name !== undefined ? row[colMap.mother_name] : '',
+            mother_phone: colMap.mother_phone !== undefined ? row[colMap.mother_phone] : '',
+            // address is parsed but not stored
             username: generateUsername(row[colMap.name] || 'student', taken),
             status: 'pending',
         })).filter(r => r.name);
@@ -833,8 +913,8 @@ function renderImportPreview() {
             <td class="data-table__td">${i + 1}</td>
             <td class="data-table__td--main">${window.esc(r.name)}</td>
             <td class="data-table__td">${window.esc(r.grade)}</td>
-            <td class="data-table__td">${window.esc(r.subjects)}</td>
             <td class="data-table__td">${window.esc(r.phone)}</td>
+            <td class="data-table__td">${window.esc(r.email)}</td>
             <td class="data-table__td">
                 <input type="text" value="${window.esc(r.username)}" data-row="${i}"
                     style="padding:3px 8px;border:1px solid var(--border-color);border-radius:var(--radius-md);font-size:0.85rem;width:130px;background:var(--bg-surface);color:var(--text-main);"
@@ -872,8 +952,14 @@ async function importAllStudents() {
         const { data: sessionData } = await window.supabaseClient.auth.getSession();
         const teacherSession = sessionData?.session;
 
-        const email = `${r.username}@msgt.internal`;
-        const meta = { name: r.name, username: r.username, grade: r.grade, subjects: r.subjects, phone: r.phone, role: 'student' };
+        const email = r.email || `${r.username}@msgt.internal`;
+        const meta = {
+            name: r.name, username: r.username, grade: r.grade, subjects: r.subjects,
+            phone: r.phone, email: r.email || null,
+            father_name: r.father_name || null, father_phone: r.father_phone || null,
+            mother_name: r.mother_name || null, mother_phone: r.mother_phone || null,
+            role: 'student',
+        };
 
         const { data, error } = await window.supabaseClient.auth.signUp({ email, password: defaultPassword, options: { data: meta } });
 

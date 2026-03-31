@@ -426,7 +426,7 @@ let allIndexedFiles = [];
 async function populateMaterialDropdown() {
     const sel = document.getElementById('testMaterial');
     if (!sel) return;
-    const filesRes  = await window.api.get('files', {}, 'id, title, subject, grade');
+    const filesRes  = await window.api.get('files', { upload_type: 'ai' }, 'id, title, subject, grade');
     const chunksRes = await window.api.get('material_chunks', {}, 'file_id');
     const indexedIds = new Set((chunksRes.data || []).map(r => r.file_id));
     allIndexedFiles = (filesRes.data || []).filter(f => indexedIds.has(f.id));

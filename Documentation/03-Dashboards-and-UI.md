@@ -46,11 +46,31 @@ All forms that include a subject field (Add Student, Upload Material, Schedule T
 ## Student Dashboard (`student_dashboard.html`)
 The student dashboard focuses on consumption of information relevant to the enrolled student.
 
+### Navigation and Structure
+-   Uses a **left sidebar** (`aside.dash-sidebar`) with the logo at the top. The logo (`logo.png`) is wrapped in an anchor tag linking to the home page (`index`).
+-   The sidebar contains only the logout button and the student's profile avatar/name — external links (Home, Testimonials, Results) have been removed.
+
+### Modular Architecture
+The student dashboard uses the same tab-based router as the teacher dashboard. `js/student_dashboard.js` is an empty shim; all logic lives in dedicated modules under `js/dashboard/`:
+
+| Tab | JS Module |
+|-----|-----------|
+| Marks | `student-marks.js` |
+| Materials | `student-materials.js` |
+| Notices | `student-notices.js` |
+| Schedule | `student-schedule.js` |
+| Attendance | `student-attendance.js` |
+| Leaderboard | `student-leaderboard.js` |
+| Ask AI | `student-ask-ai.js` |
+| Profile | `student-profile.js` |
+
+Home panel widgets are loaded inline in `student_dashboard.html`.
+
 ### Key Features
 -   **Profile Information:** Displays the student's personal details, assigned batches, and subjects.
 -   **Schedule View:** Shows upcoming classes mapped to their enrolled batches.
 -   **Announcements:** A feed of notices from teachers.
--   **Materials Access:** A section to download files uploaded for their grade or subject.
+-   **Materials Access:** Shows only files tagged `upload_type = 'student'` — AI training uploads are hidden from students.
 -   **Academic Progress:** View test marks and personal attendance records.
 -   **Portal Lock:** If the `student_portal_enabled` feature flag is disabled by the admin, the entire dashboard is replaced with an "unavailable" message — no data is loaded.
 -   The interface is designed to be streamlined, presenting only the data the student is authorized to view based on RLS policies.

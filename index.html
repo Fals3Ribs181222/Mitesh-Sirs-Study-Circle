@@ -5,13 +5,98 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Mitesh Sir's Group Tuitions — Mumbai's most trusted ISC Accountancy coaching classes for 12th Grade students.">
-    <title>Mitesh Sir's Group Tuitions</title>
+        content="Score 90+ in ISC Accountancy with Mitesh Sir — 22 years of expertise, former HoD at Jamnabai Narsee School, CISCE External Examiner, and mentor to 5,000+ Mumbai students. 100% passing rate.">
+    <meta name="keywords" content="ISC Accountancy coaching Mumbai, ISC accounts tuition, 12th grade accountancy coaching, Mitesh Sir tuitions, ISC board coaching Mumbai">
+    <title>Mitesh Sir's Study Circle — ISC Accountancy Coaching Mumbai</title>
+    <link rel="canonical" href="https://miteshbhatt.in">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Mitesh Sir's Study Circle — ISC Accountancy Coaching Mumbai">
+    <meta property="og:description" content="Mumbai's most trusted ISC Accountancy coaching. 22 years of excellence, 100% passing rate, 5,000+ students guided by Mitesh Sir — CISCE External Examiner and former HoD at Jamnabai Narsee School.">
+    <meta property="og:url" content="https://miteshbhatt.in">
+    <meta property="og:image" content="https://miteshbhatt.in/logo.png">
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Mitesh Sir's Study Circle — ISC Accountancy Coaching Mumbai">
+    <meta name="twitter:description" content="Mumbai's most trusted ISC Accountancy coaching. 22 years of excellence, 100% passing rate, 5,000+ students guided by Mitesh Sir — CISCE External Examiner and former HoD at Jamnabai Narsee School.">
+    <meta name="twitter:image" content="https://miteshbhatt.in/logo.png">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": ["EducationalOrganization", "LocalBusiness"],
+      "name": "Mitesh Sir's Study Circle",
+      "url": "https://miteshbhatt.in",
+      "logo": "https://miteshbhatt.in/logo.png",
+      "description": "Mumbai's most trusted ISC Accountancy coaching classes. 22 years of excellence, 100% passing rate, 5,000+ students guided.",
+      "telephone": "+919619562656",
+      "email": "Miteshsirsstudycircle@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Mumbai",
+        "addressRegion": "Maharashtra",
+        "addressCountry": "IN"
+      },
+      "areaServed": "Mumbai",
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": "ISC Accountancy Coaching Classes"
+      }
+    }
+    </script>
     <link rel="icon" href="logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <style>
+        @media (max-width: 600px) {
+            .about-teaser-grid { grid-template-columns: 1fr !important; text-align: center; }
+            .about-teaser-grid > div:first-child { margin: 0 auto; }
+        }
+
+        /* How It Works */
+        .hiw-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 960px;
+            margin: 0 auto;
+        }
+        .hiw-card { text-align: center; padding: 2.5rem 2rem; }
+        .hiw-card__step {
+            font-size: 3.5rem; font-weight: 800;
+            color: var(--primary); opacity: 0.15; line-height: 1; margin-bottom: 0.5rem;
+            font-family: var(--font-main);
+        }
+        .hiw-card__icon { font-size: 2.25rem; margin-bottom: 1rem; display: block; }
+        .hiw-card__title { font-size: 1.15rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; }
+        .hiw-card__desc { color: var(--text-muted); font-size: 0.95rem; line-height: 1.7; }
+        @media (max-width: 768px) {
+            .hiw-grid { grid-template-columns: 1fr; max-width: 480px; }
+        }
+
+        /* Contact section */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            max-width: 960px;
+            margin: 0 auto;
+            align-items: start;
+        }
+        .contact-detail-item {
+            display: flex; align-items: flex-start; gap: 1rem;
+            padding: 1rem 0; border-bottom: 1px solid var(--border-color);
+        }
+        .contact-detail-item:first-of-type { padding-top: 0; }
+        .contact-detail-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
+        .contact-whatsapp-btn {
+            margin-top: 1.5rem; width: 100%; background: #25D366;
+            justify-content: center; gap: 0.5rem;
+        }
+        .contact-whatsapp-btn:hover { background: #1ebe5d; transform: translateY(-2px); }
+        @media (max-width: 768px) {
+            .contact-grid { grid-template-columns: 1fr; }
+        }
+    </style>
 </head>
 
 <body>
@@ -22,6 +107,7 @@
             <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;"><span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span></a>
             <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
                 <li><a href="index" class="navbar__link navbar__link--active">Home</a></li>
+                <li><a href="about" class="navbar__link">About</a></li>
                 <li><a href="testimonials" class="navbar__link">Testimonials</a></li>
                 <li><a href="results" class="navbar__link">Results</a></li>
                 <li><a href="login" class="navbar__link">Login</a></li>
@@ -32,10 +118,11 @@
     <!-- Mobile slide-in nav sidebar -->
     <aside class="dash-sidebar dash-sidebar--floating" id="dashSidebar">
         <div class="dash-sidebar__top">
-            <img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;">
+            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
         </div>
         <nav class="dash-sidebar__nav">
             <a href="index" class="dash-sidebar__item dash-sidebar__item--active">🏠 Home</a>
+            <a href="about" class="dash-sidebar__item">👨‍🏫 About</a>
             <a href="testimonials" class="dash-sidebar__item">⭐ Testimonials</a>
             <a href="results" class="dash-sidebar__item">📊 Results</a>
             <a href="login" class="dash-sidebar__item">🔑 Login</a>
@@ -46,10 +133,9 @@
     <!-- Hero Section -->
     <section class="hero container" aria-labelledby="hero-heading">
         <div class="hero__content">
-            <span class="hero__subtitle">Premium ISC Accountancy Coaching</span>
-            <h1 id="hero-heading">Master the Art of <span class="hero__highlight">Accountancy</span></h1>
-            <p class="hero__text">Join Mumbai's most trusted coaching classes. We empower 12th Grade students with
-                conceptual clarity, rigorous practice, and an environment designed for ultimate success.</p>
+            <span class="hero__subtitle">CISCE External Examiner · Former HoD, Jamnabai Narsee School · 22 Years</span>
+            <h1 id="hero-heading">ISC Accountancy by <span class="hero__highlight">Mitesh Bhatt</span></h1>
+            <p class="hero__text">Learn from Mitesh Bhatt — CISCE External Examiner since 2013, former Head of Department at Jamnabai Narsee School, and a teacher who has guided 5,000+ Mumbai students to consistent results over 22 years.</p>
             <div class="hero__actions">
                 <a href="login" class="btn btn--primary">Join Now</a>
                 <a href="results" class="btn btn--outline">View Results</a>
@@ -61,7 +147,7 @@
     <section class="container section--stats" aria-label="Key statistics">
         <div class="stats">
             <article class="stats__item">
-                <p class="stats__number">10+</p>
+                <p class="stats__number">22+</p>
                 <p class="stats__label">Years of Excellence</p>
             </article>
             <article class="stats__item">
@@ -73,9 +159,123 @@
                 <p class="stats__label">Students Guided</p>
             </article>
             <article class="stats__item">
-                <p class="stats__number">50+</p>
-                <p class="stats__label">State Toppers</p>
+                <p class="stats__number">75→97%</p>
+                <p class="stats__label">Class Average Lifted</p>
             </article>
+        </div>
+    </section>
+
+    <!-- Why Students Choose Me Section -->
+    <section class="container section" aria-labelledby="why-heading" style="padding-top:5rem;padding-bottom:5rem;border-top:1px solid var(--border-color);margin-top:3rem;">
+        <div class="section__header">
+            <span style="display:block;color:var(--primary);font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:0.8rem;margin-bottom:0.6rem;">What Makes This Different</span>
+            <h2 id="why-heading" class="section__title">Why Students Choose Me</h2>
+            <p style="color:var(--text-muted);font-size:1rem;max-width:540px;margin:0 auto;">Three things I bring to every class that no other accountancy tutor in Mumbai can.</p>
+        </div>
+        <div class="hiw-grid">
+            <article class="glass hiw-card">
+                <div class="hiw-card__icon" aria-hidden="true">🔍</div>
+                <h3 class="hiw-card__title">CISCE Examiner Experience</h3>
+                <p class="hiw-card__desc">Serving as a CISCE External Examiner since 2013, I have a direct understanding of the board's marking criteria, paper patterns, and assessment standards — applied in every class I teach.</p>
+            </article>
+            <article class="glass hiw-card">
+                <div class="hiw-card__icon" aria-hidden="true">🏫</div>
+                <h3 class="hiw-card__title">Institutional Leadership</h3>
+                <p class="hiw-card__desc">As Head of Department at Jamnabai Narsee School from 2019 to 2025, I led ISC Accountancy curriculum planning, examination coordination, and teacher mentoring for 120+ students annually.</p>
+            </article>
+            <article class="glass hiw-card">
+                <div class="hiw-card__icon" aria-hidden="true">📈</div>
+                <h3 class="hiw-card__title">Consistent Results</h3>
+                <p class="hiw-card__desc">Over 22 years, class averages under my guidance rose from 75% to 97%. More than 5,000 students coached, a 100% passing rate, and many alumni placed in top commerce colleges across Mumbai.</p>
+            </article>
+        </div>
+    </section>
+
+    <!-- About Mitesh Sir Section -->
+    <section class="container section" aria-labelledby="about-section-heading" style="padding-top:5rem;padding-bottom:5rem;border-top:1px solid var(--border-color);margin-top:3rem;">
+        <div class="about-teaser-grid" style="display:grid;grid-template-columns:auto 1fr;gap:3.5rem;align-items:center;max-width:900px;margin:0 auto;">
+            <!-- Avatar / Photo -->
+            <div style="flex-shrink:0;width:160px;height:160px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:50%;backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:3.5rem;line-height:1;">
+                👨‍🏫
+            </div>
+            <!-- Text -->
+            <div>
+                <span style="display:block;color:var(--primary);font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:0.8rem;margin-bottom:0.6rem;">Your Mentor</span>
+                <h2 id="about-section-heading" style="font-size:clamp(1.6rem,3vw,2.25rem);margin-bottom:0.9rem;">Mitesh Bhatt</h2>
+                <p style="color:var(--text-muted);font-size:1rem;line-height:1.75;margin-bottom:1.25rem;">
+                    22 years of ISC and State Board Accountancy teaching across Mumbai. Former <strong>Head of Department at Jamnabai Narsee School</strong>, <strong>CISCE External Examiner</strong> since 2013, and Best Teacher Award recipient. Students' class average improved from 75% to 97% under his guidance.
+                </p>
+                <!-- Credential pills -->
+                <div style="display:flex;flex-wrap:wrap;gap:0.6rem;margin-bottom:1.5rem;">
+                    <span style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);padding:0.3rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(--text-muted);">M.Com · First Class</span>
+                    <span style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);padding:0.3rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(--text-muted);">B.Ed · First Class</span>
+                    <span style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);padding:0.3rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(--text-muted);">22 Yrs Experience</span>
+                    <span style="background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius-full);padding:0.3rem 0.9rem;font-size:0.8rem;font-weight:600;color:var(--text-muted);">Best Teacher Award 2015</span>
+                </div>
+                <a href="about" class="btn btn--primary" style="display:inline-flex;">Full Profile &rarr;</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / Enquiry Section -->
+    <section class="container section" id="contact" aria-labelledby="contact-heading" style="padding-top:5rem;padding-bottom:5rem;border-top:1px solid var(--border-color);margin-top:3rem;">
+        <div class="section__header">
+            <span style="display:block;color:var(--primary);font-weight:600;letter-spacing:2px;text-transform:uppercase;font-size:0.8rem;margin-bottom:0.6rem;">Admissions Open</span>
+            <h2 id="contact-heading" class="section__title">Get in Touch</h2>
+            <p style="color:var(--text-muted);font-size:1rem;max-width:480px;margin:0 auto;">Have a question about batches, fees, or schedules? Send us a message and we'll get back to you the same day.</p>
+        </div>
+        <div class="contact-grid">
+            <!-- Enquiry Form -->
+            <div class="glass" style="padding:2rem;">
+                <h3 style="font-size:1.2rem;margin-bottom:1.5rem;">Send an Enquiry</h3>
+                <form action="mailto:Miteshsirsstudycircle@gmail.com" method="GET" enctype="text/plain">
+                    <div class="form__group">
+                        <label class="form__label" for="contact-name">Your Name</label>
+                        <input class="form__input" type="text" id="contact-name" name="name" placeholder="e.g. Priya Sharma" required autocomplete="name">
+                    </div>
+                    <div class="form__group">
+                        <label class="form__label" for="contact-phone">Phone Number</label>
+                        <input class="form__input" type="tel" id="contact-phone" name="phone" placeholder="+91 98765 43210" autocomplete="tel">
+                    </div>
+                    <div class="form__group">
+                        <label class="form__label" for="contact-message">Message</label>
+                        <textarea class="form__textarea" id="contact-message" name="body" rows="5" placeholder="e.g. I'm in Class 12 ISC and looking for Accountancy coaching. Please share batch details." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary" style="width:100%;">Send Message</button>
+                    <p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.75rem;text-align:center;">This opens your email client. Alternatively, WhatsApp or call us directly.</p>
+                </form>
+            </div>
+            <!-- Contact Details -->
+            <div>
+                <h3 style="font-size:1.2rem;margin-bottom:1.5rem;">Contact Details</h3>
+                <div class="contact-detail-item">
+                    <span class="contact-detail-icon" aria-hidden="true">📞</span>
+                    <div>
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.15rem;">Phone</p>
+                        <a href="tel:+919619562656" style="font-weight:600;color:var(--text-main);font-size:1rem;">+91 96195 62656</a>
+                    </div>
+                </div>
+                <div class="contact-detail-item">
+                    <span class="contact-detail-icon" aria-hidden="true">✉️</span>
+                    <div>
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.15rem;">Email</p>
+                        <a href="mailto:Miteshsirsstudycircle@gmail.com" style="font-weight:600;color:var(--text-main);font-size:0.9rem;word-break:break-all;">Miteshsirsstudycircle@gmail.com</a>
+                    </div>
+                </div>
+                <div class="contact-detail-item">
+                    <span class="contact-detail-icon" aria-hidden="true">📍</span>
+                    <div>
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.15rem;">Location</p>
+                        <address style="font-style:normal;font-weight:600;color:var(--text-main);">Mumbai, Maharashtra</address>
+                    </div>
+                </div>
+                <a href="https://wa.me/919619562656" target="_blank" rel="noopener noreferrer" class="btn contact-whatsapp-btn">
+                    <span aria-hidden="true">💬</span> Chat on WhatsApp
+                </a>
+                <div class="glass" style="margin-top:1.5rem;padding:1.25rem 1.5rem;text-align:center;">
+                    <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.6;">We typically respond within <strong style="color:var(--text-main);">a few hours</strong>. Batches fill quickly — reach out early to confirm your seat.</p>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -84,16 +284,16 @@
         <div class="container">
             <div class="footer__grid">
                 <div class="footer__col">
-                    <h4>Mitesh Sir's Group Tuitions</h4>
+                    <h4>Mitesh Sir's Study Circle</h4>
                     <p class="footer__desc">
-                        Guiding students towards academic excellence since 2012. Our proven methodology ensures deep
-                        understanding of fundamental concepts.
+                        ISC Accountancy coaching in Mumbai by Mitesh Bhatt — former HoD at Jamnabai Narsee School, CISCE External Examiner since 2013, and mentor to 5,000+ students.
                     </p>
                 </div>
                 <div class="footer__col">
                     <h4>Quick Links</h4>
                     <ul class="footer__links">
                         <li><a href="index">Home</a></li>
+                        <li><a href="about">About Mitesh Sir</a></li>
                         <li><a href="results">Results</a></li>
                         <li><a href="testimonials">Testimonials</a></li>
                         <li><a href="login">Login Portal</a></li>
@@ -102,8 +302,8 @@
                 <div class="footer__col">
                     <h4>Contact Us</h4>
                     <ul class="footer__links">
-                        <li><a href="tel:+919800000000">+91 98XXX XXXXX</a></li>
-                        <li><a href="mailto:contact@miteshsir.in">contact@miteshsir.in</a></li>
+                        <li><a href="tel:+919619562656">+91 96195 62656</a></li>
+                        <li><a href="mailto:Miteshsirsstudycircle@gmail.com">Miteshsirsstudycircle@gmail.com</a></li>
                         <li>
                             <address>Mumbai, Maharashtra</address>
                         </li>
@@ -111,7 +311,7 @@
                 </div>
             </div>
             <div class="footer__bottom">
-                <p>&copy; 2026 Mitesh Sir's Group Tuitions. All rights reserved.</p>
+                <p>&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
             </div>
         </div>
     </footer>
