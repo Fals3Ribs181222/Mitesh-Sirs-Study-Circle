@@ -188,6 +188,11 @@ function attachAddStudentListeners() {
         const username = document.getElementById('studentUsername').value.trim().toLowerCase();
         const password = document.getElementById('studentPassword').value;
         const phone = document.getElementById('studentPhone').value.trim();
+        const email = document.getElementById('studentEmail').value.trim() || null;
+        const father_name = document.getElementById('studentFatherName').value.trim() || null;
+        const father_phone = document.getElementById('studentFatherPhone').value.trim() || null;
+        const mother_name = document.getElementById('studentMotherName').value.trim() || null;
+        const mother_phone = document.getElementById('studentMotherPhone').value.trim() || null;
 
         const subjectCheckboxes = document.querySelectorAll('input[name="studentSubjects"]:checked');
         const subjects = Array.from(subjectCheckboxes).map(cb => cb.value).join(', ');
@@ -206,30 +211,21 @@ function attachAddStudentListeners() {
 
         try {
             const { data: sessionData } = await window.supabaseClient.auth.getSession();
-            const teacherSession = sessionData?.session;
+            const token = sessionData?.session?.access_token;
 
-            const email = `${username}@msgt.internal`;
-            const metadata = { name, username, grade, subjects, phone, role: 'student' };
+            const meta = { name, username, grade, subjects, phone, email, father_name, father_phone, mother_name, mother_phone, role: 'student' };
 
-            const { data, error } = await window.supabaseClient.auth.signUp({
-                email,
-                password,
-                options: { data: metadata }
+            const res = await fetch(`${window.CONFIG.SUPABASE_URL}/functions/v1/admin-api`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                    'apikey': window.CONFIG.SUPABASE_ANON_KEY,
+                },
+                body: JSON.stringify({ action: 'create_student', email: `${username}@msgt.internal`, password, meta }),
             });
-
-            if (teacherSession) {
-                await window.supabaseClient.auth.setSession({
-                    access_token: teacherSession.access_token,
-                    refresh_token: teacherSession.refresh_token
-                });
-            }
-
-            if (!error && data?.user?.id) {
-                await window.supabaseClient
-                    .from('profiles')
-                    .update({ name, username, grade, subjects, phone, role: 'student' })
-                    .eq('id', data.user.id);
-            }
+            const result = await res.json();
+            const error = result.error ? { message: result.error } : null;
 
             if (error) {
                 status.textContent = `Error: ${error.message}`;

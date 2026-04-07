@@ -40,9 +40,30 @@
     </div>
 
     <div class="form__group">
-        <label class="form__label" for="studentPhone">Phone Number (WhatsApp)</label>
-        <input type="tel" id="studentPhone" class="form__control" placeholder="e.g. 9876543210" pattern="[0-9]{10}">
+        <label class="form__label" for="studentPhone">Student Phone (WhatsApp)</label>
+        <input type="tel" id="studentPhone" class="form__control" placeholder="e.g. 9876543210">
         <small class="form__help">10-digit number without +91</small>
+    </div>
+
+    <div class="form__group">
+        <label class="form__label" for="studentEmail">Student Email <span style="color:var(--text-muted);font-weight:400;">(optional)</span></label>
+        <input type="email" id="studentEmail" class="form__control" placeholder="e.g. student@gmail.com">
+    </div>
+
+    <div class="form__group" style="margin-top:1.25rem;">
+        <label class="form__label">Father's Details</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <input type="text" id="studentFatherName" class="form__control" placeholder="Father's Name">
+            <input type="tel" id="studentFatherPhone" class="form__control" placeholder="Father's Phone">
+        </div>
+    </div>
+
+    <div class="form__group">
+        <label class="form__label">Mother's Details</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
+            <input type="text" id="studentMotherName" class="form__control" placeholder="Mother's Name">
+            <input type="tel" id="studentMotherPhone" class="form__control" placeholder="Mother's Phone">
+        </div>
     </div>
 
     <button type="submit" class="btn btn--primary btn--full" id="btnAddStudent">
