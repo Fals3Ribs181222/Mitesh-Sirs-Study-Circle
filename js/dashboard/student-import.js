@@ -183,7 +183,7 @@ async function importAllStudents(getAllStudents, onImportComplete) {
         const r = importRows[i];
         if (r.status === 'done') { done++; continue; }
 
-        const email = r.email || `${r.username}@msgt.internal`;
+        const email = `${r.username}@msgt.internal`;
         const meta = {
             name: r.name, username: r.username, grade: r.grade, subjects: r.subjects,
             phone: r.phone, email: r.email || null,
