@@ -2,6 +2,8 @@ const user = window.auth.getUser();
 
 let currentAttendanceClass = null;
 let currentAttendanceBatch = null;
+let currentBatchName = '';
+let currentClassTime = ''; // "HH:MM" 24h — used for WhatsApp notify payload
 
 async function loadTodaysClasses() {
     const grid = document.getElementById('todaysClassesGrid');
@@ -56,6 +58,8 @@ window.openAttendanceGrid = openAttendanceGrid;
 async function openAttendanceGrid(classId, batchId, title, batchName, time) {
     currentAttendanceClass = classId;
     currentAttendanceBatch = batchId;
+    currentBatchName = batchName;
+    currentClassTime = time; // "HH:MM"
 
     document.getElementById('attendancePreSelectionContainer').style.display = 'none';
     document.getElementById('attendanceGridContainer').style.display = 'block';
@@ -446,17 +450,13 @@ export function init() {
             btnNotifyAbsentLate.textContent = 'Sending...';
             if (notifyStatus) notifyStatus.style.display = 'none';
 
-            // Get class info for the message
-            const className = document.getElementById('attendanceClassName')?.textContent || '';
-            const classMeta = document.getElementById('attendanceClassMeta')?.textContent || '';
-            const subject = classMeta.split('•')[0]?.trim() || className;
             const dateStr = new Date().toISOString().split('T')[0];
 
             // Fetch profiles for student phone + mother/father phone
             const studentIds = records.map(r => r.student_id);
             const { data: profiles } = await window.supabaseClient
                 .from('profiles')
-                .select('id, name, phone, father_phone, mother_phone')
+                .select('id, name, phone, father_name, father_phone, mother_name, mother_phone')
                 .in('id', studentIds);
 
             if (!profiles || profiles.length === 0) {
@@ -490,8 +490,10 @@ export function init() {
                         payload: {
                             status: record.status,
                             student_name: profile.name,
-                            subject: subject,
+                            batch_name: currentBatchName,
+                            class_time: currentClassTime,
                             date: dateStr,
+                            // punch_in_time: — omitted until biometric machine is connected
                         },
                         sentBy: user.id,
                     });

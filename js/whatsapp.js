@@ -212,14 +212,23 @@
             });
         }
 
-        const parentPhone = student.father_phone || student.mother_phone;
-        if ((target === 'parent' || target === 'both') && parentPhone) {
-            recipients.push({
-                phone: parentPhone,
-                name: `${student.name}'s Parent`,
-                role: 'parent',
-                student_id: student.id,
-            });
+        if ((target === 'parent' || target === 'both')) {
+            if (student.father_phone) {
+                recipients.push({
+                    phone: student.father_phone,
+                    name: student.father_name || `${student.name}'s Father`,
+                    role: 'parent',
+                    student_id: student.id,
+                });
+            }
+            if (student.mother_phone) {
+                recipients.push({
+                    phone: student.mother_phone,
+                    name: student.mother_name || `${student.name}'s Mother`,
+                    role: 'parent',
+                    student_id: student.id,
+                });
+            }
         }
 
         return recipients;
