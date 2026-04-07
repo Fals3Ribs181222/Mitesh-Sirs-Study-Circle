@@ -2,12 +2,6 @@ let user, allFiles;
 
 export async function init() {
     user = window.auth.getUser();
-
-    if (typeof pdfjsLib !== 'undefined') {
-        pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-
     await loadMaterials();
     document.getElementById('btnRefreshMaterials')?.addEventListener('click', loadMaterials);
     document.getElementById('matSearchInput')?.addEventListener('input', renderFiles);
@@ -34,15 +28,24 @@ async function loadMaterials() {
     if (studentSubjects.length > 0) {
         allFiles = allFiles.filter(f => {
             if (!f.subject) return true;
-            return f.subject.split(',').map(s => s.trim()).some(s => studentSubjects.includes(s));
+            const fileSubjs = f.subject.split(',').map(s => s.trim());
+            if (fileSubjs.some(s => s.toLowerCase() === 'commerce')) return true;
+            return fileSubjs.some(s => studentSubjects.includes(s));
         });
     }
 
-    // Build subject pill filters, default to Accounts
+    // Build subject pill filters — include Commerce for all students if Commerce files exist
     const pillsEl = document.getElementById('matSubjectPills');
     if (pillsEl && studentSubjects.length) {
-        const defaultSubject = studentSubjects.find(s => s.toLowerCase() === 'accounts') || studentSubjects[0];
-        pillsEl.innerHTML = studentSubjects.map(s => {
+        const pillSubjects = [...studentSubjects];
+        const hasCommerce = allFiles.some(f => f.subject &&
+            f.subject.split(',').map(s => s.trim()).some(s => s.toLowerCase() === 'commerce'));
+        if (hasCommerce && !pillSubjects.some(s => s.toLowerCase() === 'commerce')) {
+            pillSubjects.push('Commerce');
+        }
+
+        const defaultSubject = pillSubjects.find(s => s.toLowerCase() === 'accounts') || pillSubjects[0];
+        pillsEl.innerHTML = pillSubjects.map(s => {
             const active = s === defaultSubject ? ' pill-toggle__btn--active' : '';
             return `<button type="button" class="pill-toggle__btn${active}" data-subject="${window.esc(s)}">${window.esc(s)}</button>`;
         }).join('');
@@ -83,7 +86,6 @@ function renderFiles() {
         item.className = 'material-list__item';
 
         const metaDate = new Date(f.created_at).toLocaleDateString('en-IN');
-        const isPdf = f.file_url && f.file_url.toLowerCase().endsWith('.pdf');
 
         item.innerHTML = `
             <div class="material-list__info">
@@ -97,69 +99,10 @@ function renderFiles() {
 
         const btn = document.createElement('button');
         btn.className = 'btn btn--primary btn--sm';
-
-        if (isPdf && typeof pdfjsLib !== 'undefined') {
-            btn.textContent = 'View';
-            btn.addEventListener('click', () => openPdfViewer(f.file_url, f.title));
-        } else {
-            btn.textContent = 'View / Download';
-            btn.addEventListener('click', () => window.open(window.safeUrl(f.file_url), '_blank', 'noopener'));
-        }
+        btn.textContent = 'View / Download';
+        btn.addEventListener('click', () => window.open(window.safeUrl(f.file_url), '_blank', 'noopener'));
 
         item.appendChild(btn);
         list.appendChild(item);
     });
-}
-
-function showListView() {
-    document.getElementById('materialsHeader').style.display = '';
-    document.getElementById('matFilterBar').style.display = '';
-    document.getElementById('materialsList').style.display = '';
-    document.getElementById('pdfInlineViewer').style.display = 'none';
-}
-
-function showViewerView() {
-    document.getElementById('materialsHeader').style.display = 'none';
-    document.getElementById('matFilterBar').style.display = 'none';
-    document.getElementById('materialsList').style.display = 'none';
-    document.getElementById('pdfInlineViewer').style.display = '';
-}
-
-async function openPdfViewer(url, title) {
-    showViewerView();
-
-    document.getElementById('pdfInlineTitle').textContent = title || 'Document';
-
-    const canvasWrap = document.getElementById('pdfCanvasWrap');
-    const btnBack    = document.getElementById('pdfBackBtn');
-
-    canvasWrap.innerHTML = '<div class="pdf-modal__loading">Loading PDF\u2026</div>';
-
-    btnBack.onclick = () => {
-        showListView();
-        canvasWrap.innerHTML = '';
-    };
-
-    try {
-        const pdfDoc = await pdfjsLib.getDocument(url).promise;
-        canvasWrap.innerHTML = '';
-
-        const availW = canvasWrap.clientWidth - 32;
-
-        for (let i = 1; i <= pdfDoc.numPages; i++) {
-            const page     = await pdfDoc.getPage(i);
-            const viewport = page.getViewport({ scale: 1 });
-            const scale    = Math.min(availW / viewport.width, 2);
-            const scaled   = page.getViewport({ scale });
-            const canvas   = document.createElement('canvas');
-            canvas.width   = scaled.width;
-            canvas.height  = scaled.height;
-            canvas.addEventListener('contextmenu', (e) => e.preventDefault());
-            await page.render({ canvasContext: canvas.getContext('2d'), viewport: scaled }).promise;
-            canvasWrap.appendChild(canvas);
-        }
-    } catch (err) {
-        canvasWrap.innerHTML = '<div class="pdf-modal__loading">Failed to load PDF. Please try again.</div>';
-        console.error('[PDF viewer] load error:', err);
-    }
 }
