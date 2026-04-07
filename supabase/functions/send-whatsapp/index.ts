@@ -11,7 +11,7 @@ const corsHeaders = {
     'Access-Control-Allow-Methods': 'POST, OPTIONS',
 };
 
-// ── Meta Cloud API sender ──────────────────────────────────────
+// ── Meta Cloud API sender — free-form text ────────────────────
 async function sendViaMetaAPI(to: string, message: string) {
     // Normalise to E.164 — strip leading 0, prepend 91 if not already there
     const normalised = to.startsWith('91') ? to : `91${to.replace(/^0/, '')}`;
@@ -29,6 +29,44 @@ async function sendViaMetaAPI(to: string, message: string) {
                 to: normalised,
                 type: 'text',
                 text: { body: message },
+            }),
+        }
+    );
+
+    if (!response.ok) {
+        const err = await response.json();
+        throw new Error(`Meta API error: ${err?.error?.message ?? response.statusText}`);
+    }
+
+    return response.json();
+}
+
+// ── Meta Cloud API sender — approved template ─────────────────
+async function sendTemplateViaMetaAPI(to: string, templateName: string, params: string[]) {
+    const normalised = to.startsWith('91') ? to : `91${to.replace(/^0/, '')}`;
+
+    const response = await fetch(
+        `https://graph.facebook.com/v19.0/${WHATSAPP_PHONE_NUMBER_ID}/messages`,
+        {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                messaging_product: 'whatsapp',
+                to: normalised,
+                type: 'template',
+                template: {
+                    name: templateName,
+                    language: { code: 'en' },
+                    components: [
+                        {
+                            type: 'body',
+                            parameters: params.map(p => ({ type: 'text', text: p })),
+                        },
+                    ],
+                },
             }),
         }
     );
@@ -113,6 +151,60 @@ async function logMessage(
     }]);
 }
 
+// ── Attendance template resolver ──────────────────────────────
+function resolveAttendanceTemplate(payload: Record<string, string>, recipientName?: string): { name: string; params: string[] } {
+    const studentName  = payload.student_name  || 'Student';
+    const batchName    = payload.batch_name    || 'Class';
+    const classTime    = payload.class_time    || '';          // "HH:MM" 24h
+    const punchInTime  = payload.punch_in_time || '';          // "HH:MM" 24h — empty until biometric
+    const status       = payload.status        || 'absent';
+    // parent_name: per-recipient override takes priority, then payload field, then fallback
+    payload = { ...payload, parent_name: recipientName || payload.parent_name || 'Parent' };
+
+    // Day + Date: "Tuesday, 8 April 2026"
+    const date = payload.date || new Date().toISOString().split('T')[0];
+    const dayDate = new Date(date + 'T00:00:00').toLocaleDateString('en-IN', {
+        weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+    });
+
+    // Format class start time for display: "10:00 AM"
+    const classTimeDisplay = classTime
+        ? new Date(`1970-01-01T${classTime}:00`).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+        : 'N/A';
+
+    // ── Grace period logic (active once biometric is connected) ──
+    // Rules: punch-in before or ≤10 min after class start → present (no notification)
+    //        punch-in >10 min after class start → late
+    // When punchInTime is empty (manual / no biometric), status comes from the teacher's manual selection.
+    let minsLate = 'N/A';
+    let punchDisplay = 'Not recorded';
+
+    if (punchInTime && classTime) {
+        const toMins = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+        const diff = toMins(punchInTime) - toMins(classTime);
+        punchDisplay = new Date(`1970-01-01T${punchInTime}:00`).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+
+        // Override status based on grace period: ≤10 min → present, >10 min → late
+        if (diff <= 10) return { name: '', params: [] }; // present — no notification
+        minsLate = String(diff);
+    }
+
+    if (status === 'absent') {
+        return {
+            name: 'mssc_attendance_absent',
+            // {{1}} parent_name  {{2}} student_name  {{3}} day_date  {{4}} class_time  {{5}} batch_name
+            params: [payload.parent_name || 'Parent', studentName, dayDate, classTimeDisplay, batchName],
+        };
+    }
+
+    // late
+    return {
+        name: 'mssc_attendance_late',
+        // {{1}} parent_name  {{2}} student_name  {{3}} day_date  {{4}} batch_name  {{5}} class_time  {{6}} punch_in  {{7}} mins_late
+        params: [payload.parent_name || 'Parent', studentName, dayDate, batchName, classTimeDisplay, punchDisplay, minsLate],
+    };
+}
+
 // ── Main handler ──────────────────────────────────────────────
 Deno.serve(async (req: Request) => {
     if (req.method === 'OPTIONS') {
@@ -148,7 +240,18 @@ Deno.serve(async (req: Request) => {
             }
 
             try {
-                await sendViaMetaAPI(phone, message);
+                if (type === 'attendance') {
+                    // Resolve per-recipient so parent_name is personalised (father vs mother)
+                    const attendanceTemplate = resolveAttendanceTemplate(payload || {}, recipient.name);
+                    // Empty name = within grace period → no notification
+                    if (!attendanceTemplate.name) {
+                        results.push({ phone, success: true });
+                        continue;
+                    }
+                    await sendTemplateViaMetaAPI(phone, attendanceTemplate.name, attendanceTemplate.params);
+                } else {
+                    await sendViaMetaAPI(phone, message);
+                }
 
                 await logMessage(
                     type,
