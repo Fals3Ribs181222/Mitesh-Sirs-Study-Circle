@@ -6,6 +6,6 @@
         { "source": "/seed-marks", "destination": "/", "permanent": false },
         { "source": "/seed-tests", "destination": "/", "permanent": false },
         { "source": "/seed-phone", "destination": "/", "permanent": false },
-        { "source": "/test-report.js", "destination": "/", "permanent": false },
+        { "source": "/test-report.js", "destination": "/", "permanent": false }
     ]
 }
