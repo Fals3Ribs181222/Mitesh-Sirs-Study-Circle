@@ -252,6 +252,7 @@ Deno.serve(async (req: Request) => {
 
         const message = buildMessage(type, payload || {});
         const results: Array<{ phone: string; success: boolean; error?: string }> = [];
+        let logPreview = message;
 
         for (const recipient of recipients) {
             const phone = recipient.phone;

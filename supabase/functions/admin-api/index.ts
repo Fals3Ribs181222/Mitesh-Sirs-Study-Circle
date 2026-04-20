@@ -20,14 +20,11 @@ const VALID_ROLES = new Set(['teacher', 'student', 'admin']);
 // Identify caller role using their JWT (user-scoped client)
 async function getCallerRole(authHeader: string | null): Promise<string | null> {
     if (!authHeader) return null;
-    const userClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
-        global: { headers: { Authorization: authHeader } },
-        auth: { persistSession: false },
-    });
-    const { data: { user }, error } = await userClient.auth.getUser();
+    const token = authHeader.replace(/^Bearer\s+/i, '');
+    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
+    const { data: { user }, error } = await adminClient.auth.getUser(token);
     if (error || !user) return null;
 
-    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
     const { data } = await adminClient
         .from('profiles')
         .select('role')
