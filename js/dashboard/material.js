@@ -16,7 +16,8 @@ async function loadFileList({ tbodyId, btnRefreshId, uploadType, emptyMsg }) {
     const teacherGrade = user.grade;
     let files = response.data || [];
     if (teacherGrade && teacherGrade !== 'All Grades') {
-        files = files.filter(f => !f.grade || f.grade === '' || f.grade === teacherGrade);
+        const allowedGrades = teacherGrade.split(',').map(g => g.trim()).filter(Boolean);
+        files = files.filter(f => !f.grade || f.grade === '' || allowedGrades.includes(f.grade));
     }
 
     tbody.innerHTML = files.length > 0
