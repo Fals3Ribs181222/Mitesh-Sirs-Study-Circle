@@ -36,7 +36,8 @@ export async function loadStudents() {
         let students = response.data || [];
         const teacherGrade = window.auth.getUser()?.grade;
         if (teacherGrade && teacherGrade !== 'All Grades') {
-            students = students.filter(s => s.grade === teacherGrade);
+            const allowedGrades = teacherGrade.split(',').map(g => g.trim()).filter(Boolean);
+            students = students.filter(s => allowedGrades.includes(s.grade));
         }
         allStudents = students;
 

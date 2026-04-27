@@ -211,7 +211,8 @@ async function loadStudentPicker(batchId) {
         } else {
             const teacherGrade = window.auth.getUser()?.grade;
             if (teacherGrade && teacherGrade !== 'All Grades') {
-                allStudents = allStudents.filter(s => s.grade === teacherGrade);
+                const allowedGrades = teacherGrade.split(',').map(g => g.trim()).filter(Boolean);
+                allStudents = allStudents.filter(s => allowedGrades.includes(s.grade));
             }
         }
         if (currentBatchSubject) {
