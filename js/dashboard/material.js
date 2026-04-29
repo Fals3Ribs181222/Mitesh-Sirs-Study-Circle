@@ -13,12 +13,9 @@ async function loadFileList({ tbodyId, btnRefreshId, uploadType, emptyMsg }) {
 
     if (btnRefresh) { btnRefresh.disabled = false; btnRefresh.textContent = 'Refresh List'; }
 
-    const teacherGrade = user.grade;
+    const activeGrade = window.getActiveGrade();
     let files = response.data || [];
-    if (teacherGrade && teacherGrade !== 'All Grades') {
-        const allowedGrades = teacherGrade.split(',').map(g => g.trim()).filter(Boolean);
-        files = files.filter(f => !f.grade || f.grade === '' || allowedGrades.includes(f.grade));
-    }
+    if (activeGrade) files = files.filter(f => !f.grade || f.grade === '' || f.grade === activeGrade);
 
     tbody.innerHTML = files.length > 0
         ? files.map(file => `
@@ -68,7 +65,6 @@ function attachMaterialListeners() {
     if (!form) return;
 
     window.populateGradeSelect('fileGrade');
-    window.lockGradeSelect('fileGrade');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -146,7 +142,7 @@ function attachMaterialListeners() {
                         })
                     }).then(res => res.json()).then(result => {
                         if (result.success) {
-                            window.showStatus('uploadStatus', `✅ Uploaded & indexed ${result.chunks_indexed} chunks for AI!`, 'success');
+                            window.showStatus('uploadStatus', `Uploaded & indexed ${result.chunks_indexed} chunks for AI!`, 'success');
                         } else {
                             console.warn('⚠️ Indexing failed:', result.error);
                             window.showStatus('uploadStatus', 'File uploaded, but AI indexing failed.', 'error');
@@ -156,7 +152,7 @@ function attachMaterialListeners() {
                         window.showStatus('uploadStatus', 'File uploaded, but AI indexing failed.', 'error');
                     });
                 } else {
-                    window.showStatus('uploadStatus', '✅ File uploaded for students!', 'success');
+                    window.showStatus('uploadStatus', 'File uploaded for students!', 'success');
                 }
 
                 window.safeFormReset(e.target);

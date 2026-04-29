@@ -5,9 +5,9 @@ export async function loadTab(targetId) {
     const allPanels = panelsContainer.querySelectorAll('.tabs__panel');
     allPanels.forEach(p => p.classList.remove('tabs__panel--active'));
 
-    // Update URL hash to reflect active tab
+    // Update URL hash to reflect active tab, preserving any query params (e.g. ?grade=)
     const featureSlug = targetId.replace('panel-', '');
-    history.replaceState(null, '', `#${featureSlug}`);
+    history.replaceState(null, '', `${location.search}#${featureSlug}`);
 
     // Update active sidebar item
     document.querySelectorAll('.dash-sidebar__item').forEach(btn => {

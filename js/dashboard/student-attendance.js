@@ -1,4 +1,4 @@
-let user, allAttendance, studentBatches;
+﻿let user, allAttendance, studentBatches;
 
 export async function init() {
     user = window.auth.getUser();
@@ -85,11 +85,11 @@ function renderStats(records) {
             <p style="font-size:0.8rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.06em;margin:0 0 0.6rem;">${window.esc(subj)}</p>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1rem;">
                 ${statBox(total, 'Total Classes', 'var(--primary)')}
-                ${statBox(present, 'Present', '#1D9E75')}
-                ${statBox(absent, 'Absent', '#E24B4A')}
-                ${statBox(late, 'Late', '#BA7517')}
+                ${statBox(present, 'Present', '#00A36C')}
+                ${statBox(absent, 'Absent', '#C41230')}
+                ${statBox(late, 'Late', '#C48A14')}
                 <div style="grid-column:1/-1;background:var(--bg-surface,#fff);border:1px solid var(--border-color);border-radius:var(--radius-lg,12px);padding:1.25rem;text-align:center;">
-                    <p style="font-size:1.75rem;font-weight:700;color:${pct>=80?'#1D9E75':pct>=60?'#BA7517':'#E24B4A'};margin:0 0 0.25rem;">${total > 0 ? pct + '%' : '—'}</p>
+                    <p style="font-size:1.75rem;font-weight:700;color:${pct>=80?'#00A36C':pct>=60?'#C48A14':'#C41230'};margin:0 0 0.25rem;">${total > 0 ? pct + '%' : '—'}</p>
                     <p style="font-size:0.78rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em;margin:0;">Attendance %</p>
                 </div>
             </div>
@@ -133,7 +133,7 @@ function buildCalendarHtml(records) {
         for (let d = 1; d <= daysInMonth; d++) {
             const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
             const status = dateMap[dateStr];
-            const bg = status === 'present' ? 'var(--success,#22c55e)' : status === 'absent' ? 'var(--danger,#ef4444)' : status === 'late' ? 'var(--warning,#f59e0b)' : 'transparent';
+            const bg = status === 'present' ? 'var(--grade-12)' : status === 'absent' ? 'var(--grade-11)' : status === 'late' ? 'var(--warning,#f59e0b)' : 'transparent';
             const label = status ? status.charAt(0).toUpperCase() + status.slice(1) : '';
             html += `<div title="${dateStr}${label ? ' — ' + label : ''}" style="border-radius:3px;background:${bg};color:${status ? 'white' : 'var(--text-secondary)'};padding:2px 0;font-size:0.68rem;">${d}</div>`;
         }
@@ -143,8 +143,8 @@ function buildCalendarHtml(records) {
 
     html += '</div>';
     html += `<div style="display:flex;gap:1rem;margin-top:0.75rem;font-size:0.78rem;color:var(--text-muted);">
-        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--success,#22c55e);margin-right:3px;"></span>Present</span>
-        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--danger,#ef4444);margin-right:3px;"></span>Absent</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--grade-12);margin-right:3px;"></span>Present</span>
+        <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--grade-11);margin-right:3px;"></span>Absent</span>
         <span><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--warning,#f59e0b);margin-right:3px;"></span>Late</span>
     </div>`;
     return html;
@@ -166,7 +166,7 @@ function renderAttendance() {
         return;
     }
 
-    const statusColor = { present: 'var(--success,#22c55e)', absent: 'var(--danger,#ef4444)', late: 'var(--warning,#f59e0b)' };
+    const statusColor = { present: 'var(--grade-12)', absent: 'var(--grade-11)', late: 'var(--warning,#f59e0b)' };
     const statusLabel = { present: 'Present', absent: 'Absent', late: 'Late' };
 
     tbody.innerHTML = filtered.map(r => {
@@ -184,3 +184,5 @@ function renderAttendance() {
         </tr>`;
     }).join('');
 }
+
+

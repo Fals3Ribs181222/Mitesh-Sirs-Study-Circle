@@ -11,11 +11,8 @@ async function loadProfiles() {
     const res = await window.api.get('profiles', { role: 'student' }, 'id, name, grade, phone, father_name, father_phone, mother_name, mother_phone');
     if (res.success && res.data) {
         let students = res.data;
-        const teacherGrade = user?.grade;
-        if (teacherGrade && teacherGrade !== 'All Grades') {
-            const allowedGrades = teacherGrade.split(',').map(g => g.trim()).filter(Boolean);
-            students = students.filter(s => allowedGrades.includes(s.grade));
-        }
+        const activeGrade = window.getActiveGrade();
+        if (activeGrade) students = students.filter(s => s.grade === activeGrade);
         allStudentsCache = students;
     }
     return allStudentsCache;

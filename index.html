@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -51,6 +51,7 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <style>
         @media (max-width: 600px) {
             .about-teaser-grid { grid-template-columns: 1fr !important; text-align: center; }
@@ -110,7 +111,7 @@
     <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__container" style="padding: 0 2rem;">
             <button class="navbar__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;"><span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span></a>
+            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span>Mitesh Sir's Study Circle</span></a>
             <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
                 <li><a href="index" class="navbar__link navbar__link--active">Home</a></li>
                 <li><a href="about" class="navbar__link">About</a></li>
@@ -124,14 +125,14 @@
     <!-- Mobile slide-in nav sidebar -->
     <aside class="dash-sidebar dash-sidebar--floating" id="dashSidebar">
         <div class="dash-sidebar__top">
-            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
+            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span class="dash-sidebar__brand">Mitesh Sir's Study Circle</span></a>
         </div>
         <nav class="dash-sidebar__nav">
-            <a href="index" class="dash-sidebar__item dash-sidebar__item--active">🏠 Home</a>
-            <a href="about" class="dash-sidebar__item">👨‍🏫 About</a>
-            <a href="testimonials" class="dash-sidebar__item">⭐ Testimonials</a>
-            <a href="results" class="dash-sidebar__item">📊 Results</a>
-            <a href="login" class="dash-sidebar__item">🔑 Login</a>
+            <a href="index" class="dash-sidebar__item dash-sidebar__item--active"><i class="ri-home-line" aria-hidden="true"></i> Home</a>
+            <a href="about" class="dash-sidebar__item"><i class="ri-user-3-line" aria-hidden="true"></i> About</a>
+            <a href="testimonials" class="dash-sidebar__item"><i class="ri-star-line" aria-hidden="true"></i> Testimonials</a>
+            <a href="results" class="dash-sidebar__item"><i class="ri-bar-chart-line" aria-hidden="true"></i> Results</a>
+            <a href="login" class="dash-sidebar__item"><i class="ri-login-box-line" aria-hidden="true"></i> Login</a>
         </nav>
     </aside>
     <div class="dash-sidebar-backdrop" id="sidebarBackdrop"></div>
@@ -180,17 +181,17 @@
         </div>
         <div class="hiw-grid">
             <article class="glass hiw-card">
-                <div class="hiw-card__icon" aria-hidden="true">🔍</div>
+                <div class="hiw-card__icon" aria-hidden="true"><i class="ri-search-eye-line"></i></div>
                 <h3 class="hiw-card__title">CISCE Examiner Experience</h3>
                 <p class="hiw-card__desc">Serving as a CISCE External Examiner since 2013, I have a direct understanding of the board's marking criteria, paper patterns, and assessment standards — applied in every class I teach.</p>
             </article>
             <article class="glass hiw-card">
-                <div class="hiw-card__icon" aria-hidden="true">🏫</div>
+                <div class="hiw-card__icon" aria-hidden="true"><i class="ri-building-line"></i></div>
                 <h3 class="hiw-card__title">Institutional Leadership</h3>
                 <p class="hiw-card__desc">As Head of Department at Jamnabai Narsee School from 2019 to 2025, I led ISC Accountancy curriculum planning, examination coordination, and teacher mentoring for 120+ students annually.</p>
             </article>
             <article class="glass hiw-card">
-                <div class="hiw-card__icon" aria-hidden="true">📈</div>
+                <div class="hiw-card__icon" aria-hidden="true"><i class="ri-line-chart-line"></i></div>
                 <h3 class="hiw-card__title">Consistent Results</h3>
                 <p class="hiw-card__desc">Over 22 years, class averages under my guidance rose from 75% to 97%. More than 5,000 students coached, a 100% passing rate, and many alumni placed in top commerce colleges across Mumbai.</p>
             </article>
@@ -201,8 +202,8 @@
     <section class="container section" aria-labelledby="about-section-heading" style="padding-top:5rem;padding-bottom:5rem;border-top:1px solid var(--border-color);margin-top:3rem;">
         <div class="about-teaser-grid" style="display:grid;grid-template-columns:auto 1fr;gap:3.5rem;align-items:center;max-width:900px;margin:0 auto;">
             <!-- Avatar / Photo -->
-            <div style="flex-shrink:0;width:160px;height:160px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:50%;backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:3.5rem;line-height:1;">
-                👨‍🏫
+            <div style="flex-shrink:0;width:160px;height:160px;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:50%;backdrop-filter:blur(16px);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:3.5rem;line-height:1;color:var(--primary);">
+                <i class="ri-user-3-line" aria-hidden="true"></i>
             </div>
             <!-- Text -->
             <div>
@@ -255,28 +256,28 @@
             <div>
                 <h3 style="font-size:1.2rem;margin-bottom:1.5rem;">Contact Details</h3>
                 <div class="contact-detail-item">
-                    <span class="contact-detail-icon" aria-hidden="true">📞</span>
+                    <span class="contact-detail-icon" aria-hidden="true"><i class="ri-phone-line"></i></span>
                     <div>
                         <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.15rem;">Phone</p>
                         <a href="tel:+919619562656" style="font-weight:600;color:var(--text-main);font-size:1rem;">+91 96195 62656</a>
                     </div>
                 </div>
                 <div class="contact-detail-item">
-                    <span class="contact-detail-icon" aria-hidden="true">✉️</span>
+                    <span class="contact-detail-icon" aria-hidden="true"><i class="ri-mail-line"></i></span>
                     <div>
                         <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.15rem;">Email</p>
                         <a href="mailto:Miteshsirsstudycircle@gmail.com" style="font-weight:600;color:var(--text-main);font-size:0.9rem;word-break:break-all;">Miteshsirsstudycircle@gmail.com</a>
                     </div>
                 </div>
                 <div class="contact-detail-item">
-                    <span class="contact-detail-icon" aria-hidden="true">📍</span>
+                    <span class="contact-detail-icon" aria-hidden="true"><i class="ri-map-pin-line"></i></span>
                     <div>
                         <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.15rem;">Location</p>
                         <address style="font-style:normal;font-weight:600;color:var(--text-main);">Mumbai, Maharashtra</address>
                     </div>
                 </div>
                 <a href="https://wa.me/919619562656" target="_blank" rel="noopener noreferrer" class="btn contact-whatsapp-btn">
-                    <span aria-hidden="true">💬</span> Chat on WhatsApp
+                    <i class="ri-whatsapp-line" aria-hidden="true"></i> Chat on WhatsApp
                 </a>
                 <div class="glass" style="margin-top:1.5rem;padding:1.25rem 1.5rem;text-align:center;">
                     <p style="font-size:0.9rem;color:var(--text-muted);line-height:1.6;">We typically respond within <strong style="color:var(--text-main);">a few hours</strong>. Batches fill quickly — reach out early to confirm your seat.</p>
@@ -315,9 +316,6 @@
                         </li>
                     </ul>
                 </div>
-            </div>
-            <div class="footer__bottom">
-                <p>&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
             </div>
         </div>
     </footer>
