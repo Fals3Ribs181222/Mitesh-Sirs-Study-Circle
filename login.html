@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -16,6 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <script defer src="/_vercel/insights/script.js"></script>
 </head>
 
@@ -23,7 +24,7 @@
     <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__container" style="padding: 0 2rem;">
             <button class="navbar__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
-            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;"><span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span></a>
+            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span>Mitesh Sir's Study Circle</span></a>
             <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
                 <li><a href="index" class="navbar__link">Home</a></li>
                 <li><a href="about" class="navbar__link">About</a></li>
@@ -37,46 +38,66 @@
     <!-- Mobile slide-in nav sidebar -->
     <aside class="dash-sidebar dash-sidebar--floating" id="dashSidebar">
         <div class="dash-sidebar__top">
-            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
+            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span class="dash-sidebar__brand">Mitesh Sir's Study Circle</span></a>
         </div>
         <nav class="dash-sidebar__nav">
-            <a href="index" class="dash-sidebar__item">🏠 Home</a>
-            <a href="about" class="dash-sidebar__item">👨‍🏫 About</a>
-            <a href="testimonials" class="dash-sidebar__item">⭐ Testimonials</a>
-            <a href="results" class="dash-sidebar__item">📊 Results</a>
-            <a href="login" class="dash-sidebar__item dash-sidebar__item--active">🔑 Login</a>
+            <a href="index" class="dash-sidebar__item"><i class="ri-home-line" aria-hidden="true"></i> Home</a>
+            <a href="about" class="dash-sidebar__item"><i class="ri-user-3-line" aria-hidden="true"></i> About</a>
+            <a href="testimonials" class="dash-sidebar__item"><i class="ri-star-line" aria-hidden="true"></i> Testimonials</a>
+            <a href="results" class="dash-sidebar__item"><i class="ri-bar-chart-line" aria-hidden="true"></i> Results</a>
+            <a href="login" class="dash-sidebar__item dash-sidebar__item--active"><i class="ri-login-box-line" aria-hidden="true"></i> Login</a>
         </nav>
     </aside>
     <div class="dash-sidebar-backdrop" id="sidebarBackdrop"></div>
 
-    <main class="container">
-        <div class="login">
-            <div class="login__card">
-                <header class="login__header">
-                    <h1>Welcome Back</h1>
-                </header>
-
-
-
-                <form id="loginForm" novalidate>
-                    <div class="form__group">
-                        <label class="form__label" for="username">Username</label>
-                        <input type="text" id="username" class="form__control" required
-                            placeholder="Enter your username" autocomplete="username">
+    <main>
+        <div class="login-layout">
+            <aside class="login-credibility" aria-label="About Mitesh Sir's Study Circle">
+                <span class="login-credibility__eyebrow">Mitesh Sir's Study Circle</span>
+                <h1 class="login-credibility__title">ISC Accountancy by <span>Mitesh Bhatt</span></h1>
+                <p class="login-credibility__tagline">CISCE External Examiner since 2013, former HoD at Jamnabai Narsee School, and mentor to 5,000+ Mumbai students.</p>
+                <div class="login-credibility__stats">
+                    <div class="login-credibility__stat">
+                        <div class="login-credibility__stat-num">22+</div>
+                        <div class="login-credibility__stat-label">Years</div>
                     </div>
-                    <div class="form__group">
-                        <label class="form__label" for="password">Password</label>
-                        <input type="password" id="password" class="form__control" required placeholder="••••••••"
-                            autocomplete="current-password">
+                    <div class="login-credibility__stat">
+                        <div class="login-credibility__stat-num">100%</div>
+                        <div class="login-credibility__stat-label">Pass Rate</div>
                     </div>
+                    <div class="login-credibility__stat">
+                        <div class="login-credibility__stat-num">5k+</div>
+                        <div class="login-credibility__stat-label">Students</div>
+                    </div>
+                </div>
+            </aside>
 
-                    <button type="submit" class="btn btn--primary btn--full" id="submitBtn">
-                        <span id="btnText">Sign In</span>
-                        <span class="spinner" id="btnSpinner" aria-hidden="true"></span>
-                    </button>
+            <div class="login">
+                <div class="login__card">
+                    <header class="login__header">
+                        <h1>Welcome Back</h1>
+                    </header>
 
-                    <p class="form__error" id="errorMsg" role="alert"></p>
-                </form>
+                    <form id="loginForm" novalidate>
+                        <div class="form__group">
+                            <label class="form__label" for="username">Username</label>
+                            <input type="text" id="username" class="form__control" required
+                                placeholder="Enter your username" autocomplete="username">
+                        </div>
+                        <div class="form__group">
+                            <label class="form__label" for="password">Password</label>
+                            <input type="password" id="password" class="form__control" required placeholder="••••••••"
+                                autocomplete="current-password">
+                        </div>
+
+                        <button type="submit" class="btn btn--primary btn--full" id="submitBtn">
+                            <span id="btnText">Sign In</span>
+                            <span class="spinner" id="btnSpinner" aria-hidden="true"></span>
+                        </button>
+
+                        <p class="form__error" id="errorMsg" role="alert"></p>
+                    </form>
+                </div>
             </div>
         </div>
     </main>

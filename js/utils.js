@@ -4,6 +4,13 @@
 window._Grade11 = '11th';
 window._Grade12 = '12th';
 
+// Returns the currently active grade for list-view filtering ('11th' or '12th').
+// All list views should call this instead of reading the teacher's profile grade directly.
+window.getActiveGrade = function () {
+    const g = window._activeGrade;
+    return (g === window._Grade11 || g === window._Grade12) ? g : null;
+};
+
 // ── Subject Constants ─────────────────────────────────────────────────────
 window._Subject_Accounts = 'Accounts';
 window._Subject_Commerce = 'Commerce';
@@ -20,51 +27,9 @@ window.populateGradeSelect = function (selectId, includeAll = true) {
     el.innerHTML += `<option value="${window._Grade12}">${window._Grade12}</option>`;
 };
 
-// Replaces a grade <select> with a non-interactive pill matching the subject-pill style.
-// Pass one or more element IDs. Safe to call multiple times (guarded by data attr).
-window.lockGradeSelect = function (...elementIds) {
-    const teacherGrade = window.auth.getUser()?.grade;
-    if (!teacherGrade || teacherGrade === 'All Grades') return;
-    elementIds.forEach(id => {
-        const el = document.getElementById(id);
-        if (!el || el.dataset.gradeLocked) return;
-        el.value = teacherGrade;
-        el.style.display = 'none';
-        el.dataset.gradeLocked = '1';
-
-        const container = document.createElement('div');
-        container.className = 'subject-pills';
-        container.style.pointerEvents = 'none';
-
-        const label = document.createElement('label');
-        label.className = 'subject-pill';
-
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = true;
-        checkbox.disabled = true;
-
-        const span = document.createElement('span');
-        span.className = 'subject-pill__label';
-        span.textContent = teacherGrade;
-
-        label.appendChild(checkbox);
-        label.appendChild(span);
-        container.appendChild(label);
-        el.parentElement.appendChild(container);
-    });
-};
-
-// Resets a form and restores any grade-locked selects to the teacher's grade.
-// Use this instead of form.reset() to avoid breaking locked grade selects.
 window.safeFormReset = function (form) {
     if (!form) return;
     form.reset();
-    const teacherGrade = window.auth.getUser()?.grade;
-    if (!teacherGrade || teacherGrade === 'All Grades') return;
-    form.querySelectorAll('select[data-grade-locked]').forEach(el => {
-        el.value = teacherGrade;
-    });
 };
 
 /**

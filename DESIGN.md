@@ -6,7 +6,7 @@ A plain-text design system for AI agents. Read this before generating any HTML o
 
 ## 1. Mood & Brand
 
-Warm, calm, academic. Feels like a well-organized study room — not a startup dashboard. The palette is built around a warm beige base with muted blue and earthy green accents. Glassmorphism is the primary surface treatment: frosted white panels over the beige background. Nothing is harsh, sharp, or neon. The UI should feel trustworthy and unhurried.
+Warm, authoritative, academic. Feels like an established institution — not a startup dashboard. The palette is built around a warm ivory base with deep ink-navy and terracotta accents. Glassmorphism is the primary surface treatment: frosted white panels over the ivory background. Nothing is harsh, sharp, or neon. The UI should feel trustworthy, premium, and unhurried.
 
 ---
 
@@ -18,20 +18,20 @@ All colors are defined as CSS custom properties on `:root` in `css/styles.css`. 
 
 | Variable             | Value                        | Usage                                              |
 |----------------------|------------------------------|----------------------------------------------------|
-| `--bg-base`          | `#EADDCA`                    | Page background (warm beige)                       |
-| `--bg-surface`       | `#ffffff`                    | Cards, footer, clean surfaces                      |
-| `--bg-surface-hover` | `#f3e9d8`                    | Hover states, pill containers, form inputs         |
+| `--bg-base`          | `#F2EADD`                    | Page background (warm ivory)                       |
+| `--bg-surface`       | `#FDFAF6`                    | Cards, footer, clean surfaces                      |
+| `--bg-surface-hover` | `#EDE4D3`                    | Hover states, pill containers, form inputs         |
 | `--glass-bg`         | `rgba(255, 255, 255, 0.7)`   | Glassmorphic panels, cards, navbar                 |
 | `--glass-border`     | `rgba(0, 0, 0, 0.08)`        | Borders on glass elements                          |
 | `--border-color`     | `rgba(0, 0, 0, 0.1)`         | Standard borders on non-glass elements             |
-| `--primary`          | `#7393B3`                    | Primary actions, headings in panels, active nav    |
-| `--primary-hover`    | `#5a7691`                    | Hover state for primary elements                   |
-| `--secondary`        | `#8A9A5B`                    | Active tab buttons, subject pill selection, accents|
-| `--text-main`        | `#2d3748`                    | Body text, headings, high-contrast labels          |
-| `--text-muted`       | `#4a5568`                    | Secondary text, labels, table cells                |
+| `--primary`          | `#1E3A5F`                    | Primary actions, headings in panels, active nav    |
+| `--primary-hover`    | `#152D4A`                    | Hover state for primary elements                   |
+| `--secondary`        | `#B05028`                    | Active tab buttons, subject pill selection, accents|
+| `--text-main`        | `#1A2332`                    | Body text, headings, high-contrast labels          |
+| `--text-muted`       | `#3D4F63`                    | Secondary text, labels, table cells                |
 | `--shadow-glow`      | `0 4px 6px rgba(0,0,0,0.05)` | Subtle elevation on hover                          |
-| `--amber`            | `#FFBF00`                    | Sparse highlights (e.g. warning states)            |
-| `--cadmium-red`      | `#D22B2B`                    | Danger/error (alongside `.btn--danger`)            |
+| `--amber`            | `#C48A14`                    | Sparse highlights (e.g. warning states)            |
+| `--cadmium-red`      | `#B83232`                    | Danger/error (alongside `.btn--danger`)            |
 
 ### Semantic One-offs (not variables)
 
@@ -181,7 +181,7 @@ Selected: `--secondary` (green) background.
 
 Inputs, selects, textareas share: `background: var(--bg-surface-hover); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 0.75rem 1rem; font-family: var(--font-main);`
 
-Focus ring: `border-color: var(--primary); box-shadow: 0 0 0 2px rgba(115, 147, 179, 0.2);`
+Focus ring: `border-color: var(--primary); box-shadow: 0 0 0 2px rgba(30, 58, 95, 0.2);`
 
 Label: `color: var(--text-muted); font-size: 0.9rem; margin-bottom: 0.5rem;`
 
@@ -200,7 +200,7 @@ Wrapper: `.data-table` — glass surface + `overflow-x: auto`. Table: `border-co
 ### Badge
 
 ```css
-.badge { background: rgba(138,154,91,0.15); color: var(--secondary); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); border: 1px solid rgba(138,154,91,0.3); }
+.badge { background: rgba(176,80,40,0.15); color: var(--secondary); font-weight: 700; padding: 0.25rem 0.75rem; border-radius: var(--radius-full); border: 1px solid rgba(176,80,40,0.3); }
 .badge--green { background: rgba(16,185,129,0.12); color: #10b981; border-color: rgba(16,185,129,0.35); }
 ```
 

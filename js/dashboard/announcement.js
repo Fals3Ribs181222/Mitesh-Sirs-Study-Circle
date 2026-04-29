@@ -17,8 +17,11 @@ async function loadAnnouncements() {
     btnRefresh.textContent = 'Refresh List';
 
     if (response.success) {
-        if (response.data && response.data.length > 0) {
-            tbody.innerHTML = response.data.reverse().map(ann => `
+        const activeGrade = window.getActiveGrade();
+        let anns = (response.data || []).reverse();
+        if (activeGrade) anns = anns.filter(a => !a.grade || a.grade === activeGrade);
+        if (anns.length > 0) {
+            tbody.innerHTML = anns.map(ann => `
                 <tr class="data-table__row">
                     <td class="data-table__td--main">${window.esc(ann.title) || '-'}</td>
                     <td class="data-table__td">${ann.grade || 'All'}</td>
@@ -44,7 +47,6 @@ function attachAnnouncementListeners() {
     if (!form) return;
 
     window.populateGradeSelect('noticeGrade');
-    window.lockGradeSelect('noticeGrade');
 
     const titleInput = document.getElementById('noticeTitle');
     const textarea = document.getElementById('noticeMessage');

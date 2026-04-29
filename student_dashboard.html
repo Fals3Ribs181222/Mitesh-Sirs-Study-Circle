@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -23,7 +23,7 @@
 <body class="dash-page">
     <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__container" style="padding: 0 2rem;">
-            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;"><span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span></a>
+            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span>Mitesh Sir's Study Circle</span></a>
             <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
                 <li><a href="index" class="navbar__link">Home</a></li>
                 <li><a href="results" class="navbar__link">Results</a></li>
@@ -36,39 +36,39 @@
         <!-- SIDEBAR -->
         <aside class="dash-sidebar" id="dashSidebar">
             <div class="dash-sidebar__top">
-                <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
+                <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span class="dash-sidebar__brand">Mitesh Sir's Study Circle</span></a>
             </div>
             <nav class="dash-sidebar__nav">
                 <button class="dash-sidebar__item dash-sidebar__item--active" data-target="panel-student-home">
-                    <span>⊞</span> Dashboard
+                    <i class="ri-dashboard-line" aria-hidden="true"></i> Dashboard
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-marks">
-                    <span>📝</span> My Marks
+                    <i class="ri-file-text-line" aria-hidden="true"></i> My Marks
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-materials">
-                    <span>📚</span> Materials
+                    <i class="ri-book-2-line" aria-hidden="true"></i> Materials
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-notices">
-                    <span>📢</span> Notice Board
+                    <i class="ri-megaphone-line" aria-hidden="true"></i> Notice Board
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-schedule">
-                    <span>📅</span> Schedule
+                    <i class="ri-calendar-line" aria-hidden="true"></i> Schedule
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-attendance">
-                    <span>✅</span> Attendance
+                    <i class="ri-checkbox-circle-line" aria-hidden="true"></i> Attendance
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-leaderboard">
-                    <span>🏅</span> Leaderboard
+                    <i class="ri-trophy-line" aria-hidden="true"></i> Leaderboard
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-ask-ai">
-                    <span>🧠</span> Ask AI
+                    <i class="ri-brain-line" aria-hidden="true"></i> Ask AI
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-student-profile">
-                    <span>👤</span> My Profile
+                    <i class="ri-user-3-line" aria-hidden="true"></i> My Profile
                 </button>
             </nav>
             <div class="dash-sidebar__bottom">
-                <button class="dash-sidebar__logout" id="btnSidebarLogout">⏻ Logout</button>
+                <button class="dash-sidebar__logout" id="btnSidebarLogout"><i class="ri-logout-box-r-line" aria-hidden="true"></i> Logout</button>
                 <div class="dash-sidebar__profile">
                     <div class="dash-sidebar__avatar" id="sidebarAvatar">S</div>
                     <div>
@@ -109,7 +109,10 @@
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-student-marks')">My Marks</button>
                             </div>
                             <div id="homeUpcomingTests" class="tests-preview-list">
-                                <p class="loading-text">Loading...</p>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <span class="visually-hidden" role="status">Loading tests</span>
                             </div>
                         </div>
 
@@ -117,20 +120,25 @@
                         <div class="dash-widget">
                             <div class="dash-widget__header">
                                 <div>
-                                    <h3>🏆 Leaderboard</h3>
+                                    <h3><i class="ri-trophy-line" aria-hidden="true"></i> Leaderboard</h3>
                                     <span class="dash-widget__badge" id="homeLBBadge">GRADE</span>
                                 </div>
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-student-leaderboard')">Full Board</button>
                             </div>
                             <div class="mini-leaderboard" id="homeMiniLeaderboard">
-                                <p class="loading-text">Loading...</p>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <span class="visually-hidden" role="status">Loading leaderboard</span>
                             </div>
                         </div>
 
                         <!-- Ask AI widget -->
                         <div class="dash-widget">
                             <div class="dash-widget__header">
-                                <h3>🧠 Ask AI</h3>
+                                <h3><i class="ri-brain-line" aria-hidden="true"></i> Ask AI</h3>
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-student-ask-ai')">Open AI</button>
                             </div>
                             <select id="homeAiSubject" class="form__select">
@@ -153,12 +161,6 @@
 
     <!-- Sidebar backdrop (mobile) -->
     <div class="dash-sidebar-backdrop" id="sidebarBackdrop"></div>
-
-    <footer class="footer" style="background: var(--glass-bg); backdrop-filter: blur(16px); padding: 1rem 0; border-top: 1px solid var(--border-color);">
-        <div class="container">
-            <p style="text-align:center; font-size:0.875rem; color:var(--text-muted); margin:0;">&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
-        </div>
-    </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
@@ -256,7 +258,7 @@
 
             // ── Attendance rings (per subject) ────────────────────────
             const attRecords = attRes.data || [];
-            const colorMap = { present: '#1D9E75', late: '#BA7517', absent: '#E24B4A' };
+            const colorMap = { present: '#00A36C', late: '#C48A14', absent: '#C41230' };
             const circumference = 2 * Math.PI * 50;
 
             // Group records by subject; fall back to 'Overall' if no subject info
@@ -283,7 +285,7 @@
                 const absent  = recs.filter(r => r.status === 'absent').length;
                 const late    = recs.filter(r => r.status === 'late').length;
                 const pct     = total > 0 ? Math.round(((present + late) / total) * 100) : 0;
-                const ringColor = pct >= 80 ? '#1D9E75' : pct >= 60 ? '#BA7517' : '#E24B4A';
+                const ringColor = pct >= 80 ? '#00A36C' : pct >= 60 ? '#C48A14' : '#C41230';
                 const ringId  = `attRingFill_${idx}`;
 
                 const datedSubjRecs = recs.filter(r => r.date).sort((a, b) => a.date.localeCompare(b.date));
@@ -311,9 +313,9 @@
                             </div>
                             <div style="display:flex;gap:1rem;flex-wrap:wrap;">
                                 <div><p style="font-size:2.25rem;font-weight:700;color:var(--primary);margin:0">${total || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Total</p></div>
-                                <div><p style="font-size:2.25rem;font-weight:700;color:#1D9E75;margin:0">${present || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Present</p></div>
-                                <div><p style="font-size:2.25rem;font-weight:700;color:#E24B4A;margin:0">${absent || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Absent</p></div>
-                                <div><p style="font-size:2.25rem;font-weight:700;color:#BA7517;margin:0">${late || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Late</p></div>
+                                <div><p style="font-size:2.25rem;font-weight:700;color:var(--grade-12);margin:0">${present || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Present</p></div>
+                                <div><p style="font-size:2.25rem;font-weight:700;color:var(--grade-11);margin:0">${absent || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Absent</p></div>
+                                <div><p style="font-size:2.25rem;font-weight:700;color:var(--amber);margin:0">${late || '—'}</p><p style="font-size:1rem;color:var(--text-muted);margin:0">Late</p></div>
                             </div>
                         </div>
                         <div style="display:flex;flex-wrap:wrap;gap:4px;">${dotsHtml}</div>
@@ -424,3 +426,6 @@
 </body>
 
 </html>
+
+
+

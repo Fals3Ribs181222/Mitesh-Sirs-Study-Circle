@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -26,6 +26,7 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css">
     <style>
         /* ── About page specific styles ── */
         .about-hero {
@@ -351,8 +352,8 @@
         <div class="navbar__container" style="padding: 0 2rem;">
             <button class="navbar__toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
             <a href="index" class="navbar__logo">
-                <img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;">
-                <span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span>
+                <img src="logo.png" alt="Mitesh Sir's Study Circle">
+                <span>Mitesh Sir's Study Circle</span>
             </a>
             <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
                 <li><a href="index" class="navbar__link">Home</a></li>
@@ -367,14 +368,14 @@
     <!-- Mobile sidebar -->
     <aside class="dash-sidebar dash-sidebar--floating" id="dashSidebar">
         <div class="dash-sidebar__top">
-            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
+            <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span class="dash-sidebar__brand">Mitesh Sir's Study Circle</span></a>
         </div>
         <nav class="dash-sidebar__nav">
-            <a href="index" class="dash-sidebar__item">🏠 Home</a>
-            <a href="about" class="dash-sidebar__item dash-sidebar__item--active">👨‍🏫 About</a>
-            <a href="testimonials" class="dash-sidebar__item">⭐ Testimonials</a>
-            <a href="results" class="dash-sidebar__item">📊 Results</a>
-            <a href="login" class="dash-sidebar__item">🔑 Login</a>
+            <a href="index" class="dash-sidebar__item"><i class="ri-home-line" aria-hidden="true"></i> Home</a>
+            <a href="about" class="dash-sidebar__item dash-sidebar__item--active"><i class="ri-user-3-line" aria-hidden="true"></i> About</a>
+            <a href="testimonials" class="dash-sidebar__item"><i class="ri-star-line" aria-hidden="true"></i> Testimonials</a>
+            <a href="results" class="dash-sidebar__item"><i class="ri-bar-chart-line" aria-hidden="true"></i> Results</a>
+            <a href="login" class="dash-sidebar__item"><i class="ri-login-box-line" aria-hidden="true"></i> Login</a>
         </nav>
     </aside>
     <div class="dash-sidebar-backdrop" id="sidebarBackdrop"></div>
@@ -390,7 +391,7 @@
         <!-- Bio Split -->
         <section class="about-bio container" aria-label="Biography">
             <div class="about-bio__photo">
-                <div class="about-bio__photo-icon">👨‍🏫</div>
+                <div class="about-bio__photo-icon"><i class="ri-user-3-line" aria-hidden="true"></i></div>
                 <div class="about-bio__name">Mitesh Bhatt</div>
                 <div class="about-bio__title">M.Com · B.Ed · ISC Accountancy Expert</div>
             </div>
@@ -417,22 +418,22 @@
             <p class="section-heading__sub">My career, measured in student outcomes.</p>
             <div class="about-achievements__grid">
                 <article class="achievement-card">
-                    <div class="achievement-card__icon">📅</div>
+                    <div class="achievement-card__icon"><i class="ri-calendar-line" aria-hidden="true"></i></div>
                     <div class="achievement-card__value">22</div>
                     <div class="achievement-card__label">Years of Teaching Experience</div>
                 </article>
                 <article class="achievement-card">
-                    <div class="achievement-card__icon">📈</div>
+                    <div class="achievement-card__icon"><i class="ri-line-chart-line" aria-hidden="true"></i></div>
                     <div class="achievement-card__value">75→97%</div>
                     <div class="achievement-card__label">Class Average Improvement</div>
                 </article>
                 <article class="achievement-card">
-                    <div class="achievement-card__icon">🎓</div>
+                    <div class="achievement-card__icon"><i class="ri-graduation-cap-line" aria-hidden="true"></i></div>
                     <div class="achievement-card__value">150+</div>
                     <div class="achievement-card__label">College Recommendation Letters</div>
                 </article>
                 <article class="achievement-card">
-                    <div class="achievement-card__icon">👥</div>
+                    <div class="achievement-card__icon"><i class="ri-team-line" aria-hidden="true"></i></div>
                     <div class="achievement-card__value">120+</div>
                     <div class="achievement-card__label">Students Mentored Annually</div>
                 </article>
@@ -538,42 +539,42 @@
             <p class="section-heading__sub">Here's how my work has been recognised beyond the classroom.</p>
             <div class="awards-list">
                 <div class="award-item">
-                    <div class="award-item__icon">🏆</div>
+                    <div class="award-item__icon"><i class="ri-trophy-line" aria-hidden="true"></i></div>
                     <div>
                         <div class="award-item__title">Best Teacher Award</div>
                         <div class="award-item__detail">Rotary Club of Matunga · 2015</div>
                     </div>
                 </div>
                 <div class="award-item">
-                    <div class="award-item__icon">📋</div>
+                    <div class="award-item__icon"><i class="ri-clipboard-line" aria-hidden="true"></i></div>
                     <div>
                         <div class="award-item__title">Head of Department — Accountancy</div>
                         <div class="award-item__detail">Jamnabai Narsee School · 2019–2025</div>
                     </div>
                 </div>
                 <div class="award-item">
-                    <div class="award-item__icon">📝</div>
+                    <div class="award-item__icon"><i class="ri-file-text-line" aria-hidden="true"></i></div>
                     <div>
                         <div class="award-item__title">Examination Coordinator — Accountancy</div>
                         <div class="award-item__detail">Jamnabai Narsee School · 2025</div>
                     </div>
                 </div>
                 <div class="award-item">
-                    <div class="award-item__icon">🎙</div>
+                    <div class="award-item__icon"><i class="ri-mic-line" aria-hidden="true"></i></div>
                     <div>
                         <div class="award-item__title">Resource Person — Council Account Cell Meeting</div>
                         <div class="award-item__detail">CISCE Council · 2015 &amp; 2025</div>
                     </div>
                 </div>
                 <div class="award-item">
-                    <div class="award-item__icon">🔍</div>
+                    <div class="award-item__icon"><i class="ri-search-eye-line" aria-hidden="true"></i></div>
                     <div>
                         <div class="award-item__title">External Examiner</div>
                         <div class="award-item__detail">CISCE Council · 2013 – present</div>
                     </div>
                 </div>
                 <div class="award-item">
-                    <div class="award-item__icon">📚</div>
+                    <div class="award-item__icon"><i class="ri-book-2-line" aria-hidden="true"></i></div>
                     <div>
                         <div class="award-item__title">Nistha Course &amp; Multiple CISCE Accountancy Training Programmes</div>
                         <div class="award-item__detail">CISCE Council</div>
@@ -623,9 +624,6 @@
                     </ul>
                 </div>
             </div>
-            <div class="footer__bottom">
-                <p>&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
-            </div>
         </div>
     </footer>
 
@@ -653,3 +651,4 @@
 </body>
 
 </html>
+

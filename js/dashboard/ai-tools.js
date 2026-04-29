@@ -647,7 +647,7 @@ function attachAIToolListeners() {
             });
             if (!res.success) throw new Error(res.error);
 
-            window.showStatus('testStatus', `✅ Saved "${title}" to Materials → Tests.`, 'success');
+            window.showStatus('testStatus', `Saved "${title}" to Materials → Tests.`, 'success');
         } catch (err) {
             console.error('Save to Materials error:', err);
             window.showStatus('testStatus', err.message || 'Failed to save to Materials.', 'error');
@@ -725,7 +725,6 @@ function filterMaterialDropdown() {
 export function init() {
     window.populateGradeSelect('doubtGrade');
     window.populateGradeSelect('testGrade', false);
-    window.lockGradeSelect('doubtGrade', 'testGrade');
     attachAIToolListeners();
     populateMaterialDropdown();
 }

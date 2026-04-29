@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -23,7 +23,7 @@
 <body class="is-home-active dash-page">
     <nav class="navbar" aria-label="Main navigation">
         <div class="navbar__container" style="padding: 0 2rem;">
-            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:70px;width:auto;display:block;"><span style="font-size:1rem;font-weight:700;color:var(--text-primary,#1a1a2e);white-space:nowrap;">Mitesh Sir's Study Circle</span></a>
+            <a href="index" class="navbar__logo"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span>Mitesh Sir's Study Circle</span></a>
             <ul class="navbar__links" style="background:none;border:none;padding:0;gap:0.25rem;">
                 <li><a href="index" class="navbar__link">Home</a></li>
                 <li><a href="testimonials" class="navbar__link">Testimonials</a></li>
@@ -37,42 +37,51 @@
         <!-- SIDEBAR -->
         <aside class="dash-sidebar" id="dashSidebar">
             <div class="dash-sidebar__top">
-                <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle" style="height:72px;width:auto;"></a>
+                <a href="index"><img src="logo.png" alt="Mitesh Sir's Study Circle"><span class="dash-sidebar__brand">Mitesh Sir's Study Circle</span></a>
             </div>
+
             <nav class="dash-sidebar__nav">
                 <button class="dash-sidebar__item dash-sidebar__item--active" data-target="panel-home">
-                    <span>⊞</span> Dashboard
+                    <i class="ri-dashboard-line" aria-hidden="true"></i> Dashboard
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-students">
-                    <span>🎓</span> Students
+                    <i class="ri-graduation-cap-line" aria-hidden="true"></i> Students
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-material">
-                    <span>📚</span> Materials
+                    <i class="ri-book-2-line" aria-hidden="true"></i> Materials
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-test">
-                    <span>📝</span> Tests
+                    <i class="ri-file-text-line" aria-hidden="true"></i> Tests
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-announcement">
-                    <span>📢</span> Announcements
+                    <i class="ri-megaphone-line" aria-hidden="true"></i> Announcements
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-batches">
-                    <span>🧑‍🤝‍🧑</span> Batches
+                    <i class="ri-team-line" aria-hidden="true"></i> Batches
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-schedule">
-                    <span>📅</span> Schedule
+                    <i class="ri-calendar-line" aria-hidden="true"></i> Schedule
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-messages">
-                    <span>💬</span> Messages
+                    <i class="ri-chat-3-line" aria-hidden="true"></i> Messages
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-ai-tools">
-                    <span>🧠</span> AI Tools
+                    <i class="ri-brain-line" aria-hidden="true"></i> AI Tools
                 </button>
                 <button class="dash-sidebar__item" data-target="panel-leaderboard">
-                    <span>🏅</span> Leaderboard
+                    <i class="ri-trophy-line" aria-hidden="true"></i> Leaderboard
                 </button>
             </nav>
             <div class="dash-sidebar__bottom">
-                <button class="dash-sidebar__logout" id="btnSidebarLogout">⏻ Logout</button>
+                <!-- Grade switcher (shown only for All Grades teachers) -->
+                <div class="dash-grade-bar" id="gradeBar" style="display:none;">
+                    <span class="dash-grade-bar__label">Grade</span>
+                    <div class="pill-toggle">
+                        <button class="pill-toggle__btn grade-pill-btn" data-grade="11th">11th</button>
+                        <button class="pill-toggle__btn grade-pill-btn" data-grade="12th">12th</button>
+                    </div>
+                </div>
+                <button class="dash-sidebar__logout" id="btnSidebarLogout"><i class="ri-logout-box-r-line" aria-hidden="true"></i> Logout</button>
                 <div class="dash-sidebar__profile">
                     <div class="dash-sidebar__avatar" id="sidebarAvatar">T</div>
                     <div>
@@ -98,31 +107,36 @@
                         <div class="dash-widget dash-widget--classes dash-widget--full">
                             <div class="dash-widget__header">
                                 <div>
-                                    <h3>Today's Classes</h3>
+                                    <h3><i class="ri-calendar-check-line" aria-hidden="true"></i> Today's Classes</h3>
                                     <p class="dash-widget__sub" id="todayDate">—</p>
                                 </div>
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-schedule')">View Full Schedule</button>
                             </div>
                             <div class="classes-list" id="todaysClassesList">
-                                <p class="loading-text">Loading...</p>
+                                <div class="skeleton skeleton--card" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--card" aria-hidden="true"></div>
+                                <span class="visually-hidden" role="status">Loading today's classes</span>
                             </div>
                         </div>
 
                         <!-- Widget 2: Tests Preview (1 past + 2 upcoming) -->
                         <div class="dash-widget dash-widget--tests">
                             <div class="dash-widget__header">
-                                <h3>Tests</h3>
+                                <h3><i class="ri-file-list-3-line" aria-hidden="true"></i> Tests</h3>
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-test')">View All</button>
                             </div>
                             <div class="tests-preview-list" id="testsPreviewList">
-                                <p class="loading-text">Loading...</p>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <span class="visually-hidden" role="status">Loading tests</span>
                             </div>
                         </div>
 
                         <!-- Widget 3: Quick Announcement -->
                         <div class="dash-widget dash-widget--announce">
                             <div class="dash-widget__header">
-                                <h3>Quick Announcement</h3>
+                                <h3><i class="ri-megaphone-line" aria-hidden="true"></i> Quick Announcement</h3>
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-announcement')">View All</button>
                             </div>
                             <form class="quick-announce-form" id="quickAnnounceForm">
@@ -140,13 +154,17 @@
                         <div class="dash-widget dash-widget--leaderboard">
                             <div class="dash-widget__header">
                                 <div>
-                                    <h3>🏆 Leaderboard</h3>
-                                    <span class="dash-widget__badge">GLOBAL RANK</span>
+                                    <h3><i class="ri-trophy-line" aria-hidden="true"></i> Leaderboard</h3>
                                 </div>
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-leaderboard')">Full Board</button>
                             </div>
                             <div class="mini-leaderboard" id="miniLeaderboard">
-                                <p class="loading-text">Loading...</p>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <div class="skeleton skeleton--row" aria-hidden="true"></div>
+                                <span class="visually-hidden" role="status">Loading leaderboard</span>
                             </div>
                         </div>
 
@@ -196,11 +214,25 @@
         </div>
     </div>
 
-    <footer class="footer" style="background: var(--glass-bg); backdrop-filter: blur(16px); padding: 1rem 0; border-top: 1px solid var(--border-color);">
-        <div class="container">
-            <p style="text-align:center; font-size:0.875rem; color:var(--text-muted); margin:0;">&copy; 2026 Mitesh Sir's Study Circle. All rights reserved.</p>
-        </div>
-    </footer>
+    <!-- Sync grade init: read from URL or localStorage before any tab loads -->
+    <script>
+        (function () {
+            // If the teacher is grade-scoped (single grade), use their profile grade directly.
+            // This avoids a flash of wrong data before the async auth guard resolves.
+            try {
+                const profile = JSON.parse(localStorage.getItem('mitesh_tutions_user') || '{}');
+                const pg = profile.grade;
+                if (pg && pg !== 'All Grades' && !pg.includes(',') && (pg === '11th' || pg === '12th')) {
+                    window._activeGrade = pg;
+                    return;
+                }
+            } catch (_) {}
+            const urlGrade = new URLSearchParams(location.search).get('grade');
+            const stored = localStorage.getItem('tuteflow_activeGrade');
+            const resolved = urlGrade || stored || '11th';
+            window._activeGrade = (resolved === '11th' || resolved === '12th') ? resolved : '11th';
+        })();
+    </script>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked@15/marked.min.js"></script>
@@ -227,7 +259,7 @@
         });
     </script>
 
-    <!-- Auth guard -->
+    <!-- Auth guard + grade bar wiring -->
     <script>
         (async () => {
             const user = await window.auth.requireRole("teacher");
@@ -235,6 +267,36 @@
             document.getElementById("sidebarName").textContent = user.name;
             document.getElementById("sidebarAvatar").textContent = user.name?.[0]?.toUpperCase() || 'T';
             window.auth.refreshProfile();
+
+            const isMultiGrade = !user.grade || user.grade === 'All Grades' || user.grade.includes(',');
+
+            if (isMultiGrade) {
+                // Show the grade switcher bar
+                const gradeBar = document.getElementById('gradeBar');
+                gradeBar.style.display = '';
+                gradeBar.querySelectorAll('.grade-pill-btn').forEach(btn => {
+                    btn.classList.toggle('grade-pill-btn--active', btn.dataset.grade === window._activeGrade);
+                });
+
+                gradeBar.querySelectorAll('.grade-pill-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        if (btn.dataset.grade === window._activeGrade) return;
+                        window._activeGrade = btn.dataset.grade;
+                        localStorage.setItem('tuteflow_activeGrade', window._activeGrade);
+                        const hash = location.hash || '';
+                        history.replaceState(null, '', `?grade=${encodeURIComponent(window._activeGrade)}${hash}`);
+                        gradeBar.querySelectorAll('.grade-pill-btn').forEach(b => {
+                            b.classList.toggle('grade-pill-btn--active', b === btn);
+                        });
+                        // Refresh whichever tab is currently active
+                        const activePanel = document.querySelector('.tabs__panel--active');
+                        if (activePanel && typeof window.loadTab === 'function') window.loadTab(activePanel.id);
+                    });
+                });
+            } else {
+                // Scoped teacher: override _activeGrade to their fixed grade, no switcher shown
+                window._activeGrade = user.grade;
+            }
         })();
     </script>
 
@@ -311,7 +373,11 @@
                 const todays = classesRes.data.filter(c =>
                     c.class_date === todayIso || (!c.class_date && c.day_of_week === todayDow)
                 );
-                if (todays.length) {
+                const activeGradeForWidget = window.getActiveGrade ? window.getActiveGrade() : null;
+                const filteredTodays = activeGradeForWidget
+                    ? todays.filter(c => c.batches?.grade === activeGradeForWidget)
+                    : todays;
+                if (filteredTodays.length) {
                     const renderCard = c => {
                         const timeStr = window.formatTime ? window.formatTime(c.start_time) : c.start_time;
                         const isExtra = c.type === 'extra';
@@ -333,12 +399,7 @@
                             </div>
                         </div>`;
                     };
-                    const col11 = todays.filter(c => c.batches?.grade === window._Grade11);
-                    const col12 = todays.filter(c => c.batches?.grade === window._Grade12);
-                    todaysList.innerHTML = `
-                        <div class="classes-col">${col11.map(renderCard).join('') || '<p class="loading-text">No 11th classes today.</p>'}</div>
-                        <div class="classes-col">${col12.map(renderCard).join('') || '<p class="loading-text">No 12th classes today.</p>'}</div>
-                    `;
+                    todaysList.innerHTML = `<div class="classes-col">${filteredTodays.map(renderCard).join('')}</div>`;
                     todaysList.querySelectorAll('.class-item[data-class-id]').forEach(item => {
                         item.addEventListener('click', async () => {
                             await window.loadTab('panel-attendance');
@@ -358,8 +419,12 @@
             const testsRes = await window.api.get('tests', {}, '*', { order: 'date', ascending: true });
             const testsList = document.getElementById('testsPreviewList');
             if (testsRes.success && testsRes.data && testsRes.data.length) {
-                const past = testsRes.data.filter(t => t.date < todayIso).slice(-1);
-                const upcoming = testsRes.data.filter(t => t.date >= todayIso).slice(0, 2);
+                const activeGradeForTests = window.getActiveGrade ? window.getActiveGrade() : null;
+                const allTests = activeGradeForTests
+                    ? testsRes.data.filter(t => t.grade === activeGradeForTests)
+                    : testsRes.data;
+                const past = allTests.filter(t => t.date < todayIso).slice(-1);
+                const upcoming = allTests.filter(t => t.date >= todayIso).slice(0, 2);
                 const show = [...past, ...upcoming];
                 if (show.length) {
                     testsList.innerHTML = show.map(t => {
@@ -382,8 +447,7 @@
 
             // --- Quick Announcement form ---
             window.populateGradeSelect('qaGrade', true);
-            window.lockGradeSelect('qaGrade');
-            document.getElementById('quickAnnounceForm').addEventListener('submit', async (e) => {
+            document.getElementById('quickAnnounceForm').onsubmit = async (e) => {
                 e.preventDefault();
                 const btn = document.getElementById('btnQASubmit');
                 btn.disabled = true;
@@ -400,14 +464,14 @@
                     window.showStatus('qaStatus', 'Announcement posted!', 'success');
                     document.getElementById('quickAnnounceForm').reset();
                     window.populateGradeSelect('qaGrade', true);
-                    window.lockGradeSelect('qaGrade');
                 } else {
                     window.showStatus('qaStatus', res.error || 'Failed to post.', 'error');
                 }
-            });
+            };
 
             // --- Mini Leaderboard (top 3) ---
-            const gradeFilter = user.grade && user.grade !== 'All Grades' ? { grade: user.grade } : {};
+            const activeGradeForLb = window.getActiveGrade ? window.getActiveGrade() : null;
+            const gradeFilter = activeGradeForLb ? { grade: activeGradeForLb } : {};
             const lbRes = await window.api.get(
                 'student_rankings', gradeFilter, '*',
                 { order: 'rank', ascending: true }
@@ -430,6 +494,7 @@
             }
         }
 
+        window.loadDashboardWidgets = loadDashboardWidgets;
         document.addEventListener('DOMContentLoaded', loadDashboardWidgets);
     </script>
 
@@ -437,3 +502,4 @@
 </body>
 
 </html>
+

@@ -75,16 +75,19 @@ function renderTable(rows, tbodyId, avgId) {
 }
 
 function applyGradeVisibility() {
-    const teacherGrade = window.auth.getUser()?.grade;
-    if (!teacherGrade || teacherGrade === 'All Grades') return;
-
     const col11 = document.getElementById('leaderboardCol11');
     const col12 = document.getElementById('leaderboardCol12');
     const grid = document.getElementById('leaderboardColumns');
 
-    if (teacherGrade === window._Grade11 && col12) col12.style.display = 'none';
-    if (teacherGrade === window._Grade12 && col11) col11.style.display = 'none';
+    if (col11) col11.style.display = '';
+    if (col12) col12.style.display = '';
+    if (grid) grid.classList.remove('leaderboard-grid--single');
 
+    const activeGrade = window.getActiveGrade();
+    if (!activeGrade) return;
+
+    if (activeGrade === window._Grade11 && col12) col12.style.display = 'none';
+    if (activeGrade === window._Grade12 && col11) col11.style.display = 'none';
     if (grid) grid.classList.add('leaderboard-grid--single');
 }
 
@@ -95,5 +98,6 @@ export function init() {
 }
 
 export function refresh() {
+    applyGradeVisibility();
     loadRankings();
 }

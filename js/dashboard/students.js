@@ -34,11 +34,8 @@ export async function loadStudents() {
 
     if (response.success) {
         let students = response.data || [];
-        const teacherGrade = window.auth.getUser()?.grade;
-        if (teacherGrade && teacherGrade !== 'All Grades') {
-            const allowedGrades = teacherGrade.split(',').map(g => g.trim()).filter(Boolean);
-            students = students.filter(s => allowedGrades.includes(s.grade));
-        }
+        const activeGrade = window.getActiveGrade();
+        if (activeGrade) students = students.filter(s => s.grade === activeGrade);
         allStudents = students;
 
         // Load batches + memberships in parallel, then populate filter
@@ -190,7 +187,6 @@ function attachAddStudentListeners() {
     if (!form) return;
 
     window.populateGradeSelect('studentGrade', false);
-    window.lockGradeSelect('studentGrade');
 
     const nameInput = document.getElementById('studentName');
     const usernameInput = document.getElementById('studentUsername');
@@ -261,7 +257,7 @@ function attachAddStudentListeners() {
                 status.className = 'status status--error';
                 status.style.display = 'block';
             } else {
-                status.innerHTML = `<strong>✓ Student registered!</strong><br>
+                status.innerHTML = `<strong><i class="ri-check-line" aria-hidden="true"></i> Student registered!</strong><br>
                     Name: ${window.esc(name)}<br>Username: ${window.esc(username)}<br>Grade: ${window.esc(grade)}<br>
                     The student can now log in.`;
                 status.className = 'status status--info';
@@ -304,10 +300,7 @@ export function init() {
     if (studentSubjectFilter) studentSubjectFilter.addEventListener('change', filterStudents);
     if (studentBatchFilter) studentBatchFilter.addEventListener('change', filterStudents);
 
-    const teacherGrade = window.auth.getUser()?.grade;
-    if (teacherGrade && teacherGrade !== 'All Grades' && studentGradeFilter) {
-        studentGradeFilter.style.display = 'none';
-    }
+    if (studentGradeFilter) studentGradeFilter.style.display = 'none';
 
     const pillView = document.getElementById('pillViewStudents');
     const pillAdd = document.getElementById('pillAddStudent');

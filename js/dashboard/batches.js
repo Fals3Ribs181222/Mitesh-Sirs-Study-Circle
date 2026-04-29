@@ -20,7 +20,11 @@ async function loadBatches() {
     btnRefresh.textContent = 'Refresh List';
 
     if (batchRes.success) {
-        if (batchRes.data && batchRes.data.length > 0) {
+        const activeGrade = window.getActiveGrade();
+        const batchData = activeGrade
+            ? (batchRes.data || []).filter(b => b.grade === activeGrade)
+            : (batchRes.data || []);
+        if (batchData.length > 0) {
             const countRes = await window.api.get('batch_students', {}, 'batch_id');
             const counts = {};
             if (countRes.success && countRes.data) {
@@ -29,7 +33,7 @@ async function loadBatches() {
                 });
             }
 
-            tbody.innerHTML = [...batchRes.data].sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(batch => {
+            tbody.innerHTML = [...batchData].sort((a, b) => (a.name || '').localeCompare(b.name || '')).map(batch => {
                 let scheduleStr = 'No schedule';
                 if (batch.classes && batch.classes.length > 0) {
                     const regularClasses = batch.classes.filter(c => c.type === 'regular');
@@ -72,7 +76,6 @@ function attachBatchFormListeners() {
     const form = document.getElementById('batchForm');
     if (!form) return;
     window.populateGradeSelect('batchGrade', false);
-    window.lockGradeSelect('batchGrade');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();

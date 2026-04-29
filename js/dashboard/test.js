@@ -17,8 +17,12 @@ async function loadTestsList() {
     btnRefresh.textContent = 'Refresh List';
 
     if (response.success) {
-        if (response.data && response.data.length > 0) {
-            tbody.innerHTML = response.data.map(test => {
+        const activeGrade = window.getActiveGrade();
+        const tests = activeGrade
+            ? (response.data || []).filter(t => t.grade === activeGrade)
+            : (response.data || []);
+        if (tests.length > 0) {
+            tbody.innerHTML = tests.map(test => {
                 const schools = Array.isArray(test.schools) && test.schools.length > 0
                     ? test.schools.join(', ')
                     : 'All';
@@ -52,7 +56,6 @@ function attachTestListeners() {
     if (!form) return;
 
     window.populateGradeSelect('schedTestGrade', false);
-    window.lockGradeSelect('schedTestGrade');
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
