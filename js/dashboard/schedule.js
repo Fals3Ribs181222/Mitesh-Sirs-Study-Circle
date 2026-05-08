@@ -76,13 +76,13 @@ async function renderCalendar() {
 
         dayClasses.forEach(c => {
             const pill = document.createElement('div');
-            const batchGrade = c.batches?.grade || '';
+            const batchGrade = c.grade || c.batches?.grade || '';
             const gradeClass = batchGrade.includes('11') ? 'calendar__pill--grade-11'
                 : batchGrade.includes('12') ? 'calendar__pill--grade-12'
                 : `calendar__pill--${c.type}`;
             pill.className = `calendar__pill ${gradeClass}`;
             const batchSubject = c.batches?.subject || '';
-            const batchName = c.batches?.name || '';
+            const batchName = c.batches?.name || 'Open Class';
             pill.innerHTML = `
                 <div class="calendar__pill-time">${window.formatTime(c.start_time)}</div>
                 <div class="calendar__pill-title">${window.esc(batchGrade)} ${window.esc(batchSubject)}</div>
@@ -99,7 +99,8 @@ async function renderCalendar() {
                 id: c.id,
                 class_group_id: c.class_group_id,
                 title: c.title,
-                batchName: c.batches ? c.batches.name : 'Unknown Batch',
+                batchName: c.batches?.name || 'Open Class',
+                grade: c.grade || c.batches?.grade || '',
                 timeSpan: `${window.formatTime(c.start_time)} – ${window.formatTime(c.end_time)}`,
                 startTime: c.start_time.substring(0, 5),
                 type: c.type,
@@ -113,7 +114,7 @@ async function renderCalendar() {
                 const data = JSON.parse(e.currentTarget.dataset.classData);
                 await window.loadTab('panel-attendance');
                 if (window.openAttendanceGrid) {
-                    window.openAttendanceGrid(data.id, data.batch_id, data.title, data.batchName, data.startTime, data.date);
+                    window.openAttendanceGrid(data.id, data.batch_id, data.title, data.batchName, data.startTime, data.date, data.grade);
                 }
             });
 
@@ -141,27 +142,54 @@ async function loadClassComponent() {
     }
 }
 
-async function refreshBatchDropdown() {
-    const select = document.getElementById('classBatch');
-    if (!select) return;
+function filterBatchByGrade(grade) {
+    const batchSelect = document.getElementById('classBatch');
+    if (!batchSelect) return;
+    Array.from(batchSelect.options).forEach(opt => {
+        if (!opt.value) return;
+        opt.style.display = (!grade || opt.dataset.gradeFilter === grade) ? '' : 'none';
+    });
+    const sel = batchSelect.options[batchSelect.selectedIndex];
+    if (sel && sel.value && sel.style.display === 'none') batchSelect.value = '';
+}
 
-    select.innerHTML = '<option value="">-- Select Batch --</option>';
+async function refreshFormDropdowns() {
+    const gradeSelect = document.getElementById('classGrade');
+    const batchSelect = document.getElementById('classBatch');
+    if (!gradeSelect || !batchSelect) return;
+
+    batchSelect.innerHTML = '<option value="">-- No Batch (Open Class) --</option>';
+
     const res = await window.api.get('batches');
-    if (res.success && res.data) {
-        const sorted = (res.data || []).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-        sorted.forEach(batch => {
-            const opt = document.createElement('option');
-            opt.value = batch.id;
-            const subject = batch.subject || 'General Segment';
-            const grade = batch.grade || 'General Grade';
-            const name = batch.name || 'Unknown Batch';
-            opt.textContent = `${grade} – ${name} – ${subject}`;
-            opt.dataset.subject = subject;
-            opt.dataset.name = name;
-            opt.dataset.grade = grade;
-            select.appendChild(opt);
-        });
-    }
+    if (!res.success || !res.data) return;
+
+    const sorted = (res.data || []).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+
+    const grades = [...new Set(sorted.map(b => b.grade).filter(Boolean))].sort();
+    gradeSelect.innerHTML = '<option value="">-- Select Grade --</option>';
+    grades.forEach(g => {
+        const opt = document.createElement('option');
+        opt.value = g;
+        opt.textContent = g;
+        gradeSelect.appendChild(opt);
+    });
+
+    sorted.forEach(batch => {
+        const opt = document.createElement('option');
+        opt.value = batch.id;
+        const subject = batch.subject || 'General Segment';
+        const grade = batch.grade || '';
+        const name = batch.name || 'Unknown Batch';
+        opt.textContent = `${name} – ${subject}`;
+        opt.dataset.subject = subject;
+        opt.dataset.name = name;
+        opt.dataset.grade = grade;
+        opt.dataset.gradeFilter = grade;
+        batchSelect.appendChild(opt);
+    });
+
+    gradeSelect.addEventListener('change', () => filterBatchByGrade(gradeSelect.value));
+    filterBatchByGrade(gradeSelect.value);
 }
 
 function attachClassFormListeners() {
@@ -302,20 +330,26 @@ function attachClassFormListeners() {
         status.style.display = 'none';
 
         const type = typeInput?.value || 'regular';
+        const gradeSelect = document.getElementById('classGrade');
         const batchSelect = document.getElementById('classBatch');
-        const selectedOption = batchSelect.options[batchSelect.selectedIndex];
-        const subjectName = selectedOption ? selectedOption.dataset.subject : 'Class';
-        const batchName = selectedOption ? selectedOption.dataset.name : 'Batch';
-        const gradeName = selectedOption ? selectedOption.dataset.grade : 'Grade';
+        const gradeName = gradeSelect?.value || '';
+        const batchOpt = batchSelect.value ? batchSelect.options[batchSelect.selectedIndex] : null;
+        const subjectName = batchOpt?.dataset.subject || '';
+        const batchName = batchOpt?.dataset.name || '';
 
-        const autoTitle = type === 'regular'
-            ? `${gradeName} – ${batchName} – ${subjectName}`
-            : `${gradeName} – ${batchName} – ${subjectName} (Extra)`;
+        const autoTitle = batchOpt
+            ? (type === 'regular'
+                ? `${gradeName} – ${batchName} – ${subjectName}`
+                : `${gradeName} – ${batchName} – ${subjectName} (Extra)`)
+            : (type === 'regular'
+                ? `${gradeName} – Open Class`
+                : `${gradeName} – Open Class (Extra)`);
 
         const sharedGroupId = crypto.randomUUID();
 
         const basePayload = {
-            batch_id: batchSelect.value,
+            batch_id: batchSelect.value || null,
+            grade: gradeName,
             title: autoTitle,
             type: type,
             start_time: document.getElementById('classStartTime').value,
@@ -402,27 +436,32 @@ window.openClassModal = async function (data) {
 
     const tbody = document.getElementById('modalStudentList');
     const countSpan = document.getElementById('modalStudentCount');
-    tbody.innerHTML = '<tr><td colspan="2" class="loading-text">Loading students...</td></tr>';
 
     classModal.style.display = 'flex';
 
-    const res = await window.api.get('batch_students', { batch_id: data.batch_id }, '*, profiles:student_id(name, grade)');
-    if (res.success && res.data) {
-        countSpan.textContent = res.data.length;
-        if (res.data.length > 0) {
-            tbody.innerHTML = res.data.map(m => {
-                const p = m.profiles || {};
-                return `<tr>
-                            <td>${window.esc(p.name) || '-'}</td>
-                            <td>${window.esc(p.grade) || '-'}</td>
-                        </tr>`;
-            }).join('');
-        } else {
-            tbody.innerHTML = '<tr><td colspan="2" class="loading-text">No students enrolled in this batch.</td></tr>';
-        }
-    } else {
-        tbody.innerHTML = '<tr><td colspan="2" class="loading-text">Failed to load students.</td></tr>';
+    if (!data.batch_id) {
         countSpan.textContent = '0';
+        tbody.innerHTML = '<tr><td colspan="2" class="loading-text">Open class — no assigned batch. Students are added at attendance time.</td></tr>';
+    } else {
+        tbody.innerHTML = '<tr><td colspan="2" class="loading-text">Loading students...</td></tr>';
+        const res = await window.api.get('batch_students', { batch_id: data.batch_id }, '*, profiles:student_id(name, grade)');
+        if (res.success && res.data) {
+            countSpan.textContent = res.data.length;
+            if (res.data.length > 0) {
+                tbody.innerHTML = res.data.map(m => {
+                    const p = m.profiles || {};
+                    return `<tr>
+                                <td>${window.esc(p.name) || '-'}</td>
+                                <td>${window.esc(p.grade) || '-'}</td>
+                            </tr>`;
+                }).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="2" class="loading-text">No students enrolled in this batch.</td></tr>';
+            }
+        } else {
+            tbody.innerHTML = '<tr><td colspan="2" class="loading-text">Failed to load students.</td></tr>';
+            countSpan.textContent = '0';
+        }
     }
 };
 
@@ -449,7 +488,7 @@ export function init() {
             pillViewCalendar.classList.remove('pill-toggle__btn--active');
             if (calendarContainer) calendarContainer.style.display = 'none';
             if (addClassContainer) addClassContainer.style.display = 'block';
-            refreshBatchDropdown();
+            refreshFormDropdowns();
         });
     }
 

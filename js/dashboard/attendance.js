@@ -5,7 +5,8 @@ let currentAttendanceSession = null;
 let currentAttendanceDate = null;
 let currentAttendanceBatch = null;
 let currentBatchName = '';
-let currentClassTime = ''; // "HH:MM" 24h
+let currentClassTime = '';
+let currentClassGrade = null;
 let guestListLoadedForBatch = null;
 
 async function loadTodaysClasses() {
@@ -38,11 +39,11 @@ async function loadTodaysClasses() {
     todaysClasses.sort((a, b) => a.start_time.localeCompare(b.start_time));
 
     grid.innerHTML = todaysClasses.map(c => `
-        <button class="landing-pill" data-class-id="${c.id}" data-batch-id="${c.batch_id}" data-title="${window.esc(c.title)}" data-batch-name="${window.esc(c.batches ? c.batches.name : 'Unknown Batch')}" data-time="${c.start_time.substring(0, 5)}">
+        <button class="landing-pill" data-class-id="${c.id}" data-batch-id="${c.batch_id ?? ''}" data-title="${window.esc(c.title)}" data-batch-name="${window.esc(c.batches?.name || 'Open Class')}" data-grade="${window.esc(c.grade || c.batches?.grade || '')}" data-time="${c.start_time.substring(0, 5)}">
             <span class="landing-pill__icon" style="${c.type === 'extra' ? 'background: rgba(255,191,0,0.15); color: var(--amber);' : 'background: rgba(115,147,179,0.15); color: var(--primary);'} font-size: 0.75rem; font-weight: 600; width: auto; height: auto; padding: 0.3rem 0.75rem; border-radius: var(--radius-full); letter-spacing: 0.05em; text-transform: uppercase;">${c.type === 'extra' ? 'Extra' : 'Regular'}</span>
             <span class="landing-pill__text">
                 ${window.esc(c.title)}
-                <span style="display:block; font-size: 0.85rem; font-weight: 400; color: var(--text-muted); margin-top: 0.15rem;">${window.esc(c.batches ? c.batches.name : 'Unknown Batch')} &bull; ${c.start_time.substring(0, 5)}</span>
+                <span style="display:block; font-size: 0.85rem; font-weight: 400; color: var(--text-muted); margin-top: 0.15rem;">${window.esc(c.batches?.name || 'Open Class')} &bull; ${c.start_time.substring(0, 5)}</span>
             </span>
         </button>
     `).join('');
@@ -50,16 +51,18 @@ async function loadTodaysClasses() {
     grid.querySelectorAll('.landing-pill').forEach(pill => {
         pill.addEventListener('click', () => {
             const t = pill.dataset;
-            openAttendanceGrid(t.classId, t.batchId, t.title, t.batchName, t.time, dateStr);
+            openAttendanceGrid(t.classId, t.batchId || null, t.title, t.batchName, t.time, dateStr, t.grade);
         });
     });
 }
 
 window.openAttendanceGrid = openAttendanceGrid;
-async function openAttendanceGrid(classId, batchId, title, batchName, time, sessionDate) {
+async function openAttendanceGrid(classId, batchId, title, batchName, time, sessionDate, grade) {
+    batchId = batchId || null;
     currentAttendanceClass = classId;
     currentAttendanceBatch = batchId;
     currentBatchName = batchName;
+    currentClassGrade = grade || null;
     currentClassTime = time;
 
     document.getElementById('attendancePreSelectionContainer').style.display = 'none';
@@ -93,19 +96,19 @@ async function openAttendanceGrid(classId, batchId, title, batchName, time, sess
         currentAttendanceSession = sessionData?.id ?? null;
     }
 
-    const res = await window.api.get('batch_students', { batch_id: batchId }, '*, profiles:student_id(id, name)');
-
-    if (!res.success) {
-        tbody.innerHTML = `<tr><td colspan="2" class="loading-text status--error">Error: ${res.error}</td></tr>`;
-        return;
-    }
-
-    const students = res.data.map(m => m.profiles).filter(Boolean)
-        .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
-
-    if (students.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="2" class="loading-text">No students enrolled in this batch.</td></tr>';
-        return;
+    let students = [];
+    if (batchId) {
+        const res = await window.api.get('batch_students', { batch_id: batchId }, '*, profiles:student_id(id, name)');
+        if (!res.success) {
+            tbody.innerHTML = `<tr><td colspan="2" class="loading-text status--error">Error: ${res.error}</td></tr>`;
+            return;
+        }
+        students = res.data.map(m => m.profiles).filter(Boolean)
+            .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
+        if (students.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="2" class="loading-text">No students enrolled in this batch.</td></tr>';
+            return;
+        }
     }
 
     const attRes = await window.api.get('attendance', { session_id: currentAttendanceSession });
@@ -161,12 +164,22 @@ async function mergeTransferredGuests(currentBatchId, classId, statusMap) {
     const dateStr = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, '0')}-${String(new Date().getDate()).padStart(2, '0')}`;
     const todayDay = window.DAYS[new Date().getDay()];
 
-    const res = await window.api.get('batch_transfers', { to_batch_id: currentBatchId }, '*, profiles:student_id(id, name)');
-    if (!res.success || !res.data) return;
-
-    const todaysGuests = res.data.filter(t =>
-        t.transfer_date === dateStr && t.reason === `classId:${classId}`
-    );
+    let todaysGuests;
+    if (currentBatchId) {
+        const res = await window.api.get('batch_transfers', { to_batch_id: currentBatchId }, '*, profiles:student_id(id, name)');
+        if (!res.success || !res.data) return;
+        todaysGuests = res.data.filter(t =>
+            t.transfer_date === dateStr && t.reason === `classId:${classId}`
+        );
+    } else {
+        const { data, error } = await window.supabaseClient
+            .from('batch_transfers')
+            .select('*, profiles:student_id(id, name)')
+            .eq('reason', `classId:${classId}`)
+            .eq('transfer_date', dateStr);
+        if (error || !data) return;
+        todaysGuests = data;
+    }
 
     if (todaysGuests.length === 0) return;
 
@@ -366,7 +379,8 @@ export function init() {
             if (isOpen) return;
             setTimeout(() => form.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
 
-            if (guestListLoadedForBatch === currentAttendanceBatch) return;
+            const cacheKey = currentAttendanceBatch ?? `class:${currentAttendanceClass}`;
+            if (guestListLoadedForBatch === cacheKey) return;
 
             const listEl = document.getElementById('guestStudentList');
             const searchInput = document.getElementById('guestStudentSearch');
@@ -377,17 +391,22 @@ export function init() {
             searchInput.value = '';
             if (countEl) countEl.textContent = '0 selected';
 
-            const batchRes = await window.api.get('batches', { id: currentAttendanceBatch }, 'subject, grade');
-            if (!batchRes.success || !batchRes.data?.length) {
-                listEl.innerHTML = '<p class="loading-text" style="padding:0.5rem;">Failed to load batch info.</p>';
-                return;
+            let grade = currentClassGrade;
+            let enrolledIds = new Set();
+
+            if (currentAttendanceBatch) {
+                const batchRes = await window.api.get('batches', { id: currentAttendanceBatch }, 'subject, grade');
+                if (!batchRes.success || !batchRes.data?.length) {
+                    listEl.innerHTML = '<p class="loading-text" style="padding:0.5rem;">Failed to load batch info.</p>';
+                    return;
+                }
+                grade = batchRes.data[0].grade;
+                const enrolledRes = await window.api.get('batch_students', { batch_id: currentAttendanceBatch }, 'student_id');
+                enrolledIds = new Set((enrolledRes.data || []).map(r => r.student_id));
             }
-            const { grade } = batchRes.data[0];
 
-            const enrolledRes = await window.api.get('batch_students', { batch_id: currentAttendanceBatch }, 'student_id');
-            const enrolledIds = new Set((enrolledRes.data || []).map(r => r.student_id));
-
-            const studentsRes = await window.api.get('profiles', { role: 'student', grade }, 'id, name');
+            const profileFilter = grade ? { role: 'student', grade } : { role: 'student' };
+            const studentsRes = await window.api.get('profiles', profileFilter, 'id, name');
             if (!studentsRes.success) {
                 listEl.innerHTML = '<p class="loading-text" style="padding:0.5rem;">Failed to load students.</p>';
                 return;
@@ -398,7 +417,7 @@ export function init() {
                 .sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
             if (eligible.length === 0) {
-                listEl.innerHTML = '<p class="loading-text" style="padding:0.5rem;">No other students in this grade.</p>';
+                listEl.innerHTML = '<p class="loading-text" style="padding:0.5rem;">No students available to add.</p>';
                 return;
             }
 
@@ -422,7 +441,7 @@ export function init() {
                 if (countEl) countEl.textContent = `${n} selected`;
             });
 
-            guestListLoadedForBatch = currentAttendanceBatch;
+            guestListLoadedForBatch = cacheKey;
         });
     }
 

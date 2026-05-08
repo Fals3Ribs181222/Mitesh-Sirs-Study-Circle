@@ -1,6 +1,6 @@
 <div class="panel__info">
     <h3>Add New Class</h3>
-    <p>Schedule a regular (repeating weekly) or an extra (one-off) class for a specific batch.</p>
+    <p>Schedule a regular (repeating weekly) or an extra (one-off) class. Batch is optional — leave it empty to create an open class for the grade.</p>
 </div>
 
 <form id="classForm">
@@ -15,11 +15,20 @@
         <input type="hidden" id="classType" value="regular">
     </div>
 
-    <!-- Batch Selection -->
+    <!-- Grade Selection -->
     <div class="form__group">
-        <label class="form__label" for="classBatch">Select Batch</label>
-        <select id="classBatch" class="form__control" required>
-            <option value="">-- Select Batch --</option>
+        <label class="form__label" for="classGrade">Grade</label>
+        <select id="classGrade" class="form__control" required>
+            <option value="">-- Select Grade --</option>
+            <!-- Options populated via JS -->
+        </select>
+    </div>
+
+    <!-- Batch Selection (Optional) -->
+    <div class="form__group">
+        <label class="form__label" for="classBatch">Batch <span style="font-weight:400; color:var(--text-muted);">(Optional)</span></label>
+        <select id="classBatch" class="form__control">
+            <option value="">-- No Batch (Open Class) --</option>
             <!-- Options populated via JS -->
         </select>
     </div>
