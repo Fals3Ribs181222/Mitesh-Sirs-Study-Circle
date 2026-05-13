@@ -14,6 +14,20 @@ window.getActiveGrade = function () {
 // ── Subject Constants ─────────────────────────────────────────────────────
 window._Subject_Accounts = 'Accounts';
 window._Subject_Commerce = 'Commerce';
+window._Subjects = [window._Subject_Accounts, window._Subject_Commerce];
+
+// Populates a subject <select> with standard options.
+// includeAll=true adds an "All Subjects" first option.
+window.populateSubjectSelect = function (selectId, includeAll = true) {
+    const el = document.getElementById(selectId);
+    if (!el) return;
+    el.innerHTML = '';
+    if (includeAll) el.innerHTML += `<option value="">All Subjects</option>`;
+    else el.innerHTML += `<option value="">-- Select Subject --</option>`;
+    window._Subjects.forEach(s => {
+        el.innerHTML += `<option value="${s}">${s}</option>`;
+    });
+};
 
 // Populates a grade <select> with standard options derived from the constants.
 // includeAll=true adds an "All Grades" first option (for filters/announcements).

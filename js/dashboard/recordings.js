@@ -347,6 +347,10 @@ export async function init() {
         document.getElementById('btnEmptyNewPlaylist')?.addEventListener('click', showCreateForm);
     }
 
+    // Populate selects from shared constants
+    window.populateSubjectSelect('plSubject', true);
+    window.populateGradeSelect('plGrade', true);
+
     // Create playlist
     document.getElementById('btnNewPlaylist')?.addEventListener('click', showCreateForm);
     document.getElementById('btnCancelCreate')?.addEventListener('click', hideCreateForm);
