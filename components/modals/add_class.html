@@ -1,42 +1,33 @@
-<div class="panel__info">
-    <h3>Add New Class</h3>
-    <p>Schedule a regular (repeating weekly) or an extra (one-off) class. Batch is optional — leave it empty to create an open class for the grade.</p>
-</div>
-
 <form id="classForm">
-    <!-- Class Type Toggle -->
-    <div class="form__group">
-        <label class="form__label">Class Type</label>
-        <div class="pill-toggle" style="margin-bottom: 1rem; width: fit-content;">
-            <button type="button" class="pill-toggle__btn pill-toggle__btn--active" id="btnTypeRegular"
-                data-type="regular">Regular</button>
-            <button type="button" class="pill-toggle__btn" id="btnTypeExtra" data-type="extra">Extra</button>
+    <!-- Class Type / Grade / Batch — one row -->
+    <div class="form__row" style="margin-bottom: 0.75rem; align-items: flex-end;">
+        <div class="form__row-item">
+            <label class="form__label">Class Type</label>
+            <div class="pill-toggle" style="width: fit-content;">
+                <button type="button" class="pill-toggle__btn pill-toggle__btn--active" id="btnTypeRegular"
+                    data-type="regular">Regular</button>
+                <button type="button" class="pill-toggle__btn" id="btnTypeExtra" data-type="extra">Extra</button>
+            </div>
+            <input type="hidden" id="classType" value="regular">
         </div>
-        <input type="hidden" id="classType" value="regular">
-    </div>
-
-    <!-- Grade Selection -->
-    <div class="form__group">
-        <label class="form__label" for="classGrade">Grade</label>
-        <select id="classGrade" class="form__control" required>
-            <option value="">-- Select Grade --</option>
-            <!-- Options populated via JS -->
-        </select>
-    </div>
-
-    <!-- Batch Selection (Optional) -->
-    <div class="form__group">
-        <label class="form__label" for="classBatch">Batch <span style="font-weight:400; color:var(--text-muted);">(Optional)</span></label>
-        <select id="classBatch" class="form__control">
-            <option value="">-- No Batch (Open Class) --</option>
-            <!-- Options populated via JS -->
-        </select>
+        <div class="form__row-item">
+            <label class="form__label" for="classGrade">Grade</label>
+            <select id="classGrade" class="form__control" required>
+                <option value="">-- Select Grade --</option>
+            </select>
+        </div>
+        <div class="form__row-item">
+            <label class="form__label" for="classBatch">Batch</label>
+            <select id="classBatch" class="form__control">
+                <option value="">Open Class</option>
+            </select>
+        </div>
     </div>
 
     <!-- Dynamic Fields based on Type -->
     <div class="form__group" id="groupDayOfWeek">
         <label class="form__label">Days of the Week</label>
-        <div class="day-picker" id="classDayOfWeek">
+        <div class="day-picker day-picker--full" id="classDayOfWeek">
             <label class="day-picker__label">
                 <input type="checkbox" name="classDays" value="1" class="day-picker__input">
                 <span class="day-picker__text">Mon</span>
@@ -74,7 +65,7 @@
     </div>
 
     <!-- Time fields -->
-    <div class="form__row" style="margin-bottom: 1rem;">
+    <div class="form__row" style="margin-bottom: 0.75rem;">
 
         <!-- Start Time Custom Picker -->
         <div class="form__row-item time-picker-wrapper" id="startPickerWrapper">
@@ -99,7 +90,7 @@
     </div>
 
     <!-- Inline Custom Time Picker Panel -->
-    <div class="time-picker-panel" id="timePickerPanel" style="display: none; margin-bottom: 2rem;">
+    <div class="time-picker-panel" id="timePickerPanel" style="display: none; margin-bottom: 0.75rem;">
         <div class="time-col" id="timeHourCol">
             <!-- JS populated -->
         </div>
@@ -111,14 +102,8 @@
         </div>
     </div>
 
-    <div class="form__group">
-        <label class="form__label" for="classNotes">Notes (Optional)</label>
-        <textarea id="classNotes" class="form__control" rows="2"
-            placeholder="Any specific requirements or topics to cover..."></textarea>
-    </div>
-
     <button type="submit" class="btn btn--primary btn--full" id="btnCreateClass">
-        <span id="btnCreateClassText">Add Class</span>
+        <span id="btnCreateClassText">Schedule Class</span>
         <span class="spinner" id="btnCreateClassSpinner" style="display:none;" aria-hidden="true"></span>
     </button>
 

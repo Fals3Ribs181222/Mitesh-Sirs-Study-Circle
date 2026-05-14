@@ -466,6 +466,63 @@ Inline pill tags on student name cells:
 /* shared */     display: inline-block; padding: 0.15rem 0.5rem; border-radius: var(--radius-full); font-size: 0.7rem; font-weight: 600;
 ```
 
+### Class Item Card
+
+Clickable card for displaying a class. Renders inside a `classes-list` grid (`repeat(2, 1fr)`).
+
+```css
+.class-item {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.6rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  /* grade accent notch via ::after pseudo-element */
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: var(--transition);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.class-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+  background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+}
+```
+
+**Grade modifiers** (applied to `.class-item`):
+
+| Modifier | `border-top-color` | `background` |
+|---|---|---|
+| `.class-item--grade-11` | `--notch-color: var(--grade-11)` (#C41230 red) | `rgba(196,18,48,0.04)` |
+| `.class-item--grade-12` | `--notch-color: var(--grade-12)` (#00A36C green) | `rgba(0,163,108,0.04)` |
+
+**Inner elements:**
+
+- `.class-item__top-row` — `display: flex; justify-content: space-between; width: 100%` — holds the type badge
+- `.class-item__badge` — pill tag (Regular/Extra); `font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.3rem 0.75rem; border-radius: var(--radius-full); background: rgba(30,58,95,0.15); color: var(--primary)`
+- `.class-item__badge--extra` — amber variant: `background: rgba(196,138,20,0.15); color: var(--amber)`
+- `.class-item__body` — `display: flex; flex-direction: column; gap: 0.25rem`
+- `.class-item__meta` — subject + time row: `display: flex; gap: 0.5rem; flex-wrap: wrap`
+
+**HTML structure:**
+```html
+<div class="class-item class-item--grade-11" data-class-id="..." data-batch-id="..." ...>
+  <div class="class-item__top-row">
+    <span class="class-item__badge">Regular</span>
+  </div>
+  <div class="class-item__body">
+    <strong>Batch 3</strong>
+    <div class="class-item__meta">
+      <span class="text-muted">Accounts</span>
+      <span class="text-muted">8:00 AM</span>
+    </div>
+  </div>
+</div>
+```
+
+Cards are rendered directly as children of `.classes-list` — do not wrap them in an intermediate div.
+
 ---
 
 ## 9. Motion & Interaction

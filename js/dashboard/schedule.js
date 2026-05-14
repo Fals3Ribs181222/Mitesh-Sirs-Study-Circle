@@ -22,7 +22,7 @@ async function renderCalendar() {
     startDate.setDate(startDate.getDate() + diffToMonday);
 
     const endDate = new Date(startDate);
-    endDate.setDate(startDate.getDate() + 13); // 14 days total
+    endDate.setDate(startDate.getDate() + 6); // 7 days total
 
     header.innerHTML = `<span class="cal-range-start">${window.MONTH_NAMES[startDate.getMonth()]} ${startDate.getDate()}</span><span class="cal-range-sep"> – </span><span class="cal-range-end">${window.MONTH_NAMES[endDate.getMonth()]} ${endDate.getDate()}</span>`;
 
@@ -41,7 +41,7 @@ async function renderCalendar() {
 
     loadingCell.remove();
 
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 7; i++) {
         const cellDate = new Date(startDate);
         cellDate.setDate(startDate.getDate() + i);
 
@@ -55,7 +55,9 @@ async function renderCalendar() {
         const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 
         const today = new Date();
-        if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+        const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+        if (isToday) {
+            cell.classList.add('calendar__day--today');
             cell.innerHTML = `<div class="calendar__date calendar__date--today">${day}</div>`;
         } else {
             cell.innerHTML = `<div class="calendar__date">${day}</div>`;
@@ -71,23 +73,33 @@ async function renderCalendar() {
 
         dayClasses.sort((a, b) => a.start_time.localeCompare(b.start_time));
 
+        if (dayClasses.length === 0) {
+            cell.classList.add('calendar__day--empty');
+        }
+
         const pillsContainer = document.createElement('div');
         pillsContainer.className = 'calendar__pills';
 
         dayClasses.forEach(c => {
             const pill = document.createElement('div');
             const batchGrade = c.grade || c.batches?.grade || '';
-            const gradeClass = c.type === 'extra' ? 'calendar__pill--extra'
-                : batchGrade.includes('11') ? 'calendar__pill--grade-11'
-                : batchGrade.includes('12') ? 'calendar__pill--grade-12'
-                : 'calendar__pill--regular';
-            pill.className = `calendar__pill ${gradeClass}`;
+            const isExtra = c.type === 'extra';
+            const gradeClass = batchGrade.includes('11') ? ' class-item--grade-11'
+                : batchGrade.includes('12') ? ' class-item--grade-12'
+                : '';
+            pill.className = `class-item${gradeClass}`;
             const batchSubject = c.batches?.subject || '';
             const batchName = c.batches?.name || 'Open Class';
+            const timeStr = window.formatTime(c.start_time);
             pill.innerHTML = `
-                <div class="calendar__pill-time">${window.formatTime(c.start_time)}</div>
-                <div class="calendar__pill-title">${window.esc(batchGrade)} ${window.esc(batchSubject)}</div>
-                <div class="calendar__pill-subtitle">${window.esc(batchName)}</div>
+                ${isExtra ? '<div class="class-item__top-row"><span class="class-item__badge class-item__badge--extra">Extra</span></div>' : ''}
+                <div class="class-item__body">
+                    <strong>${window.esc(batchName)}</strong>
+                    <div class="class-item__meta">
+                        <span class="text-muted">${window.esc(batchSubject)}</span>
+                        <span class="text-muted">${timeStr}</span>
+                    </div>
+                </div>
             `;
 
             const relatedClasses = c.class_group_id ? classes.filter(other =>
@@ -159,7 +171,7 @@ async function refreshFormDropdowns() {
     const batchSelect = document.getElementById('classBatch');
     if (!gradeSelect || !batchSelect) return;
 
-    batchSelect.innerHTML = '<option value="">-- No Batch (Open Class) --</option>';
+    batchSelect.innerHTML = '<option value="">Open Class</option>';
 
     const res = await window.api.get('batches');
     if (!res.success || !res.data) return;
@@ -167,7 +179,7 @@ async function refreshFormDropdowns() {
     const sorted = (res.data || []).sort((a, b) => (a.name || '').localeCompare(b.name || ''));
 
     const grades = [...new Set(sorted.map(b => b.grade).filter(Boolean))].sort();
-    gradeSelect.innerHTML = '<option value="">-- Select Grade --</option>';
+    gradeSelect.innerHTML = '<option value="" disabled selected>Select Grade</option>';
     grades.forEach(g => {
         const opt = document.createElement('option');
         opt.value = g;
@@ -189,7 +201,13 @@ async function refreshFormDropdowns() {
         batchSelect.appendChild(opt);
     });
 
-    gradeSelect.addEventListener('change', () => filterBatchByGrade(gradeSelect.value));
+    batchSelect.disabled = true;
+
+    gradeSelect.addEventListener('change', () => {
+        batchSelect.disabled = !gradeSelect.value;
+        if (!gradeSelect.value) batchSelect.value = '';
+        filterBatchByGrade(gradeSelect.value);
+    });
     filterBatchByGrade(gradeSelect.value);
 }
 
@@ -246,11 +264,11 @@ function attachClassFormListeners() {
         }).join('');
 
         minCol.innerHTML = ['00', '15', '30', '45'].map(m => {
-            return `<div class="time-option time-option--min ${m === s.min ? 'time-option--selected' : ''}" style="flex: 1 1 calc(25% - 0.4rem);" data-val="${m}">${m}</div>`;
+            return `<div class="time-option time-option--min ${m === s.min ? 'time-option--selected' : ''}" style="flex: 1 1 calc(50% - 0.4rem);" data-val="${m}">${m}</div>`;
         }).join('');
 
         amPmCol.innerHTML = ['AM', 'PM'].map(a => {
-            return `<div class="time-option time-option--ampm ${a === s.ampm ? 'time-option--selected' : ''}" style="flex: 1 1 calc(50% - 0.4rem);" data-val="${a}">${a}</div>`;
+            return `<div class="time-option time-option--ampm ${a === s.ampm ? 'time-option--selected' : ''}" style="flex: 1 1 100%;" data-val="${a}">${a}</div>`;
         }).join('');
     };
 
@@ -281,12 +299,6 @@ function attachClassFormListeners() {
         pickerState.active = mode;
         renderPanelOptions();
         panel.style.display = 'flex';
-
-        if (mode === 'end') {
-            panel.style.marginLeft = 'calc(50% + 0.75rem)';
-        } else {
-            panel.style.marginLeft = '0';
-        }
 
         startDisplay.style.borderColor = mode === 'start' ? 'var(--primary)' : 'var(--border-color)';
         endDisplay.style.borderColor = mode === 'end' ? 'var(--primary)' : 'var(--border-color)';
@@ -355,7 +367,7 @@ function attachClassFormListeners() {
             type: type,
             start_time: document.getElementById('classStartTime').value,
             end_time: document.getElementById('classEndTime').value,
-            notes: document.getElementById('classNotes').value.trim() || null,
+            notes: null,
             created_by: user.id,
             class_group_id: sharedGroupId
         };
@@ -481,6 +493,8 @@ export function init() {
             pillAddClass.classList.remove('pill-toggle__btn--active');
             if (calendarContainer) calendarContainer.style.display = 'block';
             if (addClassContainer) addClassContainer.style.display = 'none';
+            const titleEl = document.getElementById('scheduleTitle');
+            if (titleEl) titleEl.textContent = 'Classes';
             renderCalendar();
         });
 
@@ -489,6 +503,8 @@ export function init() {
             pillViewCalendar.classList.remove('pill-toggle__btn--active');
             if (calendarContainer) calendarContainer.style.display = 'none';
             if (addClassContainer) addClassContainer.style.display = 'block';
+            const titleEl = document.getElementById('scheduleTitle');
+            if (titleEl) titleEl.textContent = 'Schedule Class';
             refreshFormDropdowns();
         });
     }
@@ -498,14 +514,14 @@ export function init() {
 
     if (btnPrevMonth) {
         btnPrevMonth.addEventListener('click', () => {
-            currentDate.setDate(currentDate.getDate() - 14);
+            currentDate.setDate(currentDate.getDate() - 7);
             renderCalendar();
         });
     }
 
     if (btnNextMonth) {
         btnNextMonth.addEventListener('click', () => {
-            currentDate.setDate(currentDate.getDate() + 14);
+            currentDate.setDate(currentDate.getDate() + 7);
             renderCalendar();
         });
     }

@@ -98,12 +98,39 @@
         <!-- MAIN CONTENT -->
         <main class="dash-main">
             <!-- Hamburger toggle (mobile only) -->
-            <button class="dash-menu-toggle" id="dashMenuToggle" aria-label="Open navigation">☰</button>
+            <button class="dash-menu-toggle" id="dashMenuToggle" aria-label="Open navigation"><i class="ri-menu-line" aria-hidden="true"></i></button>
 
             <div class="panels-container" id="dashboard-content">
 
                 <!-- HOME PANEL -->
                 <section class="tabs__panel tabs__panel--active" id="panel-home" role="tabpanel" aria-label="Home">
+
+                    <!-- Greeting + Quick Stats -->
+                    <div class="home-greeting">
+                        <div>
+                            <p class="home-greeting__salutation" id="greetingSalutation">Welcome,</p>
+                            <h2 class="home-greeting__name">Hello, <span id="greetingName">Teacher</span></h2>
+                        </div>
+                        <div class="home-stats-row" aria-label="Quick stats">
+                            <div class="home-stat">
+                                <span class="home-stat__value" id="statStudents">—</span>
+                                <span class="home-stat__label">Students</span>
+                            </div>
+                            <div class="home-stat">
+                                <span class="home-stat__value" id="statBatches">—</span>
+                                <span class="home-stat__label">Batches</span>
+                            </div>
+                            <div class="home-stat">
+                                <span class="home-stat__value" id="statTodayClasses">—</span>
+                                <span class="home-stat__label">Today's Classes</span>
+                            </div>
+                            <div class="home-stat">
+                                <span class="home-stat__value" id="statUpcomingTests">—</span>
+                                <span class="home-stat__label">Upcoming Tests</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="dash-widgets">
 
                         <!-- Widget 1: Today's Classes -->
@@ -143,9 +170,12 @@
                                 <button class="btn btn--outline btn--sm" onclick="window.loadTab('panel-announcement')">View All</button>
                             </div>
                             <form class="quick-announce-form" id="quickAnnounceForm">
+                                <label for="qaTitle" class="visually-hidden">Announcement title</label>
                                 <input type="text" id="qaTitle" class="form__input" placeholder="Title" required>
+                                <label for="qaMessage" class="visually-hidden">Announcement message</label>
                                 <textarea id="qaMessage" class="form__textarea" rows="3" placeholder="Message..." required></textarea>
                                 <div class="quick-announce-footer">
+                                    <label for="qaGrade" class="visually-hidden">Target grade</label>
                                     <select id="qaGrade" class="form__select"></select>
                                     <button type="submit" class="btn btn--primary btn--sm" id="btnQASubmit">Post</button>
                                 </div>
@@ -358,13 +388,29 @@
         async function loadDashboardWidgets() {
             const user = window.auth.getUser();
 
-            // Today's date
+            // Today's date + greeting
             const now = new Date();
+            const h = now.getHours();
+            const salutation = h < 12 ? 'Good morning' : h < 17 ? 'Good afternoon' : 'Good evening';
+            const greetingEl = document.getElementById('greetingSalutation');
+            const nameEl = document.getElementById('greetingName');
+            if (greetingEl) greetingEl.textContent = salutation + ',';
+            if (nameEl && user) nameEl.textContent = user.name || 'Teacher';
+
             document.getElementById('todayDate').textContent =
                 now.toLocaleDateString('en-IN', { weekday: 'long', month: 'long', day: 'numeric' });
 
             const todayDow = now.getDay();
             const todayIso = now.toISOString().slice(0, 10);
+
+            const activeGrade = window.getActiveGrade ? window.getActiveGrade() : null;
+            const gradeFilter = activeGrade ? { grade: activeGrade } : {};
+
+            // Kick off stats queries in parallel with content queries
+            const statsPromise = Promise.all([
+                window.api.get('profiles', { role: 'student', ...gradeFilter }, 'id', {}),
+                window.api.get('batches', gradeFilter, 'id', {})
+            ]);
 
             // --- Today's Classes ---
             const classesRes = await window.api.get(
@@ -376,22 +422,23 @@
                 const todays = classesRes.data.filter(c =>
                     c.class_date === todayIso || (!c.class_date && c.day_of_week === todayDow)
                 );
-                const activeGradeForWidget = window.getActiveGrade ? window.getActiveGrade() : null;
-                const filteredTodays = activeGradeForWidget
-                    ? todays.filter(c => c.batches?.grade === activeGradeForWidget)
+                const filteredTodays = activeGrade
+                    ? todays.filter(c => c.batches?.grade === activeGrade)
                     : todays;
+
+                document.getElementById('statTodayClasses').textContent = filteredTodays.length;
+
                 if (filteredTodays.length) {
                     const renderCard = c => {
                         const timeStr = window.formatTime ? window.formatTime(c.start_time) : c.start_time;
                         const isExtra = c.type === 'extra';
                         const type = isExtra ? 'Extra' : 'Regular';
                         const grade = c.batches?.grade || '';
-                        const gradeClass = grade === window._Grade11 ? ' class-item--grade-11' : grade === window._Grade12 ? ' class-item--grade-12' : '';
+                        const gradeClass = grade === '11th' ? ' class-item--grade-11' : grade === '12th' ? ' class-item--grade-12' : '';
                         return `
                         <div class="class-item${gradeClass}" data-class-id="${c.id}" data-batch-id="${c.batch_id}" data-title="${(c.title || '').replace(/"/g, '&quot;')}" data-batch-name="${(c.batches?.name || '').replace(/"/g, '&quot;')}" data-time="${timeStr}">
                             <div class="class-item__top-row">
                                 <span class="class-item__badge${isExtra ? ' class-item__badge--extra' : ''}">${type}</span>
-                                ${grade ? `<span class="class-item__grade">${window.esc(grade)}</span>` : ''}
                             </div>
                             <div class="class-item__body">
                                 <strong>${window.esc(c.batches?.name || 'Class')}</strong>
@@ -402,7 +449,8 @@
                             </div>
                         </div>`;
                     };
-                    todaysList.innerHTML = `<div class="classes-col">${filteredTodays.map(renderCard).join('')}</div>`;
+                    // Render cards directly as grid children (no wrapper div)
+                    todaysList.innerHTML = filteredTodays.map(renderCard).join('');
                     todaysList.querySelectorAll('.class-item[data-class-id]').forEach(item => {
                         item.addEventListener('click', async () => {
                             await window.loadTab('panel-attendance');
@@ -415,6 +463,7 @@
                     todaysList.innerHTML = '<p class="loading-text">No classes today.</p>';
                 }
             } else {
+                document.getElementById('statTodayClasses').textContent = '0';
                 todaysList.innerHTML = '<p class="loading-text">No classes scheduled.</p>';
             }
 
@@ -422,13 +471,13 @@
             const testsRes = await window.api.get('tests', {}, '*', { order: 'date', ascending: true });
             const testsList = document.getElementById('testsPreviewList');
             if (testsRes.success && testsRes.data && testsRes.data.length) {
-                const activeGradeForTests = window.getActiveGrade ? window.getActiveGrade() : null;
-                const allTests = activeGradeForTests
-                    ? testsRes.data.filter(t => t.grade === activeGradeForTests)
+                const allTests = activeGrade
+                    ? testsRes.data.filter(t => t.grade === activeGrade)
                     : testsRes.data;
+                const upcomingTests = allTests.filter(t => t.date >= todayIso);
+                document.getElementById('statUpcomingTests').textContent = upcomingTests.length;
                 const past = allTests.filter(t => t.date < todayIso).slice(-1);
-                const upcoming = allTests.filter(t => t.date >= todayIso).slice(0, 2);
-                const show = [...past, ...upcoming];
+                const show = [...past, ...upcomingTests.slice(0, 2)];
                 if (show.length) {
                     testsList.innerHTML = show.map(t => {
                         const isPast = t.date < todayIso;
@@ -436,8 +485,8 @@
                         <a href="manage_marks?testId=${t.id}" class="test-preview-item ${isPast ? 'test-preview-item--past' : ''}" style="text-decoration:none; color:inherit; cursor:pointer;">
                             <span class="test-preview-item__badge">${isPast ? 'Past' : 'Upcoming'}</span>
                             <div class="test-preview-item__body">
-                                <strong>${t.title || t.subject || '—'}</strong>
-                                <span class="text-muted">${t.subject || ''} · ${t.date || ''} · ${t.max_marks || '?'} marks</span>
+                                <strong>${window.esc(t.title || t.subject || '—')}</strong>
+                                <span class="text-muted">${window.esc(t.subject || '')} · ${t.date || ''} · ${t.max_marks || '?'} marks</span>
                             </div>
                         </a>`;
                     }).join('');
@@ -445,6 +494,7 @@
                     testsList.innerHTML = '<p class="loading-text">No tests found.</p>';
                 }
             } else {
+                document.getElementById('statUpcomingTests').textContent = '0';
                 testsList.innerHTML = '<p class="loading-text">No tests found.</p>';
             }
 
@@ -473,27 +523,36 @@
             };
 
             // --- Mini Leaderboard (top 3) ---
-            const activeGradeForLb = window.getActiveGrade ? window.getActiveGrade() : null;
-            const gradeFilter = activeGradeForLb ? { grade: activeGradeForLb } : {};
             const lbRes = await window.api.get(
                 'student_rankings', gradeFilter, '*',
                 { order: 'rank', ascending: true }
             );
             const miniLb = document.getElementById('miniLeaderboard');
             if (lbRes.success && lbRes.data && lbRes.data.length) {
-                const medals = ['🥇', '🥈', '🥉'];
-                miniLb.innerHTML = lbRes.data.slice(0, 3).map((s, i) => `
+                miniLb.innerHTML = lbRes.data.slice(0, 3).map((s, i) => {
+                    const rankClass = i < 3 ? ` mini-lb-row__rank--${i + 1}` : '';
+                    return `
                     <div class="mini-lb-row">
-                        <span class="mini-lb-row__medal">${medals[i] || (i + 1)}</span>
+                        <span class="mini-lb-row__rank${rankClass}" aria-label="Rank ${i + 1}">${i + 1}</span>
                         <div class="mini-lb-row__avatar">${s.name?.[0]?.toUpperCase() || '?'}</div>
                         <div class="mini-lb-row__info">
-                            <strong>${s.name || '—'}</strong>
-                            <span>${s.grade || ''}</span>
+                            <strong>${window.esc(s.name || '—')}</strong>
+                            <span>${window.esc(s.grade || '')}</span>
                         </div>
                         <span class="mini-lb-row__score">${Math.round(s.final_score ?? s.avg_percentage ?? 0)}</span>
-                    </div>`).join('');
+                    </div>`;
+                }).join('');
             } else {
                 miniLb.innerHTML = '<p class="loading-text">No rankings yet.</p>';
+            }
+
+            // --- Resolve stats queries ---
+            const [studentsRes, batchesRes] = await statsPromise;
+            if (studentsRes.success) {
+                document.getElementById('statStudents').textContent = studentsRes.data?.length ?? '—';
+            }
+            if (batchesRes.success) {
+                document.getElementById('statBatches').textContent = batchesRes.data?.length ?? '—';
             }
         }
 
