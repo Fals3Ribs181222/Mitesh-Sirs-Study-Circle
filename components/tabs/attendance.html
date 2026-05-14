@@ -7,26 +7,48 @@
 
 <!-- Pre-Selection Container -->
 <div id="attendancePreSelectionContainer">
-    <p class="text-muted" style="margin-bottom: 1.5rem;">Select a class scheduled for today to mark
-        attendance.</p>
+    <p class="text-muted" style="margin-bottom: 1.5rem;">Select a class scheduled for today to mark attendance.</p>
     <div id="todaysClassesGrid" class="classes-grid">
         <div class="loading-text">Loading today's classes...</div>
     </div>
 </div>
 
-<!-- Grid-Based Attendance Container -->
+<!-- Attendance Grid Container -->
 <div id="attendanceGridContainer" style="display:none;">
-    <div class="attendance-topbar" style="margin-bottom: 1.5rem;">
+
+    <!-- Topbar -->
+    <div class="attendance-topbar" style="margin-bottom: 1rem;">
         <h3 id="attendanceClassName" style="font-size: 1.25rem;">Class Name</h3>
         <p id="attendanceClassMeta" class="text-muted">Batch • Time</p>
     </div>
 
+    <!-- Live Summary Bar -->
+    <div class="att-summary" id="attendanceSummary">
+        <div class="att-summary__stat att-summary__stat--present">
+            <span class="att-summary__count" id="summaryPresent">0</span>
+            <span class="att-summary__label">Present</span>
+        </div>
+        <div class="att-summary__stat att-summary__stat--late">
+            <span class="att-summary__count" id="summaryLate">0</span>
+            <span class="att-summary__label">Late</span>
+        </div>
+        <div class="att-summary__stat att-summary__stat--absent">
+            <span class="att-summary__count" id="summaryAbsent">0</span>
+            <span class="att-summary__label">Absent</span>
+        </div>
+        <div class="att-summary__stat att-summary__stat--unmarked">
+            <span class="att-summary__count" id="summaryUnmarked">0</span>
+            <span class="att-summary__label">Unmarked</span>
+        </div>
+    </div>
+
+    <!-- Attendance Table -->
     <div class="table-wrap">
         <table id="attendanceTable" class="attendance-table" aria-label="Attendance list">
             <thead>
                 <tr>
                     <th scope="col">Student Name</th>
-                    <th scope="col" style="text-align: right;">Status</th>
+                    <th scope="col" class="att-status-col">Status</th>
                 </tr>
             </thead>
             <tbody id="attendanceTableBody">
@@ -36,13 +58,20 @@
             </tbody>
         </table>
     </div>
-    <div class="form__actions" style="margin-top: 1.5rem; display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
-        <button class="btn btn--outline" id="btnAddGuest" style="font-size: 0.9rem;">+ Add Student</button>
-        <button class="btn btn--outline" id="btnMarkAllPresent">Mark All Present</button>
-        <button class="btn btn--primary" id="btnSaveAttendance">Save Attendance</button>
-        <button class="btn btn--outline" id="btnSendChecked" disabled style="background:rgba(37,211,102,0.1); border-color:#25D366; color:#25D366; opacity:0.5;">
-            <i class="ri-whatsapp-line"></i> Send WhatsApp (0)
-        </button>
+
+    <!-- Action Bar -->
+    <div class="att-actions">
+        <div class="att-actions__secondary">
+            <button class="btn btn--outline btn--sm" id="btnMarkAllPresent">Mark All Present</button>
+            <button class="btn btn--outline btn--sm" id="btnAddGuest">+ Add Student</button>
+        </div>
+        <div class="att-actions__primary">
+            <button class="btn btn--primary" id="btnSaveAttendance">Save Attendance</button>
+            <button class="btn btn--outline" id="btnSendChecked" disabled
+                style="background:rgba(37,211,102,0.1); border-color:#25D366; color:#25D366; opacity:0.5;">
+                <i class="ri-whatsapp-line"></i> Send WhatsApp (0)
+            </button>
+        </div>
     </div>
     <div id="sendCheckedStatus" class="status" style="display:none; margin-top: 0.75rem;"></div>
 
@@ -52,8 +81,10 @@
         <h4 style="margin: 0 0 1rem 0; color: var(--primary);">Add Guest Student</h4>
         <div class="form__group">
             <label class="form__label">Students</label>
-            <input class="form__control" type="text" id="guestStudentSearch" placeholder="Search students..." disabled style="margin-bottom: 0.5rem;">
-            <div id="guestStudentList" class="student-picker__list" style="max-height:200px; overflow-y:auto; border:1px solid var(--glass-border); border-radius:var(--radius-md); padding:0.25rem;">
+            <input class="form__control" type="text" id="guestStudentSearch" placeholder="Search students..."
+                disabled style="margin-bottom: 0.5rem; touch-action: manipulation;">
+            <div id="guestStudentList" class="student-picker__list"
+                style="max-height:200px; overflow-y:auto; -webkit-overflow-scrolling:touch; border:1px solid var(--glass-border); border-radius:var(--radius-md); padding:0.25rem;">
                 <p class="loading-text" style="padding:0.5rem;">Loading...</p>
             </div>
             <p id="guestSelectedCount" style="font-size:0.8rem; color:var(--text-muted); margin-top:0.35rem;">0 selected</p>

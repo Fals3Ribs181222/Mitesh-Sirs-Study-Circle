@@ -2,6 +2,7 @@ const user = window.auth.getUser();
 let currentBatchId = null;
 let currentBatchGrade = null;
 let currentBatchSubject = null;
+let pickerChangeHandler = null;
 
 async function loadBatches() {
     const tbody = document.getElementById('batchesTableBody');
@@ -249,10 +250,12 @@ async function loadStudentPicker(batchId) {
             };
         }
 
-        listEl.addEventListener('change', () => {
+        if (pickerChangeHandler) listEl.removeEventListener('change', pickerChangeHandler);
+        pickerChangeHandler = () => {
             const checked = listEl.querySelectorAll('input:checked').length;
             document.getElementById('selectedCount').textContent = `${checked} selected`;
-        });
+        };
+        listEl.addEventListener('change', pickerChangeHandler);
     } else {
         listEl.innerHTML = '<p class="loading-text">Failed to load students.</p>';
     }

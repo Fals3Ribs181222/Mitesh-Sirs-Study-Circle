@@ -150,6 +150,7 @@ async function openAttendanceGrid(classId, batchId, title, batchName, time, sess
     }).join('');
 
     await mergeTransferredGuests(batchId, classId, statusMap);
+    updateAttendanceSummary();
 
     if (currentAttendanceSession) {
         const sentRes = await window.supabaseClient
@@ -311,6 +312,33 @@ function markRowAsSent(studentId) {
 
     document.getElementById('attendanceTableBody').appendChild(row);
     updateSendCheckedBtn();
+    updateAttendanceSummary();
+}
+
+function updateAttendanceSummary() {
+    const rows = document.querySelectorAll('#attendanceTableBody tr.att-row');
+    let present = 0, late = 0, absent = 0, unmarked = 0;
+
+    rows.forEach(row => {
+        const checked = row.querySelector('input[type="radio"]:checked');
+        if (!row.classList.contains('att-row--sent')) {
+            row.classList.remove('att-row--present', 'att-row--late', 'att-row--absent');
+            if (checked) row.classList.add(`att-row--${checked.value}`);
+        }
+        if (!checked) { unmarked++; return; }
+        if (checked.value === 'present') present++;
+        else if (checked.value === 'late') late++;
+        else if (checked.value === 'absent') absent++;
+    });
+
+    const p = document.getElementById('summaryPresent');
+    const l = document.getElementById('summaryLate');
+    const a = document.getElementById('summaryAbsent');
+    const u = document.getElementById('summaryUnmarked');
+    if (p) p.textContent = present;
+    if (l) l.textContent = late;
+    if (a) a.textContent = absent;
+    if (u) u.textContent = unmarked;
 }
 
 function updateSendCheckedBtn() {
@@ -334,11 +362,14 @@ function resetSendCheckedBtn() {
 export function init() {
     loadTodaysClasses();
 
-    // Auto-update send button count when any radio changes
+    // Auto-update send button count and summary when any radio changes
     const tbody = document.getElementById('attendanceTableBody');
     if (tbody) {
         tbody.addEventListener('change', (e) => {
-            if (e.target.type === 'radio') updateSendCheckedBtn();
+            if (e.target.type === 'radio') {
+                updateSendCheckedBtn();
+                updateAttendanceSummary();
+            }
         });
     }
 
@@ -556,7 +587,10 @@ export function init() {
     }
 
     document.getElementById('btnSwitchClassAttendance')?.addEventListener('click', () => {
-        window.loadTab('panel-schedule');
+        document.getElementById('attendanceGridContainer').style.display = 'none';
+        document.getElementById('attendancePreSelectionContainer').style.display = 'block';
+        document.getElementById('attendanceHeaderActions').style.display = 'none';
+        loadTodaysClasses();
     });
 
     document.getElementById('btnMarkAllPresent')?.addEventListener('click', () => {

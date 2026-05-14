@@ -1687,11 +1687,13 @@ button:disabled {
 
 .student-picker__search {
     margin-bottom: 1rem;
+    touch-action: manipulation;
 }
 
 .student-picker__list {
     max-height: 320px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
@@ -2542,6 +2544,107 @@ button:disabled {
     flex-direction: column;
 }
 
+/* Live summary stats bar */
+.att-summary {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.att-summary__stat {
+    flex: 1;
+    min-width: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 0.5rem;
+    border-radius: var(--radius-md);
+    border: 1px solid;
+    gap: 0.2rem;
+}
+
+.att-summary__count {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.att-summary__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.75;
+}
+
+.att-summary__stat--present {
+    background: rgba(16, 185, 129, 0.08);
+    border-color: rgba(16, 185, 129, 0.25);
+    color: #10b981;
+}
+
+.att-summary__stat--late {
+    background: rgba(196, 138, 20, 0.08);
+    border-color: rgba(196, 138, 20, 0.25);
+    color: var(--amber);
+}
+
+.att-summary__stat--absent {
+    background: rgba(184, 50, 50, 0.08);
+    border-color: rgba(184, 50, 50, 0.25);
+    color: var(--cadmium-red);
+}
+
+.att-summary__stat--unmarked {
+    background: rgba(0, 0, 0, 0.03);
+    border-color: var(--border-color);
+    color: var(--text-muted);
+}
+
+/* Row status color coding */
+.att-row--present td:first-child {
+    border-left: 3px solid #10b981;
+}
+
+.att-row--late td:first-child {
+    border-left: 3px solid var(--amber);
+}
+
+.att-row--absent td:first-child {
+    border-left: 3px solid var(--cadmium-red);
+}
+
+/* Action bar */
+.att-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+}
+
+.att-actions__secondary {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.att-actions__primary {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.att-actions__primary .btn--primary {
+    flex: 1;
+}
+
+/* Status column alignment */
+.att-status-col {
+    text-align: right;
+}
+
 .attendance-table {
     width: 100%;
 }
@@ -2551,7 +2654,7 @@ button:disabled {
 }
 
 .attendance-table tbody tr:hover {
-    background: rgba(30, 58, 95, 0.05);
+    background: rgba(30, 58, 95, 0.04);
 }
 
 .attendance-toggles {
@@ -2588,34 +2691,35 @@ button:disabled {
     background: transparent;
     color: var(--text-muted);
     border: none;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
     white-space: nowrap;
     cursor: pointer;
+    min-height: 38px;
 }
 
 .attendance-toggle__mark:hover {
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.6);
 }
 
 /* Present - Emerald */
 .attendance-toggle input[value="present"]:checked~.attendance-toggle__mark {
     background: var(--grade-12);
     color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
 }
 
 /* Absent - Ruby */
 .attendance-toggle input[value="absent"]:checked~.attendance-toggle__mark {
     background: var(--grade-11);
     color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(184, 50, 50, 0.3);
 }
 
 /* Late - Amber */
 .attendance-toggle input[value="late"]:checked~.attendance-toggle__mark {
     background: var(--amber);
     color: white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 6px rgba(196, 138, 20, 0.3);
 }
 
 /* ============================================================
@@ -3225,6 +3329,83 @@ tr.editing-row {
 
     .student-detail__twocol {
         grid-template-columns: 1fr;
+    }
+
+    /* Attendance table: card-based layout on mobile */
+    #attendanceTable,
+    #attendanceTable tbody {
+        display: block;
+    }
+
+    #attendanceTable thead {
+        display: none;
+    }
+
+    #attendanceTable tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    #attendanceTable tr.att-row {
+        display: flex;
+        flex-direction: column;
+        padding: 0.75rem 1rem;
+        background: var(--glass-bg);
+        border: 1px solid var(--glass-border);
+        border-radius: var(--radius-md);
+        gap: 0.6rem;
+        backdrop-filter: blur(8px);
+    }
+
+    #attendanceTable tr.att-row td {
+        display: block;
+        text-align: left !important;
+        padding: 0 !important;
+        border: none !important;
+    }
+
+    /* Row status: left border on the card itself on mobile */
+    .att-row--present { border-left: 3px solid #10b981 !important; }
+    .att-row--late    { border-left: 3px solid var(--amber) !important; }
+    .att-row--absent  { border-left: 3px solid var(--cadmium-red) !important; }
+    .att-row--present td:first-child,
+    .att-row--late td:first-child,
+    .att-row--absent td:first-child { border-left: none; }
+
+    /* Toggles: full-width, even split */
+    .attendance-toggles {
+        width: 100%;
+        display: flex;
+    }
+
+    .attendance-toggle {
+        flex: 1;
+    }
+
+    .attendance-toggle__mark {
+        width: 100%;
+        justify-content: center;
+        min-height: 44px;
+        padding: 0.6rem 0.25rem;
+        font-size: 0.82rem;
+    }
+
+    /* Action bar: stack on mobile */
+    .att-actions__primary {
+        flex-direction: column;
+    }
+
+    .att-actions__primary .btn--primary,
+    .att-actions__primary .btn--outline {
+        width: 100%;
+        flex: none;
+        justify-content: center;
+    }
+
+    /* Summary bar: compact on mobile */
+    .att-summary__count {
+        font-size: 1.35rem;
     }
 }
 
